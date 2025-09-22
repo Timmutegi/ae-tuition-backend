@@ -71,6 +71,7 @@ app.add_middleware(
         "x-requested-with",
         "no-auth"
     ],
+    expose_headers=["*"],
 )
 
 # Include API routes
