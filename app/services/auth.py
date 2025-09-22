@@ -28,6 +28,7 @@ class AuthService:
         # Update last login
         user.last_login = datetime.utcnow()
         await db.commit()
+        await db.refresh(user)
 
         return user
 

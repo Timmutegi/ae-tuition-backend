@@ -86,7 +86,8 @@ async def get_current_admin(
     current_user = Depends(get_current_user)
 ):
     """Get current admin user."""
-    if current_user.role != "admin":
+    from app.models.user import UserRole  # Import here to avoid circular import
+    if current_user.role != UserRole.ADMIN:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions. Admin access required."
@@ -97,9 +98,13 @@ async def get_current_student(
     current_user = Depends(get_current_user)
 ):
     """Get current student user."""
-    if current_user.role != "student":
+    from app.models.user import UserRole  # Import here to avoid circular import
+    if current_user.role != UserRole.STUDENT:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not enough permissions. Student access required."
         )
     return current_user
+
+# Alias for backwards compatibility
+get_current_admin_user = get_current_admin

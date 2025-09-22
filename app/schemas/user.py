@@ -31,6 +31,9 @@ class User(UserBase):
     class Config:
         from_attributes = True
 
+# Alias for backwards compatibility
+UserResponse = User
+
 # Schema for login request
 class LoginRequest(BaseModel):
     email: EmailStr

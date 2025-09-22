@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Results - AE Tuition</title>
+    <style>
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            font-family: "Segoe UI", Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji" ;
+        }
+        .header {
+            background-color: #4F46E5;
+            height: 150px;
+            line-height: 150px;
+            padding-right: 50px;
+            padding-bottom: 20px;
+            color: white;
+        }
+        .header h1 {
+            text-align: center;
+        }
+        .content {
+            min-height: 100px;
+        }
+        .footer {
+            height: 100px;
+            background-color: #4F46E5;
+            padding-top: 30px;
+            padding-bottom: 30px;
+            color: white;
+            font-size: 13px;
+            line-height: 20px;
+        }
+        .footer p {
+            margin-top: 0px;
+            margin-bottom: 0px;
+            text-align: center;
+        }
+        .footer a {
+            color: white;
+        }
+        .results-box {
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .results-box.passed {
+            background-color: #f0fdf4;
+            border: 2px solid #16a34a;
+        }
+        .results-box.failed {
+            background-color: #fef2f2;
+            border: 2px solid #dc2626;
+        }
+        .score-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px auto;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-circle.passed {
+            background: linear-gradient(135deg, #16a34a, #059669);
+        }
+        .score-circle.failed {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+        }
+        .test-stats {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+        .stat-label {
+            font-weight: 600;
+            color: #475569;
+        }
+        .stat-value {
+            font-weight: 500;
+            color: #1e293b;
+        }
+        .performance-box {
+            background-color: #f0f9ff;
+            border-left: 4px solid #0369a1;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .encouragement-box {
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .encouragement-box.passed {
+            background-color: #f0fdf4;
+            border: 2px solid #16a34a;
+        }
+        .encouragement-box.failed {
+            background-color: #fef3c7;
+            border: 2px solid #f59e0b;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <div class="header">
+                <h1>AE Tuition</h1>
+            </div>
+            <div class="content">
+                <div style="max-width: 560px; padding: 20px; background: #ffffff; border-radius: 5px; margin: 40px auto; font-family: Open Sans,Helvetica,Arial; font-size: 15px; color: #666;">
+                    <div style="color: #444444; font-weight: normal;">
+                        <div style="text-align: center; font-weight: 600; font-size: 24px; padding: 10px 0; border-bottom: solid 3px #eeeeee;">AE Tuition</div>
+                        <div style="clear: both;"> </div>
+                    </div>
+                    <div style="padding: 0 30px 30px 30px; border-bottom: 3px solid #eeeeee;">
+                        <div style="font-size: 18px; text-align: center; line-height: 25px; margin-bottom: 20px;"><strong>📊 Test Results for {{student_name}}</strong></div>
+
+                        <div style="font-size: 15px; text-align: center; line-height: 25px; margin-bottom: 20px;">
+                            Your results for <strong>"{{test_title}}"</strong> are now available.
+                        </div>
+
+                        <div class="results-box {{#if passed}}passed{{else}}failed{{/if}}">
+                            <div style="font-size: 18px; font-weight: 600; margin-bottom: 15px; color: {{#if passed}}#166534{{else}}#991b1b{{/if}};">
+                                {{test_title}}
+                            </div>
+
+                            <div class="score-circle {{#if passed}}passed{{else}}failed{{/if}}">
+                                {{percentage}}%
+                            </div>
+
+                            <div style="font-size: 20px; font-weight: bold; margin: 15px 0; color: {{#if passed}}#166534{{else}}#991b1b{{/if}};">
+                                {{#if passed}}
+                                ✅ PASSED
+                                {{else}}
+                                ❌ NOT PASSED
+                                {{/if}}
+                            </div>
+
+                            <div style="font-size: 14px; color: {{#if passed}}#166534{{else}}#991b1b{{/if}};">
+                                Score: {{score}} out of {{total_marks}} marks ({{percentage}}%)
+                            </div>
+                        </div>
+
+                        <div class="test-stats">
+                            <div style="text-align: center; font-size: 16px; font-weight: 600; color: #1e293b; margin-bottom: 15px;">Test Statistics</div>
+
+                            <div class="stat-item">
+                                <span class="stat-label">Your Score:</span>
+                                <span class="stat-value">{{score}}/{{total_marks}} ({{percentage}}%)</span>
+                            </div>
+
+                            <div class="stat-item">
+                                <span class="stat-label">Pass Mark:</span>
+                                <span class="stat-value">{{pass_mark}}%</span>
+                            </div>
+
+                            <div class="stat-item">
+                                <span class="stat-label">Time Taken:</span>
+                                <span class="stat-value">{{duration_minutes}} minutes</span>
+                            </div>
+
+                            <div class="stat-item">
+                                <span class="stat-label">Submitted:</span>
+                                <span class="stat-value">{{submitted_at}}</span>
+                            </div>
+
+                            <div class="stat-item">
+                                <span class="stat-label">Test Type:</span>
+                                <span class="stat-value">{{test_type}}</span>
+                            </div>
+
+                            {{#if questions_correct}}
+                            <div class="stat-item">
+                                <span class="stat-label">Questions Correct:</span>
+                                <span class="stat-value">{{questions_correct}}/{{total_questions}}</span>
+                            </div>
+                            {{/if}}
+                        </div>
+
+                        {{#if passed}}
+                        <div class="encouragement-box passed">
+                            <div style="font-size: 16px; font-weight: 600; color: #166534; margin-bottom: 10px;">🎉 Congratulations!</div>
+                            <div style="font-size: 14px; color: #166534; line-height: 20px;">
+                                Well done on passing your test! Your hard work and preparation have paid off. Keep up the excellent work!
+                            </div>
+                        </div>
+                        {{else}}
+                        <div class="encouragement-box failed">
+                            <div style="font-size: 16px; font-weight: 600; color: #92400e; margin-bottom: 10px;">📚 Keep Going!</div>
+                            <div style="font-size: 14px; color: #92400e; line-height: 20px;">
+                                Don't be discouraged! Every test is a learning opportunity. Review the areas where you need improvement and you'll do better next time.
+                            </div>
+                        </div>
+                        {{/if}}
+
+                        <div class="performance-box">
+                            <div style="font-size: 14px; font-weight: 600; color: #0c4a6e; margin-bottom: 8px;">💡 Performance Insights</div>
+                            <div style="font-size: 13px; color: #164e63; line-height: 18px;">
+                                {{#if passed}}
+                                <ul style="margin: 5px 0; padding-left: 20px;">
+                                    <li>You scored above the pass mark - excellent work!</li>
+                                    <li>Continue practicing to maintain this level of performance</li>
+                                    <li>Your time management was effective</li>
+                                </ul>
+                                {{else}}
+                                <ul style="margin: 5px 0; padding-left: 20px;">
+                                    <li>Focus on reviewing the topics covered in this test</li>
+                                    <li>Consider spending more time on practice questions</li>
+                                    <li>Don't hesitate to ask your instructor for help</li>
+                                    <li>You can retake similar tests to improve your understanding</li>
+                                </ul>
+                                {{/if}}
+                            </div>
+                        </div>
+
+                        <div style="padding: 10px 0 30px 0; text-align: center;">
+                            <a style="background: #4F46E5; color: #fff; padding: 12px 30px; text-decoration: none; border-radius: 3px; letter-spacing: 0.3px; margin-right: 10px;" href="{{frontend_url}}/student/test-result/{{test_id}}">View Detailed Results</a>
+                            <a style="background: #059669; color: #fff; padding: 12px 30px; text-decoration: none; border-radius: 3px; letter-spacing: 0.3px;" href="{{frontend_url}}/student/tests">View All Tests</a>
+                        </div>
+
+                        <div style="font-size: 14px; text-align: left; line-height: 20px; color: #6b7280;">
+                            <p><strong>Next steps:</strong></p>
+                            <ul style="margin: 5px 0; padding-left: 20px;">
+                                {{#if passed}}
+                                <li>Celebrate your success!</li>
+                                <li>Review your detailed results to understand your strengths</li>
+                                <li>Prepare for upcoming tests with the same dedication</li>
+                                {{else}}
+                                <li>Review the detailed results to identify areas for improvement</li>
+                                <li>Practice similar questions and topics</li>
+                                <li>Reach out to your instructor for additional help if needed</li>
+                                <li>Stay positive and keep working towards your goals</li>
+                                {{/if}}
+                                <li>Check your dashboard for any new test assignments</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div style="color: #999; padding: 20px 30px; font-size: 14px;">
+                        <div>
+                            {{#if passed}}
+                            Keep up the great work! We're proud of your achievement.
+                            {{else}}
+                            Remember, every step forward is progress. Keep learning and improving!
+                            {{/if}}
+                        </div>
+                        <div style="margin-top: 10px;">Best regards,</div>
+                        <div>The <a style="color: #4F46E5; text-decoration: none;" href="{{frontend_url}}">AE Tuition</a> Team</div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <p><strong><a href="mailto:{{contact_email}}">{{contact_email}}</a></strong></p>
+                <p><strong>AE Tuition Support Team</strong></p>
+                <p><strong>Empowering Quality Education</strong></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

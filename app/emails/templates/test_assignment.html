@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Test Assignment - AE Tuition</title>
+    <style>
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            font-family: "Segoe UI", Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji" ;
+        }
+        .header {
+            background-color: #4F46E5;
+            height: 150px;
+            line-height: 150px;
+            padding-right: 50px;
+            padding-bottom: 20px;
+            color: white;
+        }
+        .header h1 {
+            text-align: center;
+        }
+        .content {
+            min-height: 100px;
+        }
+        .footer {
+            height: 100px;
+            background-color: #4F46E5;
+            padding-top: 30px;
+            padding-bottom: 30px;
+            color: white;
+            font-size: 13px;
+            line-height: 20px;
+        }
+        .footer p {
+            margin-top: 0px;
+            margin-bottom: 0px;
+            text-align: center;
+        }
+        .footer a {
+            color: white;
+        }
+        .test-info-box {
+            background-color: #f0f9ff;
+            border: 2px solid #0369a1;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-detail {
+            margin: 8px 0;
+            font-size: 15px;
+        }
+        .test-label {
+            font-weight: 600;
+            color: #0369a1;
+            display: inline-block;
+            width: 140px;
+        }
+        .test-value {
+            color: #1f2937;
+            font-weight: 500;
+        }
+        .schedule-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .important-box {
+            background-color: #fee2e2;
+            border: 2px solid #dc2626;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <div class="header">
+                <h1>AE Tuition</h1>
+            </div>
+            <div class="content">
+                <div style="max-width: 560px; padding: 20px; background: #ffffff; border-radius: 5px; margin: 40px auto; font-family: Open Sans,Helvetica,Arial; font-size: 15px; color: #666;">
+                    <div style="color: #444444; font-weight: normal;">
+                        <div style="text-align: center; font-weight: 600; font-size: 24px; padding: 10px 0; border-bottom: solid 3px #eeeeee;">AE Tuition</div>
+                        <div style="clear: both;"> </div>
+                    </div>
+                    <div style="padding: 0 30px 30px 30px; border-bottom: 3px solid #eeeeee;">
+                        <div style="font-size: 18px; text-align: center; line-height: 25px; margin-bottom: 20px;"><strong>📝 New Test Assignment for {{student_name}}</strong></div>
+
+                        <div style="font-size: 15px; text-align: center; line-height: 25px; margin-bottom: 20px;">
+                            You have been assigned a new test. Please review the details below and make sure you're prepared.
+                        </div>
+
+                        <div class="test-info-box">
+                            <div style="text-align: center; font-size: 18px; font-weight: 600; color: #0369a1; margin-bottom: 15px;">{{test_title}}</div>
+
+                            <div class="test-detail" style="margin-bottom: 15px;">
+                                <strong>Description:</strong> {{test_description}}
+                            </div>
+
+                            <div class="test-detail">
+                                <span class="test-label">Test Type:</span>
+                                <span class="test-value">{{test_type}}</span>
+                            </div>
+
+                            <div class="test-detail">
+                                <span class="test-label">Duration:</span>
+                                <span class="test-value">{{duration_minutes}} minutes</span>
+                            </div>
+
+                            <div class="test-detail">
+                                <span class="test-label">Pass Mark:</span>
+                                <span class="test-value">{{pass_mark}}%</span>
+                            </div>
+
+                            <div class="test-detail">
+                                <span class="test-label">Class:</span>
+                                <span class="test-value">{{class_name}} ({{year_group}})</span>
+                            </div>
+                        </div>
+
+                        <div class="schedule-box">
+                            <div style="font-size: 14px; font-weight: 600; color: #92400e; margin-bottom: 8px;">📅 Test Schedule</div>
+                            <div style="font-size: 13px; color: #78350f; line-height: 18px;">
+                                <div style="margin: 5px 0;"><strong>Available from:</strong> {{scheduled_start}}</div>
+                                <div style="margin: 5px 0;"><strong>Must complete by:</strong> {{scheduled_end}}</div>
+                                {{#if late_submission_allowed}}
+                                <div style="margin: 5px 0; color: #059669;"><strong>Late submission grace period:</strong> {{late_submission_grace_minutes}} minutes after end time</div>
+                                {{/if}}
+                            </div>
+                        </div>
+
+                        {{#if custom_instructions}}
+                        <div class="important-box">
+                            <div style="font-size: 14px; font-weight: 600; color: #dc2626; margin-bottom: 8px;">📋 Special Instructions</div>
+                            <div style="font-size: 13px; color: #7f1d1d; line-height: 18px;">
+                                {{custom_instructions}}
+                            </div>
+                        </div>
+                        {{/if}}
+
+                        <div style="padding: 10px 0 50px 0; text-align: center;">
+                            <a style="background: #4F46E5; color: #fff; padding: 12px 30px; text-decoration: none; border-radius: 3px; letter-spacing: 0.3px;" href="{{frontend_url}}/student/tests">View My Tests</a>
+                        </div>
+
+                        <div style="font-size: 14px; text-align: left; line-height: 20px; color: #6b7280;">
+                            <p><strong>How to take the test:</strong></p>
+                            <ol style="margin: 10px 0; padding-left: 20px;">
+                                <li>Log in to your AE Tuition student portal</li>
+                                <li>Navigate to the "My Tests" section</li>
+                                <li>Find your assigned test and click "Start Test" when ready</li>
+                                <li>Complete all questions within the given time limit</li>
+                                <li>Submit your test before the deadline</li>
+                            </ol>
+
+                            <p style="margin-top: 15px;"><strong>Important reminders:</strong></p>
+                            <ul style="margin: 5px 0; padding-left: 20px;">
+                                <li>Ensure you have a stable internet connection</li>
+                                <li>Read all instructions carefully before starting</li>
+                                <li>Manage your time wisely during the test</li>
+                                <li>Contact support if you experience any technical issues</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div style="color: #999; padding: 20px 30px; font-size: 14px;">
+                        <div>Good luck with your test! If you have any questions or need assistance, please contact our support team.</div>
+                        <div style="margin-top: 10px;">Best of luck,</div>
+                        <div>The <a style="color: #4F46E5; text-decoration: none;" href="{{frontend_url}}">AE Tuition</a> Team</div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <p><strong><a href="mailto:{{contact_email}}">{{contact_email}}</a></strong></p>
+                <p><strong>AE Tuition Support Team</strong></p>
+                <p><strong>Empowering Quality Education</strong></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

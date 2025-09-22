@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Reminder - AE Tuition</title>
+    <style>
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            font-family: "Segoe UI", Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji" ;
+        }
+        .header {
+            background-color: #4F46E5;
+            height: 150px;
+            line-height: 150px;
+            padding-right: 50px;
+            padding-bottom: 20px;
+            color: white;
+        }
+        .header h1 {
+            text-align: center;
+        }
+        .content {
+            min-height: 100px;
+        }
+        .footer {
+            height: 100px;
+            background-color: #4F46E5;
+            padding-top: 30px;
+            padding-bottom: 30px;
+            color: white;
+            font-size: 13px;
+            line-height: 20px;
+        }
+        .footer p {
+            margin-top: 0px;
+            margin-bottom: 0px;
+            text-align: center;
+        }
+        .footer a {
+            color: white;
+        }
+        .reminder-box {
+            background-color: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .countdown-box {
+            background-color: #fee2e2;
+            border-left: 4px solid #dc2626;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .countdown-time {
+            font-size: 24px;
+            font-weight: bold;
+            color: #dc2626;
+            font-family: monospace;
+        }
+        .test-detail {
+            margin: 8px 0;
+            font-size: 15px;
+        }
+        .test-label {
+            font-weight: 600;
+            color: #92400e;
+            display: inline-block;
+            width: 120px;
+        }
+        .test-value {
+            color: #1f2937;
+            font-weight: 500;
+        }
+        .checklist-box {
+            background-color: #f0fdf4;
+            border: 2px solid #16a34a;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <div class="header">
+                <h1>AE Tuition</h1>
+            </div>
+            <div class="content">
+                <div style="max-width: 560px; padding: 20px; background: #ffffff; border-radius: 5px; margin: 40px auto; font-family: Open Sans,Helvetica,Arial; font-size: 15px; color: #666;">
+                    <div style="color: #444444; font-weight: normal;">
+                        <div style="text-align: center; font-weight: 600; font-size: 24px; padding: 10px 0; border-bottom: solid 3px #eeeeee;">AE Tuition</div>
+                        <div style="clear: both;"> </div>
+                    </div>
+                    <div style="padding: 0 30px 30px 30px; border-bottom: 3px solid #eeeeee;">
+                        <div style="font-size: 18px; text-align: center; line-height: 25px; margin-bottom: 20px;"><strong>⏰ Test Reminder for {{student_name}}</strong></div>
+
+                        <div style="font-size: 15px; text-align: center; line-height: 25px; margin-bottom: 20px;">
+                            {{#if is_starting_soon}}
+                            Your test <strong>"{{test_title}}"</strong> is starting soon. Don't miss it!
+                            {{else}}
+                            This is a friendly reminder about your upcoming test <strong>"{{test_title}}"</strong>.
+                            {{/if}}
+                        </div>
+
+                        <div class="countdown-box">
+                            <div style="font-size: 16px; font-weight: 600; color: #dc2626; margin-bottom: 10px;">
+                                {{#if is_starting_soon}}
+                                🚨 Test starts in:
+                                {{else}}
+                                ⏳ Time remaining:
+                                {{/if}}
+                            </div>
+                            <div class="countdown-time">{{time_remaining}}</div>
+                            <div style="font-size: 12px; color: #7f1d1d; margin-top: 5px;">
+                                {{#if is_starting_soon}}
+                                Starting at {{scheduled_start}}
+                                {{else}}
+                                Test begins on {{scheduled_start}}
+                                {{/if}}
+                            </div>
+                        </div>
+
+                        <div class="reminder-box">
+                            <div style="text-align: center; font-size: 18px; font-weight: 600; color: #92400e; margin-bottom: 15px;">{{test_title}}</div>
+
+                            <div class="test-detail">
+                                <span class="test-label">Test Type:</span>
+                                <span class="test-value">{{test_type}}</span>
+                            </div>
+
+                            <div class="test-detail">
+                                <span class="test-label">Duration:</span>
+                                <span class="test-value">{{duration_minutes}} minutes</span>
+                            </div>
+
+                            <div class="test-detail">
+                                <span class="test-label">Pass Mark:</span>
+                                <span class="test-value">{{pass_mark}}%</span>
+                            </div>
+
+                            <div class="test-detail">
+                                <span class="test-label">Deadline:</span>
+                                <span class="test-value">{{scheduled_end}}</span>
+                            </div>
+                        </div>
+
+                        {{#if is_starting_soon}}
+                        <div style="padding: 10px 0 30px 0; text-align: center;">
+                            <a style="background: #dc2626; color: #fff; padding: 15px 40px; text-decoration: none; border-radius: 3px; letter-spacing: 0.3px; font-size: 16px; font-weight: bold;" href="{{frontend_url}}/student/tests">Start Test Now</a>
+                        </div>
+                        {{else}}
+                        <div style="padding: 10px 0 30px 0; text-align: center;">
+                            <a style="background: #4F46E5; color: #fff; padding: 12px 30px; text-decoration: none; border-radius: 3px; letter-spacing: 0.3px;" href="{{frontend_url}}/student/tests">View Test Details</a>
+                        </div>
+                        {{/if}}
+
+                        <div class="checklist-box">
+                            <div style="font-size: 14px; font-weight: 600; color: #166534; margin-bottom: 12px;">✅ Pre-Test Checklist</div>
+                            <div style="font-size: 13px; color: #14532d; line-height: 18px; text-align: left;">
+                                <ul style="margin: 0; padding-left: 20px;">
+                                    <li>Ensure stable internet connection</li>
+                                    <li>Find a quiet, distraction-free environment</li>
+                                    <li>Have necessary materials ready (pen, paper, calculator if allowed)</li>
+                                    <li>Close unnecessary browser tabs and applications</li>
+                                    <li>Review any study materials one last time</li>
+                                    <li>Be ready to log in at the scheduled start time</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        {{#if custom_instructions}}
+                        <div style="background-color: #f0f9ff; border-left: 4px solid #0369a1; padding: 15px; margin: 20px 0; border-radius: 4px;">
+                            <div style="font-size: 14px; font-weight: 600; color: #0c4a6e; margin-bottom: 8px;">📋 Special Instructions</div>
+                            <div style="font-size: 13px; color: #164e63; line-height: 18px;">
+                                {{custom_instructions}}
+                            </div>
+                        </div>
+                        {{/if}}
+
+                        <div style="font-size: 14px; text-align: left; line-height: 20px; color: #6b7280; margin-top: 20px;">
+                            <p><strong>Need help?</strong></p>
+                            <ul style="margin: 5px 0; padding-left: 20px;">
+                                <li>Technical issues: Contact support immediately at {{contact_email}}</li>
+                                <li>Test content questions: Reach out to your instructor</li>
+                                <li>Login problems: Try refreshing your browser or clearing cache</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div style="color: #999; padding: 20px 30px; font-size: 14px;">
+                        <div>
+                            {{#if is_starting_soon}}
+                            You're all set! Log in now and show what you've learned. Good luck!
+                            {{else}}
+                            We're rooting for you! Prepare well and you'll do great.
+                            {{/if}}
+                        </div>
+                        <div style="margin-top: 10px;">Best wishes,</div>
+                        <div>The <a style="color: #4F46E5; text-decoration: none;" href="{{frontend_url}}">AE Tuition</a> Team</div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <p><strong><a href="mailto:{{contact_email}}">{{contact_email}}</a></strong></p>
+                <p><strong>AE Tuition Support Team</strong></p>
+                <p><strong>Empowering Quality Education</strong></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

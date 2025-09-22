@@ -1,0 +1,353 @@
+import logging
+from typing import Dict, List, Optional, Tuple
+from uuid import UUID
+from sqlalchemy import select, func, and_, or_
+from sqlalchemy.orm import joinedload, selectinload
+
+from app.core.database import AsyncSessionLocal
+from app.models import User, Student, Class, UserRole, StudentStatus
+from app.schemas.student import StudentCreate, StudentUpdate, ClassCreate
+from app.services.email_service import EmailService
+from app.utils.password_generator import generate_secure_password
+from app.core.security import get_password_hash
+
+
+logger = logging.getLogger(__name__)
+
+
+class StudentService:
+    def __init__(self):
+        self.email_service = EmailService()
+
+    async def create_student(self, db, student_data: StudentCreate) -> Dict:
+        """Create a single student account."""
+        try:
+            # Generate password
+            password = generate_secure_password()
+            password_hash = get_password_hash(password)
+
+            # Create or get class
+            class_obj = None
+            if student_data.class_name:
+                class_obj = await self._get_or_create_class(
+                    db, student_data.class_name, student_data.year_group
+                )
+            elif student_data.class_id:
+                result = await db.execute(select(Class).where(Class.id == student_data.class_id))
+                class_obj = result.scalar_one_or_none()
+
+            # Create username from email
+            username = student_data.email.split('@')[0]
+            counter = 1
+            original_username = username
+            while True:
+                existing_user = await db.execute(
+                    select(User).where(User.username == username)
+                )
+                if not existing_user.scalar_one_or_none():
+                    break
+                username = f"{original_username}{counter}"
+                counter += 1
+
+            # Create user
+            user = User(
+                email=student_data.email,
+                username=username,
+                password_hash=password_hash,
+                full_name=student_data.full_name,
+                role=UserRole.STUDENT,
+                is_active=True
+            )
+            db.add(user)
+            await db.flush()
+
+            # Generate student code
+            student_code = await self._generate_student_code(db)
+
+            # Create student profile
+            student = Student(
+                user_id=user.id,
+                class_id=class_obj.id if class_obj else None,
+                year_group=student_data.year_group,
+                student_code=student_code,
+                status=StudentStatus.ACTIVE
+            )
+            db.add(student)
+
+            # Store user and student data before commit to avoid lazy loading issues
+            user_email = user.email
+            user_full_name = user.full_name
+            student_code = student.student_code
+
+            await db.commit()
+
+            # Send welcome email using stored data
+            student_dict = {
+                "email": user_email,
+                "full_name": user_full_name
+            }
+            email_sent = await self.email_service.send_welcome_email(student_dict, password)
+            logger.info(f"Student created successfully: {user_email} (email sent: {email_sent})")
+
+            return {
+                "success": True,
+                "student": student,
+                "user": user,
+                "user_email": user_email,
+                "user_full_name": user_full_name,
+                "student_code": student_code,
+                "password": password
+            }
+
+        except Exception as e:
+            await db.rollback()
+            logger.error(f"Error creating student: {str(e)}")
+            return {
+                "success": False,
+                "error": str(e)
+            }
+
+    async def create_bulk_students(self, db, students_data: List[StudentCreate]) -> Dict:
+        """Create multiple students from CSV data."""
+        results = {
+            "successful": [],
+            "failed": [],
+            "total": len(students_data),
+            "email_results": {"sent": 0, "failed": 0}
+        }
+
+        for student_data in students_data:
+            result = await self.create_student(db, student_data)
+            if result["success"]:
+                results["successful"].append({
+                    "email": result["user_email"],
+                    "name": result["user_full_name"],
+                    "student_code": result["student_code"]
+                })
+            else:
+                results["failed"].append({
+                    "email": student_data.email,
+                    "name": student_data.full_name,
+                    "error": result["error"]
+                })
+
+        return results
+
+    async def get_students(
+        self,
+        db,
+        page: int = 1,
+        limit: int = 50,
+        search: Optional[str] = None,
+        class_id: Optional[UUID] = None,
+        year_group: Optional[int] = None,
+        status: Optional[StudentStatus] = None
+    ) -> Dict:
+        """Get paginated list of students with filters."""
+        try:
+            # Build query with proper joins
+            query = select(Student).options(
+                joinedload(Student.user),
+                joinedload(Student.class_info)
+            )
+
+            # Apply filters
+            filters = []
+            if search:
+                # For search, we need to join with User table
+                query = query.join(Student.user)
+                search_filter = or_(
+                    User.full_name.ilike(f"%{search}%"),
+                    User.email.ilike(f"%{search}%"),
+                    User.username.ilike(f"%{search}%")
+                )
+                filters.append(search_filter)
+
+            if class_id:
+                filters.append(Student.class_id == class_id)
+
+            if year_group:
+                filters.append(Student.year_group == year_group)
+
+            if status:
+                filters.append(Student.status == status)
+
+            if filters:
+                query = query.where(and_(*filters))
+
+            # Count total
+            count_query = select(func.count(Student.id)).select_from(Student)
+            if search:
+                # Only join User for count if we have search filters
+                count_query = count_query.join(Student.user)
+            if filters:
+                count_query = count_query.where(and_(*filters))
+
+            total = await db.execute(count_query)
+            total_count = total.scalar()
+
+            # Apply pagination
+            offset = (page - 1) * limit
+            query = query.offset(offset).limit(limit)
+
+            # Execute query
+            result = await db.execute(query)
+            students = result.scalars().all()
+
+            return {
+                "students": students,
+                "total": total_count,
+                "page": page,
+                "pages": (total_count + limit - 1) // limit,
+                "limit": limit
+            }
+
+        except Exception as e:
+            logger.error(f"Error getting students: {str(e)}")
+            raise e
+
+    async def get_student(self, db, student_id: UUID) -> Optional[Student]:
+        """Get single student by ID."""
+        result = await db.execute(
+            select(Student)
+            .options(joinedload(Student.user), joinedload(Student.class_info))
+            .where(Student.id == student_id)
+        )
+        return result.scalar_one_or_none()
+
+    async def update_student(
+        self, db, student_id: UUID, student_data: StudentUpdate
+    ) -> Optional[Student]:
+        """Update student information."""
+        try:
+            student = await self.get_student(db, student_id)
+            if not student:
+                return None
+
+            # Update student fields
+            if student_data.class_id is not None:
+                student.class_id = student_data.class_id
+            if student_data.year_group is not None:
+                student.year_group = student_data.year_group
+            if student_data.status is not None:
+                student.status = student_data.status
+
+            # Update user fields
+            if student_data.full_name is not None:
+                student.user.full_name = student_data.full_name
+
+            await db.commit()
+            return student
+
+        except Exception as e:
+            await db.rollback()
+            logger.error(f"Error updating student: {str(e)}")
+            raise e
+
+    async def delete_student(self, db, student_id: UUID) -> bool:
+        """Delete student and associated user account."""
+        try:
+            student = await self.get_student(db, student_id)
+            if not student:
+                return False
+
+            # Delete student (cascade will delete user)
+            await db.delete(student)
+            await db.commit()
+            return True
+
+        except Exception as e:
+            await db.rollback()
+            logger.error(f"Error deleting student: {str(e)}")
+            raise e
+
+    async def reset_password(self, db, student_id: UUID) -> Dict:
+        """Reset student password and send email."""
+        try:
+            student = await self.get_student(db, student_id)
+            if not student:
+                return {"success": False, "error": "Student not found"}
+
+            # Generate new password
+            new_password = generate_secure_password()
+            password_hash = get_password_hash(new_password)
+
+            # Update user password
+            student.user.password_hash = password_hash
+            await db.commit()
+
+            # Send email
+            student_dict = {
+                "email": student.user.email,
+                "full_name": student.user.full_name
+            }
+            email_sent = await self.email_service.send_password_reset(
+                student_dict, new_password
+            )
+
+            return {
+                "success": True,
+                "email_sent": email_sent,
+                "message": "Password reset successfully"
+            }
+
+        except Exception as e:
+            await db.rollback()
+            logger.error(f"Error resetting password: {str(e)}")
+            return {"success": False, "error": str(e)}
+
+    async def _get_or_create_class(self, db, class_name: str, year_group: int) -> Class:
+        """Get existing class or create new one."""
+        # Try to find existing class
+        result = await db.execute(
+            select(Class).where(
+                and_(Class.name == class_name, Class.year_group == year_group)
+            )
+        )
+        class_obj = result.scalar_one_or_none()
+
+        if not class_obj:
+            # Create new class
+            class_obj = Class(
+                name=class_name,
+                year_group=year_group,
+                academic_year="2023-2024"  # You might want to make this configurable
+            )
+            db.add(class_obj)
+            await db.flush()
+
+        return class_obj
+
+    async def _generate_student_code(self, db) -> str:
+        """Generate unique student code."""
+        base_number = 1000
+
+        # Get the highest existing student code number
+        result = await db.execute(
+            select(func.max(Student.student_code))
+        )
+        max_code = result.scalar()
+
+        if max_code:
+            try:
+                # Extract number from code (e.g., "STU001234" -> 1234)
+                number_part = int(max_code.replace("STU", ""))
+                base_number = max(base_number, number_part + 1)
+            except (ValueError, AttributeError):
+                # If parsing fails, start from base_number
+                pass
+
+        # Generate new code
+        student_code = f"STU{base_number:06d}"
+
+        # Ensure uniqueness (in case of race conditions)
+        while True:
+            existing = await db.execute(
+                select(Student).where(Student.student_code == student_code)
+            )
+            if not existing.scalar_one_or_none():
+                break
+            base_number += 1
+            student_code = f"STU{base_number:06d}"
+
+        return student_code
