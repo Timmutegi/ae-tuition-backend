@@ -11,6 +11,7 @@ from app.schemas.test import (
     TestQuestionCreate, TestAssignmentCreate, TestAssignmentUpdate, TestAssignmentResponse,
     BulkAssignmentRequest, TestCloneRequest, TestStatsResponse, TestListResponse
 )
+from app.schemas.question_set import BulkQuestionSetAssignment
 from app.services.test_service import TestService
 
 router = APIRouter(prefix="/tests", tags=["Test Management"])
@@ -244,6 +245,28 @@ async def publish_test(
         )
 
 
+@router.post("/{test_id}/unpublish", response_model=TestResponse)
+async def unpublish_test(
+    test_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_admin_user)
+):
+    """Unpublish a test to allow editing"""
+    try:
+        test = await TestService.unpublish_test(db, test_id, current_user.id)
+        if not test:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Test not found or access denied"
+            )
+        return test
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+
+
 @router.post("/{test_id}/archive", response_model=TestResponse)
 async def archive_test(
     test_id: UUID,
@@ -258,6 +281,31 @@ async def archive_test(
             detail="Test not found or access denied"
         )
     return test
+
+
+@router.post("/{test_id}/question-sets")
+async def assign_question_sets_to_test(
+    test_id: UUID,
+    assignment_data: BulkQuestionSetAssignment,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_admin_user)
+):
+    """Assign question sets to a test"""
+    from app.services.question_set_service import QuestionSetService
+
+    try:
+        await QuestionSetService.assign_question_sets_to_test(db, test_id, assignment_data.question_set_ids)
+        return {"message": "Question sets assigned successfully"}
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to assign question sets: {str(e)}"
+        )
 
 
 @router.get("/stats/overview", response_model=TestStatsResponse)
