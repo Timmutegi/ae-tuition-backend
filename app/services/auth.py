@@ -1,11 +1,12 @@
 from typing import Optional
 from datetime import datetime
+from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from fastapi import HTTPException, status
 
 from app.models.user import User, UserRole
-from app.schemas.user import UserCreate, LoginRequest
+from app.schemas.user import UserCreate, UserUpdate, LoginRequest
 from app.core.security import verify_password, get_password_hash, create_access_token
 
 class AuthService:
@@ -59,6 +60,7 @@ class AuthService:
             password_hash=hashed_password,
             full_name=user_data.full_name,
             role=user_data.role,
+            timezone=user_data.timezone,
             is_active=True
         )
 
@@ -109,3 +111,43 @@ class AuthService:
         )
 
         return await AuthService.create_user(db, user_create)
+
+    @staticmethod
+    async def update_user_profile(db: AsyncSession, user_id: UUID, user_update: UserUpdate) -> Optional[User]:
+        """Update user profile information including timezone."""
+        # Get existing user
+        result = await db.execute(select(User).where(User.id == user_id))
+        user = result.scalars().first()
+
+        if not user:
+            return None
+
+        # Update fields that are provided
+        update_data = user_update.model_dump(exclude_unset=True)
+
+        # Check for email uniqueness if email is being updated
+        if 'email' in update_data and update_data['email'] != user.email:
+            existing_user = await db.execute(select(User).where(User.email == update_data['email']))
+            if existing_user.scalars().first():
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Email already registered"
+                )
+
+        # Check for username uniqueness if username is being updated
+        if 'username' in update_data and update_data['username'] != user.username:
+            existing_user = await db.execute(select(User).where(User.username == update_data['username']))
+            if existing_user.scalars().first():
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Username already taken"
+                )
+
+        # Apply updates
+        for field, value in update_data.items():
+            setattr(user, field, value)
+
+        await db.commit()
+        await db.refresh(user)
+
+        return user
