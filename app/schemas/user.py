@@ -11,6 +11,7 @@ class UserBase(BaseModel):
     username: str
     full_name: Optional[str] = None
     role: UserRole
+    timezone: str = 'Europe/London'
     is_active: bool = True
 
 # Schema for creating a user
@@ -20,6 +21,7 @@ class UserCreate(BaseModel):
     password: str
     full_name: Optional[str] = None
     role: UserRole = UserRole.STUDENT
+    timezone: str = 'Europe/London'
 
 # Schema for user response
 class User(UserBase):
@@ -50,6 +52,7 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     username: Optional[str] = None
     full_name: Optional[str] = None
+    timezone: Optional[str] = None
     is_active: Optional[bool] = None
 
 # Schema for password reset
