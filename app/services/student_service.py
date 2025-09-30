@@ -351,3 +351,64 @@ class StudentService:
             student_code = f"STU{base_number:06d}"
 
         return student_code
+
+    async def get_classes(self, db, page: int = 1, limit: int = 50, search: Optional[str] = None, year_group: Optional[int] = None) -> Dict:
+        """Get paginated list of classes with optional filters."""
+        try:
+            # Build base query
+            query = select(Class).options(selectinload(Class.students))
+
+            # Apply filters
+            if search:
+                search_pattern = f"%{search}%"
+                query = query.where(
+                    or_(
+                        Class.name.ilike(search_pattern),
+                        Class.academic_year.ilike(search_pattern)
+                    )
+                )
+
+            if year_group:
+                query = query.where(Class.year_group == year_group)
+
+            # Count total records for pagination
+            count_query = select(func.count()).select_from(query.subquery())
+            total_result = await db.execute(count_query)
+            total = total_result.scalar()
+
+            # Apply pagination
+            offset = (page - 1) * limit
+            query = query.offset(offset).limit(limit).order_by(Class.name)
+
+            # Execute query
+            result = await db.execute(query)
+            classes = result.scalars().all()
+
+            # Convert to response format with student count
+            class_responses = []
+            for class_obj in classes:
+                class_responses.append({
+                    "id": class_obj.id,
+                    "name": class_obj.name,
+                    "year_group": class_obj.year_group,
+                    "academic_year": class_obj.academic_year,
+                    "teacher_id": class_obj.teacher_id,
+                    "created_at": class_obj.created_at,
+                    "updated_at": class_obj.updated_at,
+                    "student_count": len(class_obj.students) if class_obj.students else 0
+                })
+
+            # Calculate pages
+            pages = (total + limit - 1) // limit
+
+            return {
+                "classes": class_responses,
+                "total": total,
+                "page": page,
+                "pages": pages,
+                "limit": limit
+            }
+
+        except Exception as e:
+            logger.error(f"Error getting classes: {str(e)}")
+            raise
