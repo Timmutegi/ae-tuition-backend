@@ -244,13 +244,13 @@ class TestSessionResponse(BaseModel):
     attempt: TestAttemptResponse
     test: TestResponse
     questions: List[Dict[str, Any]]
-    answers: Dict[UUID, QuestionResponseDetail]
+    answers: Dict[str, QuestionResponseDetail]
     time_remaining: int
     progress: Dict[str, Any]
 
 
 class TestSubmissionRequest(BaseModel):
-    answers: Dict[UUID, QuestionResponseCreate]
+    answers: Dict[str, QuestionResponseCreate]
     submission_type: str = "manual"  # manual, auto_submit, timeout
 
 

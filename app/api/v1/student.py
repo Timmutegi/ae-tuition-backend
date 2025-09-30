@@ -273,8 +273,14 @@ async def start_test(
         return session
 
     except ValueError as e:
+        import traceback
+        print(f"ValueError starting test: {str(e)}")
+        print(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
+        import traceback
+        print(f"Error starting test: {str(e)}")
+        print(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail="Failed to start test")
 
 
@@ -351,7 +357,7 @@ async def save_answer(
 @router.post("/attempts/{attempt_id}/answers")
 async def save_multiple_answers(
     attempt_id: UUID,
-    answers: Dict[UUID, QuestionResponseCreate],
+    answers: Dict[str, QuestionResponseCreate],
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ) -> List[QuestionResponseDetail]:
@@ -413,8 +419,12 @@ async def submit_test(
         return result
 
     except ValueError as e:
+        print(f"ValueError submitting test: {str(e)}")
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
+        print(f"Exception submitting test: {str(e)}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Failed to submit test: {str(e)}")
 
 
