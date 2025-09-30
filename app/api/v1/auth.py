@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.core.security import get_current_user, get_current_admin
-from app.schemas.user import LoginRequest, TokenResponse, User as UserSchema
+from app.schemas.user import LoginRequest, TokenResponse, User as UserSchema, UserUpdate
 from app.services.auth import AuthService
 from app.models.user import User
 
@@ -48,6 +48,23 @@ async def get_current_user_info(
     Get current authenticated user information.
     """
     return UserSchema.model_validate(current_user)
+
+@router.put("/me", response_model=UserSchema)
+async def update_current_user_profile(
+    user_update: UserUpdate,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Update current authenticated user's profile information including timezone.
+    """
+    updated_user = await AuthService.update_user_profile(db, current_user.id, user_update)
+    if not updated_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    return UserSchema.model_validate(updated_user)
 
 @router.post("/logout")
 async def logout(
