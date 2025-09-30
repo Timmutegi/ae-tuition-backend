@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_, or_, func
 from typing import List, Optional, Dict, Any
 from uuid import UUID
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from app.core.database import get_db
 from app.core.security import get_current_user
@@ -44,15 +44,16 @@ async def get_student_dashboard(
     if not student:
         raise HTTPException(status_code=404, detail="Student profile not found")
 
-    # Get upcoming tests
-    now = datetime.utcnow()
+    # Get upcoming tests (only published tests)
+    now = datetime.now(timezone.utc)
     upcoming_tests = await db.execute(
         select(TestAssignment, Test)
         .join(Test, TestAssignment.test_id == Test.id)
         .where(and_(
             TestAssignment.class_id == student.class_id,
             TestAssignment.status.in_([AssignmentStatus.SCHEDULED, AssignmentStatus.ACTIVE]),
-            TestAssignment.scheduled_end > now
+            TestAssignment.scheduled_end > now,
+            Test.status == TestStatus.PUBLISHED  # Only show published tests
         ))
         .order_by(TestAssignment.scheduled_start)
     )
@@ -82,11 +83,14 @@ async def get_student_dashboard(
             "attempt_id": str(attempt.id) if attempt else None
         })
 
-    # Get recent results
+    # Get recent results (only for published tests)
     recent_results = await db.execute(
         select(TestResult, Test)
         .join(Test, TestResult.test_id == Test.id)
-        .where(TestResult.student_id == student.id)
+        .where(and_(
+            TestResult.student_id == student.id,
+            Test.status == TestStatus.PUBLISHED  # Only show results for published tests
+        ))
         .order_by(TestResult.submitted_at.desc())
         .limit(5)
     )
@@ -137,14 +141,15 @@ async def get_available_tests(
     if not student:
         raise HTTPException(status_code=404, detail="Student profile not found")
 
-    # Get all test assignments for student's class
-    now = datetime.utcnow()
+    # Get all test assignments for student's class (only PUBLISHED tests)
+    now = datetime.now(timezone.utc)
     assignments = await db.execute(
         select(TestAssignment, Test)
         .join(Test, TestAssignment.test_id == Test.id)
         .where(and_(
             TestAssignment.class_id == student.class_id,
-            TestAssignment.status.in_([AssignmentStatus.SCHEDULED, AssignmentStatus.ACTIVE])
+            TestAssignment.status.in_([AssignmentStatus.SCHEDULED, AssignmentStatus.ACTIVE]),
+            Test.status == TestStatus.PUBLISHED  # Only show published tests to students
         ))
         .order_by(TestAssignment.scheduled_start)
     )
@@ -164,11 +169,35 @@ async def get_available_tests(
         # Determine if test is available for taking
         can_start = False
         if not attempt or attempt.status == AttemptStatus.IN_PROGRESS:
-            buffer_start = assignment.scheduled_start - timedelta(minutes=assignment.buffer_time_minutes)
-            buffer_end = assignment.scheduled_end + timedelta(
+            # Ensure database datetimes are timezone-aware for comparison
+            scheduled_start = assignment.scheduled_start
+            if scheduled_start.tzinfo is None:
+                scheduled_start = scheduled_start.replace(tzinfo=timezone.utc)
+
+            scheduled_end = assignment.scheduled_end
+            if scheduled_end.tzinfo is None:
+                scheduled_end = scheduled_end.replace(tzinfo=timezone.utc)
+
+            buffer_start = scheduled_start - timedelta(minutes=assignment.buffer_time_minutes)
+            buffer_end = scheduled_end + timedelta(
                 minutes=assignment.late_submission_grace_minutes if assignment.allow_late_submission else 0
             )
             can_start = buffer_start <= now <= buffer_end
+
+        # For completed tests, get the result ID
+        result_id = None
+        if attempt and attempt.status != AttemptStatus.IN_PROGRESS:
+            result_query = await db.execute(
+                select(TestResult)
+                .where(and_(
+                    TestResult.test_id == test.id,
+                    TestResult.student_id == student.id,
+                    TestResult.attempt_id == attempt.id
+                ))
+            )
+            test_result = result_query.scalar_one_or_none()
+            if test_result:
+                result_id = str(test_result.id)
 
         available_tests.append({
             "assignment_id": str(assignment.id),
@@ -186,6 +215,7 @@ async def get_available_tests(
                       "in_progress" if attempt and attempt.status == AttemptStatus.IN_PROGRESS else
                       "not_started",
             "attempt_id": str(attempt.id) if attempt else None,
+            "result_id": result_id,
             "custom_instructions": assignment.custom_instructions
         })
 
@@ -216,7 +246,7 @@ async def start_test(
     browser_info = {
         "user_agent": request.headers.get("user-agent", ""),
         "referer": request.headers.get("referer", ""),
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
     # Get IP address
@@ -676,18 +706,21 @@ async def get_student_statistics(
     if not student:
         raise HTTPException(status_code=404, detail="Student profile not found")
 
-    # Get completed tests count and stats
+    # Get completed tests count and stats (only for published tests)
     results = await db.execute(
         select(TestResult, Test)
         .join(Test, TestResult.test_id == Test.id)
-        .where(TestResult.student_id == student.id)
+        .where(and_(
+            TestResult.student_id == student.id,
+            Test.status == TestStatus.PUBLISHED  # Only include published tests
+        ))
         .order_by(TestResult.submitted_at.desc())
     )
 
     all_results = results.fetchall()
 
-    # Get pending tests count
-    now = datetime.utcnow()
+    # Get pending tests count (only for published tests)
+    now = datetime.now(timezone.utc)
     pending_tests = await db.execute(
         select(func.count(TestAssignment.id))
         .join(Test, TestAssignment.test_id == Test.id)
@@ -699,7 +732,8 @@ async def get_student_statistics(
             TestAssignment.class_id == student.class_id,
             TestAssignment.status.in_([AssignmentStatus.SCHEDULED, AssignmentStatus.ACTIVE]),
             TestAssignment.scheduled_end > now,
-            or_(TestAttempt.id.is_(None), TestAttempt.status == AttemptStatus.IN_PROGRESS)
+            or_(TestAttempt.id.is_(None), TestAttempt.status == AttemptStatus.IN_PROGRESS),
+            Test.status == TestStatus.PUBLISHED  # Only count published tests
         ))
     )
 
@@ -747,11 +781,15 @@ async def get_student_statistics(
     class_rank = None
     class_size = None
     if student.class_id:
-        # Get all students in class with their average scores
+        # Get all students in class with their average scores (only for published tests)
         class_students = await db.execute(
             select(Student.id, func.avg(TestResult.percentage).label('avg_score'))
             .outerjoin(TestResult, TestResult.student_id == Student.id)
-            .where(Student.class_id == student.class_id)
+            .outerjoin(Test, TestResult.test_id == Test.id)
+            .where(and_(
+                Student.class_id == student.class_id,
+                or_(Test.status == TestStatus.PUBLISHED, Test.id.is_(None))  # Include students with no tests
+            ))
             .group_by(Student.id)
             .order_by(func.avg(TestResult.percentage).desc().nulls_last())
         )

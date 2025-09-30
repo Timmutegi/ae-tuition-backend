@@ -1,10 +1,21 @@
-from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional, List, Any, Dict
+from pydantic import BaseModel, Field, ConfigDict, field_validator
+from typing import Optional, List, Any, Dict, TYPE_CHECKING
 from datetime import datetime
 from uuid import UUID
 from enum import Enum
 
 from app.models.test import TestType, TestFormat, TestStatus, QuestionOrder, AssignmentStatus, AttemptStatus, ResultStatus
+
+# Import ClassResponse and TestQuestionSetResponse directly to avoid forward reference issues
+try:
+    from app.schemas.student import ClassResponse
+except ImportError:
+    ClassResponse = None
+
+try:
+    from app.schemas.question_set import TestQuestionSetResponse
+except ImportError:
+    TestQuestionSetResponse = None
 
 
 class TestBase(BaseModel):
@@ -45,6 +56,7 @@ class TestResponse(TestBase):
     created_by: UUID
     created_at: datetime
     updated_at: datetime
+    test_question_sets: List[TestQuestionSetResponse] = []
 
 
 class TestQuestionBase(BaseModel):
@@ -104,11 +116,15 @@ class TestAssignmentResponse(TestAssignmentBase):
     created_by: UUID
     created_at: datetime
     updated_at: datetime
+    class_info: Optional[ClassResponse] = None
 
 
 class TestWithDetails(TestResponse):
+    model_config = ConfigDict(from_attributes=True)
+
     test_questions: List[TestQuestionResponse] = []
     test_assignments: List[TestAssignmentResponse] = []
+    test_question_sets: List[TestQuestionSetResponse] = []
 
 
 class TestFilters(BaseModel):
@@ -129,9 +145,20 @@ class TestPreview(BaseModel):
     total_marks: int
 
 
+class BulkAssignmentData(BaseModel):
+    scheduled_start: datetime
+    scheduled_end: datetime
+    buffer_time_minutes: int = Field(default=0, ge=0)
+    allow_late_submission: bool = False
+    late_submission_grace_minutes: int = Field(default=0, ge=0)
+    auto_submit: bool = True
+    extended_time_students: Optional[List[UUID]] = None
+    custom_instructions: Optional[str] = None
+
+
 class BulkAssignmentRequest(BaseModel):
     class_ids: List[UUID]
-    assignment_data: TestAssignmentBase
+    assignment_data: BulkAssignmentData
 
 
 class TestCloneRequest(BaseModel):

@@ -25,6 +25,7 @@ class TestFormat(enum.Enum):
 class TestStatus(enum.Enum):
     DRAFT = "draft"
     PUBLISHED = "published"
+    UNPUBLISHED = "unpublished"
     ARCHIVED = "archived"
 
 
@@ -57,6 +58,7 @@ class Test(Base):
     # Relationships
     creator = relationship("User", foreign_keys=[created_by])
     test_questions = relationship("TestQuestion", back_populates="test", cascade="all, delete-orphan")
+    test_question_sets = relationship("TestQuestionSet", back_populates="test", cascade="all, delete-orphan")
     test_assignments = relationship("TestAssignment", back_populates="test", cascade="all, delete-orphan")
     test_attempts = relationship("TestAttempt", back_populates="test")
     test_results = relationship("TestResult", back_populates="test")

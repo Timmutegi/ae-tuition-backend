@@ -33,6 +33,14 @@ class ClassResponse(ClassBase):
     model_config = ConfigDict(from_attributes=True)
 
 
+class ClassListResponse(BaseModel):
+    classes: List[ClassResponse]
+    total: int
+    page: int
+    pages: int
+    limit: int
+
+
 class StudentBase(BaseModel):
     class_id: Optional[UUID] = None
     year_group: int = Field(..., ge=1, le=13)

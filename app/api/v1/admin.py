@@ -9,7 +9,7 @@ from app.models import User
 from app.schemas.student import (
     StudentCreate, StudentUpdate, StudentResponse, StudentListResponse,
     CSVUploadPreview, CSVUploadResult, PasswordResetResponse,
-    ClassCreate, ClassUpdate, ClassResponse
+    ClassCreate, ClassUpdate, ClassResponse, ClassListResponse
 )
 from app.schemas.analytics import (
     AdminDashboardOverview, StudentAnalytics, ClassAnalytics, TestAnalytics
@@ -307,3 +307,32 @@ async def get_test_analytics(
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get test analytics: {str(e)}")
+
+
+# Class Management Endpoints
+
+@router.get("/classes", response_model=ClassListResponse)
+async def list_classes(
+    page: int = Query(1, ge=1),
+    limit: int = Query(50, ge=1, le=100),
+    search: Optional[str] = Query(None),
+    year_group: Optional[int] = Query(None, ge=1, le=13),
+    db: AsyncSession = Depends(get_db),
+    current_admin: User = Depends(get_current_admin_user)
+):
+    """Get paginated list of classes with optional filters."""
+    result = await student_service.get_classes(
+        db=db,
+        page=page,
+        limit=limit,
+        search=search,
+        year_group=year_group
+    )
+
+    return ClassListResponse(
+        classes=result["classes"],
+        total=result["total"],
+        page=result["page"],
+        pages=result["pages"],
+        limit=result["limit"]
+    )

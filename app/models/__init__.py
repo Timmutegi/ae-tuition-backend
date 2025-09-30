@@ -12,3 +12,4 @@ from .test import (
     TestType, TestFormat, TestStatus, QuestionOrder, AssignmentStatus,
     AttemptStatus, ResultStatus
 )
+from .question_set import QuestionSet, QuestionSetItem, TestQuestionSet
