@@ -9,6 +9,7 @@ from app.models import (
     Test, TestQuestion, TestAssignment, Question, ReadingPassage, AnswerOption,
     TestType, TestStatus, AssignmentStatus, Class, User
 )
+from app.models.question_set import TestQuestionSet, QuestionSet
 from app.schemas.test import (
     TestCreate, TestUpdate, TestResponse, TestWithDetails, TestFilters,
     TestQuestionCreate, TestAssignmentCreate, TestAssignmentUpdate,
@@ -27,7 +28,17 @@ class TestService:
         db.add(test)
         await db.commit()
         await db.refresh(test)
-        return test
+
+        # Load relationships to avoid MissingGreenlet error in response validation
+        result = await db.execute(
+            select(Test)
+            .options(
+                selectinload(Test.test_question_sets).selectinload(TestQuestionSet.question_set),
+                selectinload(Test.creator)
+            )
+            .where(Test.id == test.id)
+        )
+        return result.scalar_one()
 
     @staticmethod
     async def get_test_by_id(db: AsyncSession, test_id: UUID) -> Optional[Test]:
@@ -37,6 +48,7 @@ class TestService:
             .options(
                 selectinload(Test.test_questions).selectinload(TestQuestion.question),
                 selectinload(Test.test_assignments).selectinload(TestAssignment.class_info),
+                selectinload(Test.test_question_sets).selectinload(TestQuestionSet.question_set),
                 selectinload(Test.creator)
             )
             .where(Test.id == test_id)
@@ -46,7 +58,10 @@ class TestService:
     @staticmethod
     async def get_tests(db: AsyncSession, filters: TestFilters) -> Dict[str, Any]:
         """Get tests with filtering and pagination"""
-        query = select(Test).options(selectinload(Test.creator))
+        query = select(Test).options(
+            selectinload(Test.creator),
+            selectinload(Test.test_question_sets).selectinload(TestQuestionSet.question_set)
+        )
 
         # Apply filters
         if filters.type:
@@ -91,14 +106,14 @@ class TestService:
 
     @staticmethod
     async def update_test(db: AsyncSession, test_id: UUID, test_data: TestUpdate, user_id: UUID) -> Optional[Test]:
-        """Update test (only if user is creator and test is draft)"""
+        """Update test (only if user is creator and test is draft or unpublished)"""
         test = await TestService.get_test_by_id(db, test_id)
         if not test or test.created_by != user_id:
             return None
 
-        # Only allow updates if test is in draft status
-        if test.status != TestStatus.DRAFT:
-            raise ValueError("Cannot update published or archived tests")
+        # Only allow updates if test is in draft or unpublished status
+        if test.status not in [TestStatus.DRAFT, TestStatus.UNPUBLISHED]:
+            raise ValueError("Cannot update published or archived tests. Unpublish the test first to make changes.")
 
         update_data = test_data.model_dump(exclude_unset=True)
         if update_data:
@@ -195,8 +210,12 @@ class TestService:
     async def assign_questions_to_test(db: AsyncSession, test_id: UUID, questions: List[TestQuestionCreate], user_id: UUID) -> bool:
         """Assign questions to a test"""
         test = await TestService.get_test_by_id(db, test_id)
-        if not test or test.created_by != user_id or test.status != TestStatus.DRAFT:
+        if not test or test.created_by != user_id:
             return False
+
+        # Only allow assignment if test is in draft or unpublished status
+        if test.status not in [TestStatus.DRAFT, TestStatus.UNPUBLISHED]:
+            raise ValueError("Cannot modify questions for a published test. Unpublish the test first.")
 
         # Remove existing questions
         await db.execute(delete(TestQuestion).where(TestQuestion.test_id == test_id))
@@ -218,32 +237,78 @@ class TestService:
 
     @staticmethod
     async def assign_test_to_classes(db: AsyncSession, test_id: UUID, assignment_data: BulkAssignmentRequest, user_id: UUID) -> List[TestAssignment]:
-        """Assign test to multiple classes"""
+        """Assign test to multiple classes with duplicate validation"""
         test = await TestService.get_test_by_id(db, test_id)
-        if not test or test.status != TestStatus.PUBLISHED:
-            raise ValueError("Can only assign published tests")
+        if not test:
+            raise ValueError("Test not found")
 
+        # Allow assignment for DRAFT and PUBLISHED tests
+        if test.status not in [TestStatus.DRAFT, TestStatus.PUBLISHED]:
+            raise ValueError("Can only assign tests that are in draft or published status")
+
+        # Check for already assigned classes
+        existing_result = await db.execute(
+            select(TestAssignment.class_id)
+            .where(TestAssignment.test_id == test_id)
+        )
+        existing_class_ids = {row[0] for row in existing_result.fetchall()}
+
+        # Find duplicates
+        duplicate_class_ids = [class_id for class_id in assignment_data.class_ids if class_id in existing_class_ids]
+
+        if duplicate_class_ids:
+            # Get names of duplicate classes for better error message
+            from app.models.class_model import Class
+            duplicate_names_result = await db.execute(
+                select(Class.name)
+                .where(Class.id.in_(duplicate_class_ids))
+            )
+            duplicate_names = [row[0] for row in duplicate_names_result.fetchall()]
+
+            error_msg = f"The test is already assigned to the following classes: {', '.join(duplicate_names)}. Please remove duplicate selections."
+            raise ValueError(error_msg)
+
+        # Verify all classes exist
+        from app.models.class_model import Class
+        class_result = await db.execute(
+            select(Class.id, Class.name)
+            .where(Class.id.in_(assignment_data.class_ids))
+        )
+        existing_classes = {class_id: name for class_id, name in class_result.fetchall()}
+
+        invalid_class_ids = [class_id for class_id in assignment_data.class_ids if class_id not in existing_classes]
+
+        if invalid_class_ids:
+            error_msg = f"The following classes do not exist: {', '.join(str(class_id) for class_id in invalid_class_ids)}"
+            raise ValueError(error_msg)
+
+        # Create assignments for all valid classes
         assignments = []
         for class_id in assignment_data.class_ids:
-            # Check if assignment already exists
-            existing = await db.execute(
-                select(TestAssignment).where(
-                    and_(TestAssignment.test_id == test_id, TestAssignment.class_id == class_id)
-                )
-            )
-            if existing.scalar_one_or_none():
-                continue  # Skip if already assigned
-
             assignment = TestAssignment(
                 test_id=test_id,
+                class_id=class_id,
                 **assignment_data.assignment_data.model_dump(),
+                status=AssignmentStatus.SCHEDULED,
                 created_by=user_id
             )
             db.add(assignment)
             assignments.append(assignment)
 
         await db.commit()
-        return assignments
+
+        # Refresh assignments to get IDs populated
+        for assignment in assignments:
+            await db.refresh(assignment)
+
+        # Load relationships to avoid MissingGreenlet error in response validation
+        assignment_ids = [assignment.id for assignment in assignments]
+        result = await db.execute(
+            select(TestAssignment)
+            .options(selectinload(TestAssignment.class_info))
+            .where(TestAssignment.id.in_(assignment_ids))
+        )
+        return result.scalars().all()
 
     @staticmethod
     async def get_test_assignments(db: AsyncSession, test_id: UUID) -> List[TestAssignment]:
@@ -260,7 +325,9 @@ class TestService:
     async def update_test_assignment(db: AsyncSession, assignment_id: UUID, assignment_data: TestAssignmentUpdate, user_id: UUID) -> Optional[TestAssignment]:
         """Update a test assignment"""
         assignment = await db.execute(
-            select(TestAssignment).where(TestAssignment.id == assignment_id)
+            select(TestAssignment)
+            .options(selectinload(TestAssignment.class_info))
+            .where(TestAssignment.id == assignment_id)
         )
         assignment = assignment.scalar_one_or_none()
 
@@ -274,6 +341,14 @@ class TestService:
 
             await db.commit()
             await db.refresh(assignment)
+
+            # Reload the assignment with relationships after refresh
+            result = await db.execute(
+                select(TestAssignment)
+                .options(selectinload(TestAssignment.class_info))
+                .where(TestAssignment.id == assignment_id)
+            )
+            assignment = result.scalar_one()
 
         return assignment
 
@@ -312,14 +387,50 @@ class TestService:
     async def publish_test(db: AsyncSession, test_id: UUID, user_id: UUID) -> Optional[Test]:
         """Publish a draft test"""
         test = await TestService.get_test_by_id(db, test_id)
-        if not test or test.created_by != user_id or test.status != TestStatus.DRAFT:
+        if not test or test.created_by != user_id:
             return None
 
-        # Validate test has questions
-        if not test.test_questions:
-            raise ValueError("Cannot publish test without questions")
+        if test.status != TestStatus.DRAFT and test.status != TestStatus.UNPUBLISHED:
+            raise ValueError("Can only publish tests that are in draft or unpublished status")
+
+        # Validate test has questions or question sets
+        if not test.test_questions and not test.test_question_sets:
+            raise ValueError("Cannot publish test without questions or question sets")
+
+        # Validate test has student assignments
+        if not test.test_assignments:
+            raise ValueError("Cannot publish test without student assignments. Please assign the test to at least one class.")
 
         test.status = TestStatus.PUBLISHED
+        await db.commit()
+        await db.refresh(test)
+        return test
+
+    @staticmethod
+    async def unpublish_test(db: AsyncSession, test_id: UUID, user_id: UUID) -> Optional[Test]:
+        """Unpublish a test to allow editing"""
+        test = await TestService.get_test_by_id(db, test_id)
+        if not test or test.created_by != user_id:
+            return None
+
+        if test.status != TestStatus.PUBLISHED:
+            raise ValueError("Can only unpublish tests that are currently published")
+
+        # Check if there are active assignments
+        from app.models.test import TestAssignment, AssignmentStatus
+        active_assignments = await db.execute(
+            select(func.count(TestAssignment.id))
+            .where(and_(
+                TestAssignment.test_id == test_id,
+                TestAssignment.status == AssignmentStatus.ACTIVE
+            ))
+        )
+        active_count = active_assignments.scalar()
+
+        if active_count > 0:
+            raise ValueError("Cannot unpublish test with active assignments. Please complete or cancel active assignments first.")
+
+        test.status = TestStatus.UNPUBLISHED
         await db.commit()
         await db.refresh(test)
         return test
