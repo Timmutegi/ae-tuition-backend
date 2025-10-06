@@ -200,6 +200,7 @@ class TestSessionService:
             select(TestQuestion)
             .options(
                 selectinload(TestQuestion.question).selectinload(Question.answer_options),
+                selectinload(TestQuestion.question).selectinload(Question.passage),
                 selectinload(TestQuestion.passage)
             )
             .where(TestQuestion.test_id == test_id)
@@ -213,14 +214,26 @@ class TestSessionService:
             for tq in test_questions:
                 question = tq.question
 
-                # Add passage if exists
+                # Add passage if exists (check both TestQuestion.passage and Question.passage)
+                passage = None
+                passage_id = None
+
                 if tq.passage_id and tq.passage:
-                    passages[str(tq.passage_id)] = {
-                        "id": str(tq.passage_id),
-                        "title": tq.passage.title,
-                        "content": tq.passage.content,
-                        "author": tq.passage.author,
-                        "source": tq.passage.source
+                    passage = tq.passage
+                    passage_id = tq.passage_id
+                elif question.passage_id and question.passage:
+                    passage = question.passage
+                    passage_id = question.passage_id
+
+                if passage_id and passage:
+                    passages[str(passage_id)] = {
+                        "id": str(passage_id),
+                        "title": passage.title,
+                        "content": passage.content,
+                        "image_url": passage.image_url,
+                        "s3_key": passage.s3_key,
+                        "author": passage.author,
+                        "source": passage.source
                     }
 
                 # Prepare answer options
@@ -242,7 +255,7 @@ class TestSessionService:
                     "question_text": question.question_text,
                     "question_type": question.question_type.value,
                     "question_format": question.question_format.value if question.question_format else None,
-                    "passage_id": str(tq.passage_id) if tq.passage_id else None,
+                    "passage_id": str(passage_id) if passage_id else None,
                     "passage_reference_lines": question.passage_reference_lines,
                     "instruction_text": question.instruction_text,
                     "image_url": question.image_url,
@@ -254,7 +267,10 @@ class TestSessionService:
             # Try fetching question sets if no direct questions
             test_question_sets_result = await db.execute(
                 select(TestQuestionSet)
-                .options(selectinload(TestQuestionSet.question_set).selectinload(QuestionSet.question_set_items).selectinload(QuestionSetItem.question).selectinload(Question.answer_options))
+                .options(
+                    selectinload(TestQuestionSet.question_set).selectinload(QuestionSet.question_set_items).selectinload(QuestionSetItem.question).selectinload(Question.answer_options),
+                    selectinload(TestQuestionSet.question_set).selectinload(QuestionSet.question_set_items).selectinload(QuestionSetItem.question).selectinload(Question.passage)
+                )
                 .where(TestQuestionSet.test_id == test_id)
                 .order_by(TestQuestionSet.order_number)
             )
@@ -268,6 +284,18 @@ class TestSessionService:
                     if question_set and question_set.question_set_items:
                         for qsi in sorted(question_set.question_set_items, key=lambda x: x.order_number):
                             question = qsi.question
+
+                            # Add passage if exists (for questions in question sets)
+                            if question.passage_id and question.passage:
+                                passages[str(question.passage_id)] = {
+                                    "id": str(question.passage_id),
+                                    "title": question.passage.title,
+                                    "content": question.passage.content,
+                                    "image_url": question.passage.image_url,
+                                    "s3_key": question.passage.s3_key,
+                                    "author": question.passage.author,
+                                    "source": question.passage.source
+                                }
 
                             # Prepare answer options
                             options = []
@@ -365,6 +393,7 @@ class TestSessionService:
                 test_question_sets=[]
             ),
             questions=questions,
+            passages=passages,
             answers=answers,
             time_remaining=time_remaining,
             progress=progress

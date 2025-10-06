@@ -242,6 +242,9 @@ async def start_test(
     if not student:
         raise HTTPException(status_code=404, detail="Student profile not found")
 
+    # Cache student.id to avoid lazy loading issues
+    student_id = student.id
+
     # Get browser info
     browser_info = {
         "user_agent": request.headers.get("user-agent", ""),
@@ -257,7 +260,7 @@ async def start_test(
         attempt = await TestSessionService.start_test_attempt(
             db=db,
             test_id=test_id,
-            student_id=student.id,
+            student_id=student_id,
             assignment_id=assignment_id,
             browser_info=browser_info,
             ip_address=ip_address
@@ -267,7 +270,7 @@ async def start_test(
         session = await TestSessionService.get_test_session(
             db=db,
             attempt_id=attempt.id,
-            student_id=student.id
+            student_id=student_id
         )
 
         return session

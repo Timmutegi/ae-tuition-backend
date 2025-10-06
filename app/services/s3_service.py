@@ -46,9 +46,16 @@ class S3Service:
             if not content_type:
                 content_type = 'application/octet-stream'
 
+            # Read file content into memory to avoid file pointer issues
+            file_content = file.read()
+
+            # Create BytesIO object from content
+            import io
+            file_obj = io.BytesIO(file_content)
+
             # Upload file
             self.s3_client.upload_fileobj(
-                file,
+                file_obj,
                 self.bucket_name,
                 s3_key,
                 ExtraArgs={

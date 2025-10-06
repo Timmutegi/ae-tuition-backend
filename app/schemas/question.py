@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 from typing import Optional, List, Any, Dict
 from datetime import datetime
 from uuid import UUID
@@ -8,7 +8,9 @@ from app.models.question import QuestionType, QuestionFormat, Difficulty, Option
 
 class ReadingPassageBase(BaseModel):
     title: Optional[str] = Field(None, max_length=255)
-    content: str = Field(..., min_length=1)
+    content: Optional[str] = None
+    image_url: Optional[str] = None
+    s3_key: Optional[str] = Field(None, max_length=255)
     word_count: Optional[int] = Field(None, ge=1)
     reading_level: Optional[str] = Field(None, max_length=20)
     source: Optional[str] = Field(None, max_length=255)
@@ -18,12 +20,23 @@ class ReadingPassageBase(BaseModel):
 
 
 class ReadingPassageCreate(ReadingPassageBase):
-    pass
+    @field_validator('content')
+    @classmethod
+    def validate_passage_content(cls, v, info):
+        """Validate that either content or image_url is provided"""
+        image_url = info.data.get('image_url')
+
+        if not v and not image_url:
+            raise ValueError('Either content (text) or image_url must be provided for the passage')
+
+        return v
 
 
 class ReadingPassageUpdate(BaseModel):
     title: Optional[str] = Field(None, max_length=255)
-    content: Optional[str] = Field(None, min_length=1)
+    content: Optional[str] = None
+    image_url: Optional[str] = None
+    s3_key: Optional[str] = Field(None, max_length=255)
     word_count: Optional[int] = Field(None, ge=1)
     reading_level: Optional[str] = Field(None, max_length=20)
     source: Optional[str] = Field(None, max_length=255)
@@ -76,7 +89,7 @@ class AnswerOptionResponse(AnswerOptionBase):
 
 
 class QuestionBase(BaseModel):
-    question_text: str = Field(..., min_length=1)
+    question_text: Optional[str] = Field(None, min_length=1)
     question_type: QuestionType
     question_format: QuestionFormat = QuestionFormat.STANDARD
     passage_id: Optional[UUID] = None
@@ -96,9 +109,22 @@ class QuestionBase(BaseModel):
 class QuestionCreate(QuestionBase):
     answer_options: List[AnswerOptionCreate] = []
 
+    @field_validator('question_text')
+    @classmethod
+    def validate_question_content(cls, v, info):
+        """Validate that either question_text or image_url is provided"""
+        # Get the image_url value from the data being validated
+        image_url = info.data.get('image_url')
+
+        # Check if both are missing
+        if not v and not image_url:
+            raise ValueError('Either question_text or image_url must be provided')
+
+        return v
+
 
 class QuestionUpdate(BaseModel):
-    question_text: Optional[str] = Field(None, min_length=1)
+    question_text: Optional[str] = None
     question_format: Optional[QuestionFormat] = None
     passage_id: Optional[UUID] = None
     passage_reference_lines: Optional[str] = Field(None, max_length=50)

@@ -244,6 +244,7 @@ class TestSessionResponse(BaseModel):
     attempt: TestAttemptResponse
     test: TestResponse
     questions: List[Dict[str, Any]]
+    passages: Dict[str, Dict[str, Any]]
     answers: Dict[str, QuestionResponseDetail]
     time_remaining: int
     progress: Dict[str, Any]

@@ -286,6 +286,9 @@ async def upload_question_image(
             detail=error_message
         )
 
+    # Reset file pointer to beginning
+    await file.seek(0)
+
     # Upload to S3
     upload_result = await s3_service.upload_file(
         file.file,
@@ -301,6 +304,44 @@ async def upload_question_image(
 
     return {
         "message": "Image uploaded successfully",
+        "s3_key": upload_result["s3_key"],
+        "public_url": upload_result["public_url"],
+        "file_name": upload_result["file_name"]
+    }
+
+
+@router.post("/passages/upload-image")
+async def upload_passage_image(
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_admin_user)
+):
+    """Upload image for reading passages"""
+    # Validate file
+    is_valid, error_message = s3_service.validate_file(file.filename, file.size)
+    if not is_valid:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error_message
+        )
+
+    # Reset file pointer to beginning
+    await file.seek(0)
+
+    # Upload to S3
+    upload_result = await s3_service.upload_file(
+        file.file,
+        file.filename,
+        "passages"
+    )
+
+    if not upload_result:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to upload passage image"
+        )
+
+    return {
+        "message": "Passage image uploaded successfully",
         "s3_key": upload_result["s3_key"],
         "public_url": upload_result["public_url"],
         "file_name": upload_result["file_name"]

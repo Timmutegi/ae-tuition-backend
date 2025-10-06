@@ -38,7 +38,9 @@ class ReadingPassage(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title = Column(String(255))
-    content = Column(Text, nullable=False)
+    content = Column(Text, nullable=True)
+    image_url = Column(String(500))
+    s3_key = Column(String(255))
     word_count = Column(Integer)
     reading_level = Column(String(20))
     source = Column(String(255))
@@ -62,7 +64,7 @@ class Question(Base):
     __tablename__ = "questions"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    question_text = Column(Text, nullable=False)
+    question_text = Column(Text, nullable=True)
     question_type = Column(ENUM(QuestionType), nullable=False)
     question_format = Column(ENUM(QuestionFormat), default=QuestionFormat.STANDARD)
     passage_id = Column(UUID(as_uuid=True), ForeignKey('reading_passages.id'), nullable=True)
