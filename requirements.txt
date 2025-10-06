@@ -35,3 +35,6 @@ slowapi==0.1.9
 
 # CSV processing
 pandas==2.1.4
+
+# Excel file generation
+openpyxl==3.1.2

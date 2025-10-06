@@ -336,3 +336,135 @@ async def list_classes(
         pages=result["pages"],
         limit=result["limit"]
     )
+
+
+@router.get("/results/export")
+async def export_results(
+    db: AsyncSession = Depends(get_db),
+    current_admin: User = Depends(get_current_admin_user)
+):
+    """Export all test results with student details to Excel file."""
+    from io import BytesIO
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, PatternFill, Alignment
+    from datetime import datetime
+    from sqlalchemy import select
+    from app.models.test import TestResult, Test
+    from app.models.student import Student
+
+    # Fetch all results with student and test details
+    from sqlalchemy.orm import selectinload
+    from app.models.user import User
+    from app.models.class_model import Class
+
+    query = (
+        select(TestResult)
+        .options(
+            selectinload(TestResult.student).selectinload(Student.user),
+            selectinload(TestResult.student).selectinload(Student.class_info),
+            selectinload(TestResult.test)
+        )
+        .order_by(TestResult.submitted_at.desc())
+    )
+
+    result = await db.execute(query)
+    results = result.scalars().all()
+
+    # Create workbook
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Test Results"
+
+    # Header style
+    header_fill = PatternFill(start_color="1C2536", end_color="1C2536", fill_type="solid")
+    header_font = Font(color="FFFFFF", bold=True, size=12)
+    header_alignment = Alignment(horizontal="center", vertical="center")
+
+    # Headers
+    headers = [
+        "Student ID", "Student Name", "Student Email", "Class",
+        "Test Title", "Test Type", "Score", "Total Marks",
+        "Percentage", "Pass/Fail", "Time Taken (minutes)",
+        "Submitted At", "Status"
+    ]
+
+    for col_num, header in enumerate(headers, 1):
+        cell = ws.cell(row=1, column=col_num)
+        cell.value = header
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = header_alignment
+
+    # Data rows
+    for row_num, test_result in enumerate(results, 2):
+        student = test_result.student
+        test = test_result.test
+
+        if not student or not test:
+            continue
+
+        # Calculate pass/fail
+        pass_fail = "Pass" if test_result.percentage >= test.pass_mark else "Fail"
+
+        # Format time taken
+        time_taken = ""
+        if test_result.time_taken:
+            time_taken = f"{test_result.time_taken // 60}"
+
+        # Format submitted at
+        submitted_at = ""
+        if test_result.submitted_at:
+            submitted_at = test_result.submitted_at.strftime("%Y-%m-%d %H:%M:%S")
+
+        # Get student name, email, and class
+        student_name = student.user.full_name if student.user else "N/A"
+        student_email = student.user.email if student.user else "N/A"
+        class_name = student.class_info.name if student.class_info else "N/A"
+
+        row_data = [
+            str(student.id),
+            student_name,
+            student_email,
+            class_name,
+            test.title,
+            test.type.value if hasattr(test.type, 'value') else str(test.type),
+            test_result.total_score if test_result.total_score else 0,
+            test_result.max_score if test_result.max_score else 0,
+            f"{test_result.percentage:.2f}" if test_result.percentage else "0.00",
+            pass_fail,
+            time_taken,
+            submitted_at,
+            test_result.status.value if hasattr(test_result.status, 'value') else str(test_result.status)
+        ]
+
+        for col_num, value in enumerate(row_data, 1):
+            ws.cell(row=row_num, column=col_num, value=value)
+
+    # Adjust column widths
+    for column in ws.columns:
+        max_length = 0
+        column_letter = column[0].column_letter
+        for cell in column:
+            try:
+                if len(str(cell.value)) > max_length:
+                    max_length = len(str(cell.value))
+            except:
+                pass
+        adjusted_width = min(max_length + 2, 50)
+        ws.column_dimensions[column_letter].width = adjusted_width
+
+    # Save to BytesIO
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+    # Generate filename with current date
+    filename = f"test-results-{datetime.now().strftime('%Y-%m-%d')}.xlsx"
+
+    return Response(
+        content=output.getvalue(),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={
+            "Content-Disposition": f"attachment; filename={filename}"
+        }
+    )
