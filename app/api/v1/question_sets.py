@@ -44,7 +44,6 @@ async def create_question_set(
 @router.get("/", response_model=QuestionSetListResponse)
 async def get_question_sets(
     subject: Optional[str] = Query(None),
-    topic: Optional[str] = Query(None),
     grade_level: Optional[str] = Query(None),
     search: Optional[str] = Query(None),
     is_active: Optional[bool] = Query(True),
@@ -56,7 +55,6 @@ async def get_question_sets(
     """Get question sets with filtering and pagination"""
     filters = QuestionSetFilters(
         subject=subject,
-        topic=topic,
         grade_level=grade_level,
         search=search,
         is_active=is_active,

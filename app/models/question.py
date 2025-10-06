@@ -27,12 +27,6 @@ class QuestionFormat(enum.Enum):
     SEQUENCE = "sequence"
 
 
-class Difficulty(enum.Enum):
-    EASY = "easy"
-    MEDIUM = "medium"
-    HARD = "hard"
-
-
 class ReadingPassage(Base):
     __tablename__ = "reading_passages"
 
@@ -70,15 +64,12 @@ class Question(Base):
     passage_id = Column(UUID(as_uuid=True), ForeignKey('reading_passages.id'), nullable=True)
     passage_reference_lines = Column(String(50))
     subject = Column(String(50))
-    topic = Column(String(100))
-    difficulty = Column(ENUM(Difficulty), default=Difficulty.MEDIUM)
     points = Column(Integer, default=1)
     image_url = Column(Text)
     s3_key = Column(String(255))
     explanation = Column(Text)
     instruction_text = Column(Text)
     pattern_sequence = Column(JSONB)
-    tags = Column(ARRAY(String))
     created_by = Column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=False)
     created_at = Column(DateTime(timezone=True), default=func.now())
     updated_at = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now())
@@ -91,7 +82,7 @@ class Question(Base):
     question_responses = relationship("QuestionResponse", back_populates="question")
 
     def __repr__(self):
-        return f"<Question(type='{self.question_type.value}', subject='{self.subject}', difficulty='{self.difficulty.value}')>"
+        return f"<Question(type='{self.question_type.value}', subject='{self.subject}')>"
 
 
 class OptionType(enum.Enum):

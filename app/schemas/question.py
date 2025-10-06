@@ -3,7 +3,7 @@ from typing import Optional, List, Any, Dict
 from datetime import datetime
 from uuid import UUID
 
-from app.models.question import QuestionType, QuestionFormat, Difficulty, OptionType
+from app.models.question import QuestionType, QuestionFormat, OptionType
 
 
 class ReadingPassageBase(BaseModel):
@@ -95,15 +95,12 @@ class QuestionBase(BaseModel):
     passage_id: Optional[UUID] = None
     passage_reference_lines: Optional[str] = Field(None, max_length=50)
     subject: Optional[str] = Field(None, max_length=50)
-    topic: Optional[str] = Field(None, max_length=100)
-    difficulty: Difficulty = Difficulty.MEDIUM
     points: int = Field(default=1, ge=1)
     image_url: Optional[str] = None
     s3_key: Optional[str] = Field(None, max_length=255)
     explanation: Optional[str] = None
     instruction_text: Optional[str] = None
     pattern_sequence: Optional[Dict[str, Any]] = None
-    tags: Optional[List[str]] = None
 
 
 class QuestionCreate(QuestionBase):
@@ -129,15 +126,12 @@ class QuestionUpdate(BaseModel):
     passage_id: Optional[UUID] = None
     passage_reference_lines: Optional[str] = Field(None, max_length=50)
     subject: Optional[str] = Field(None, max_length=50)
-    topic: Optional[str] = Field(None, max_length=100)
-    difficulty: Optional[Difficulty] = None
     points: Optional[int] = Field(None, ge=1)
     image_url: Optional[str] = None
     s3_key: Optional[str] = Field(None, max_length=255)
     explanation: Optional[str] = None
     instruction_text: Optional[str] = None
     pattern_sequence: Optional[Dict[str, Any]] = None
-    tags: Optional[List[str]] = None
 
 
 class QuestionResponse(QuestionBase):
@@ -158,10 +152,8 @@ class QuestionFilters(BaseModel):
     question_type: Optional[QuestionType] = None
     question_format: Optional[QuestionFormat] = None
     subject: Optional[str] = None
-    difficulty: Optional[Difficulty] = None
     passage_id: Optional[UUID] = None
     search: Optional[str] = None
-    tags: Optional[List[str]] = None
     page: int = Field(default=1, ge=1)
     limit: int = Field(default=20, ge=1, le=100)
 
@@ -179,6 +171,5 @@ class QuestionBankStats(BaseModel):
     total_questions: int
     questions_by_type: Dict[str, int]
     questions_by_subject: Dict[str, int]
-    questions_by_difficulty: Dict[str, int]
     total_passages: int
     passages_by_subject: Dict[str, int]

@@ -29,7 +29,6 @@ class QuestionSetService:
             name=question_set_data.name,
             description=question_set_data.description,
             subject=question_set_data.subject,
-            topic=question_set_data.topic,
             grade_level=question_set_data.grade_level,
             metadata_json=question_set_data.metadata_json,
             created_by=user_id
@@ -81,7 +80,6 @@ class QuestionSetService:
             "name": question_set.name,
             "description": question_set.description,
             "subject": question_set.subject,
-            "topic": question_set.topic,
             "grade_level": question_set.grade_level,
             "metadata_json": question_set.metadata_json,
             "total_points": question_set.total_points,
@@ -114,15 +112,12 @@ class QuestionSetService:
                     "question_type": item.question.question_type.value if item.question.question_type else None,
                     "question_format": item.question.question_format.value if item.question.question_format else None,
                     "subject": item.question.subject,
-                    "topic": item.question.topic,
-                    "difficulty": item.question.difficulty.value if item.question.difficulty else None,
                     "points": item.question.points,
                     "image_url": item.question.image_url,
                     "s3_key": item.question.s3_key,
                     "explanation": item.question.explanation,
                     "instruction_text": item.question.instruction_text,
                     "pattern_sequence": item.question.pattern_sequence,
-                    "tags": item.question.tags,
                     "created_by": item.question.created_by,
                     "created_at": item.question.created_at,
                     "updated_at": item.question.updated_at
@@ -147,9 +142,6 @@ class QuestionSetService:
         if filters.subject:
             conditions.append(QuestionSet.subject == filters.subject)
 
-        if filters.topic:
-            conditions.append(QuestionSet.topic == filters.topic)
-
         if filters.grade_level:
             conditions.append(QuestionSet.grade_level == filters.grade_level)
 
@@ -162,8 +154,7 @@ class QuestionSetService:
                 or_(
                     QuestionSet.name.ilike(search_term),
                     QuestionSet.description.ilike(search_term),
-                    QuestionSet.subject.ilike(search_term),
-                    QuestionSet.topic.ilike(search_term)
+                    QuestionSet.subject.ilike(search_term)
                 )
             )
 
@@ -220,7 +211,6 @@ class QuestionSetService:
             "name": question_set.name,
             "description": question_set.description,
             "subject": question_set.subject,
-            "topic": question_set.topic,
             "grade_level": question_set.grade_level,
             "metadata_json": question_set.metadata_json,
             "total_points": question_set.total_points,
@@ -253,15 +243,12 @@ class QuestionSetService:
                     "question_type": item.question.question_type.value if item.question.question_type else None,
                     "question_format": item.question.question_format.value if item.question.question_format else None,
                     "subject": item.question.subject,
-                    "topic": item.question.topic,
-                    "difficulty": item.question.difficulty.value if item.question.difficulty else None,
                     "points": item.question.points,
                     "image_url": item.question.image_url,
                     "s3_key": item.question.s3_key,
                     "explanation": item.question.explanation,
                     "instruction_text": item.question.instruction_text,
                     "pattern_sequence": item.question.pattern_sequence,
-                    "tags": item.question.tags,
                     "created_by": item.question.created_by,
                     "created_at": item.question.created_at,
                     "updated_at": item.question.updated_at

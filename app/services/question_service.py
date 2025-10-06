@@ -6,7 +6,7 @@ from uuid import UUID
 
 from app.models import (
     Question, ReadingPassage, AnswerOption, User,
-    QuestionType, QuestionFormat, Difficulty, OptionType
+    QuestionType, QuestionFormat, OptionType
 )
 from app.schemas.question import (
     QuestionCreate, QuestionUpdate, QuestionFilters, QuestionResponse,
@@ -70,15 +70,12 @@ class QuestionService:
             passage_id=question.passage_id,
             passage_reference_lines=question.passage_reference_lines,
             subject=question.subject,
-            topic=question.topic,
-            difficulty=question.difficulty,
             points=question.points,
             image_url=question.image_url,
             s3_key=question.s3_key,
             explanation=question.explanation,
             instruction_text=question.instruction_text,
             pattern_sequence=question.pattern_sequence,
-            tags=question.tags,
             created_by=question.created_by,
             created_at=question.created_at,
             updated_at=question.updated_at,
@@ -127,15 +124,12 @@ class QuestionService:
             passage_id=question.passage_id,
             passage_reference_lines=question.passage_reference_lines,
             subject=question.subject,
-            topic=question.topic,
-            difficulty=question.difficulty,
             points=question.points,
             image_url=question.image_url,
             s3_key=question.s3_key,
             explanation=question.explanation,
             instruction_text=question.instruction_text,
             pattern_sequence=question.pattern_sequence,
-            tags=question.tags,
             created_by=question.created_by,
             created_at=question.created_at,
             updated_at=question.updated_at,
@@ -182,8 +176,6 @@ class QuestionService:
             query = query.where(Question.question_format == filters.question_format)
         if filters.subject:
             query = query.where(Question.subject.ilike(f"%{filters.subject}%"))
-        if filters.difficulty:
-            query = query.where(Question.difficulty == filters.difficulty)
         if filters.passage_id:
             query = query.where(Question.passage_id == filters.passage_id)
         if filters.search:
@@ -191,13 +183,9 @@ class QuestionService:
             query = query.where(
                 or_(
                     Question.question_text.ilike(search_pattern),
-                    Question.topic.ilike(search_pattern),
                     Question.subject.ilike(search_pattern)
                 )
             )
-        if filters.tags:
-            for tag in filters.tags:
-                query = query.where(Question.tags.any(tag))
 
         # Count total
         count_query = select(func.count()).select_from(query.subquery())
@@ -239,15 +227,12 @@ class QuestionService:
                 passage_id=question.passage_id,
                 passage_reference_lines=question.passage_reference_lines,
                 subject=question.subject,
-                topic=question.topic,
-                difficulty=question.difficulty,
                 points=question.points,
                 image_url=question.image_url,
                 s3_key=question.s3_key,
                 explanation=question.explanation,
                 instruction_text=question.instruction_text,
                 pattern_sequence=question.pattern_sequence,
-                tags=question.tags,
                 created_by=question.created_by,
                 created_at=question.created_at,
                 updated_at=question.updated_at,
@@ -317,15 +302,12 @@ class QuestionService:
             passage_id=question.passage_id,
             passage_reference_lines=question.passage_reference_lines,
             subject=question.subject,
-            topic=question.topic,
-            difficulty=question.difficulty,
             points=question.points,
             image_url=question.image_url,
             s3_key=question.s3_key,
             explanation=question.explanation,
             instruction_text=question.instruction_text,
             pattern_sequence=question.pattern_sequence,
-            tags=question.tags,
             created_by=question.created_by,
             created_at=question.created_at,
             updated_at=question.updated_at,
@@ -618,15 +600,12 @@ class QuestionService:
                 passage_id=question.passage_id,
                 passage_reference_lines=question.passage_reference_lines,
                 subject=question.subject,
-                topic=question.topic,
-                difficulty=question.difficulty,
                 points=question.points,
                 image_url=question.image_url,
                 s3_key=question.s3_key,
                 explanation=question.explanation,
                 instruction_text=question.instruction_text,
                 pattern_sequence=question.pattern_sequence,
-                tags=question.tags,
                 created_by=question.created_by,
                 created_at=question.created_at,
                 updated_at=question.updated_at,
@@ -660,13 +639,6 @@ class QuestionService:
         subject_result = await db.execute(subject_query)
         questions_by_subject = dict(subject_result.fetchall())
 
-        # Questions by difficulty
-        difficulty_query = select(Question.difficulty, func.count()).group_by(Question.difficulty)
-        if user_id:
-            difficulty_query = difficulty_query.where(Question.created_by == user_id)
-        difficulty_result = await db.execute(difficulty_query)
-        questions_by_difficulty = {str(diff.value): count for diff, count in difficulty_result.fetchall()}
-
         # Passage stats
         passage_query = select(func.count()).select_from(ReadingPassage)
         if user_id:
@@ -685,7 +657,6 @@ class QuestionService:
             total_questions=total_questions,
             questions_by_type=questions_by_type,
             questions_by_subject=questions_by_subject,
-            questions_by_difficulty=questions_by_difficulty,
             total_passages=total_passages,
             passages_by_subject=passages_by_subject
         )

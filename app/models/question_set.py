@@ -14,11 +14,10 @@ class QuestionSet(Base):
     name = Column(String(255), nullable=False)
     description = Column(Text)
     subject = Column(String(50))
-    topic = Column(String(100))
     grade_level = Column(String(20))
     total_points = Column(Integer, default=0)
     question_count = Column(Integer, default=0)
-    metadata_json = Column(JSONB)  # Additional metadata like difficulty distribution
+    metadata_json = Column(JSONB)  # Additional metadata
     is_active = Column(Boolean, default=True)
     created_by = Column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=False)
     created_at = Column(DateTime(timezone=True), default=func.now())

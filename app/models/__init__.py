@@ -5,7 +5,7 @@ from .student import Student, StudentStatus
 from .csv_upload_log import CSVUploadLog, CSVUploadStatus
 from .question import (
     ReadingPassage, Question, AnswerOption, QuestionResponse,
-    QuestionType, QuestionFormat, Difficulty, OptionType
+    QuestionType, QuestionFormat, OptionType
 )
 from .test import (
     Test, TestQuestion, TestAssignment, TestAttempt, TestResult,

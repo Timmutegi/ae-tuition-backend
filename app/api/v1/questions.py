@@ -36,26 +36,22 @@ async def get_questions(
     question_type: Optional[str] = Query(None),
     question_format: Optional[str] = Query(None),
     subject: Optional[str] = Query(None),
-    difficulty: Optional[str] = Query(None),
     passage_id: Optional[UUID] = Query(None),
     search: Optional[str] = Query(None),
-    tags: Optional[List[str]] = Query(None),
     page: int = Query(1, ge=1),
     limit: int = Query(20, ge=1, le=100),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_admin_user)
 ):
     """Get questions with filtering and pagination"""
-    from app.models.question import QuestionType, QuestionFormat, Difficulty
+    from app.models.question import QuestionType, QuestionFormat
 
     filters = QuestionFilters(
         question_type=QuestionType(question_type) if question_type else None,
         question_format=QuestionFormat(question_format) if question_format else None,
         subject=subject,
-        difficulty=Difficulty(difficulty) if difficulty else None,
         passage_id=passage_id,
         search=search,
-        tags=tags,
         page=page,
         limit=limit
     )
