@@ -43,6 +43,7 @@ class EmailService:
 
             variables = {
                 "student_name": student.get("full_name", "Student"),
+                "student_code": student.get("student_code", "N/A"),
                 "email": student["email"],
                 "password": password,
                 "frontend_url": self.frontend_url,

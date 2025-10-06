@@ -51,7 +51,7 @@ class StudentCreate(StudentBase):
     full_name: str = Field(..., min_length=1)
     first_name: Optional[str] = None  # For CSV upload
     surname: Optional[str] = None  # For CSV upload
-    student_id: Optional[str] = None  # For CSV upload (external ID)
+    student_id: str = Field(..., min_length=1)  # Required: Student code from CSV (replaces auto-generation)
     class_name: Optional[str] = None  # For CSV upload
 
 

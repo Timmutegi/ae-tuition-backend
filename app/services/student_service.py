@@ -61,8 +61,8 @@ class StudentService:
             db.add(user)
             await db.flush()
 
-            # Generate student code
-            student_code = await self._generate_student_code(db)
+            # Use student code from CSV (student_id field)
+            student_code = student_data.student_id if student_data.student_id else None
 
             # Create student profile
             student = Student(
@@ -84,7 +84,8 @@ class StudentService:
             # Send welcome email using stored data
             student_dict = {
                 "email": user_email,
-                "full_name": user_full_name
+                "full_name": user_full_name,
+                "student_code": student_code
             }
             email_sent = await self.email_service.send_welcome_email(student_dict, password)
             logger.info(f"Student created successfully: {user_email} (email sent: {email_sent})")
@@ -245,15 +246,26 @@ class StudentService:
             raise e
 
     async def delete_student(self, db, student_id: UUID) -> bool:
-        """Delete student and associated user account."""
+        """Permanently delete student and associated user account (hard delete)."""
         try:
             student = await self.get_student(db, student_id)
             if not student:
                 return False
 
-            # Delete student (cascade will delete user)
+            # Get user_id before deleting student
+            user_id = student.user_id
+
+            # Delete student record first
             await db.delete(student)
+            await db.flush()
+
+            # Explicitly delete user record (permanent deletion)
+            user = await db.get(User, user_id)
+            if user:
+                await db.delete(user)
+
             await db.commit()
+            logger.info(f"Permanently deleted student {student_id} and user {user_id}")
             return True
 
         except Exception as e:
@@ -317,40 +329,6 @@ class StudentService:
             await db.flush()
 
         return class_obj
-
-    async def _generate_student_code(self, db) -> str:
-        """Generate unique student code."""
-        base_number = 1000
-
-        # Get the highest existing student code number
-        result = await db.execute(
-            select(func.max(Student.student_code))
-        )
-        max_code = result.scalar()
-
-        if max_code:
-            try:
-                # Extract number from code (e.g., "STU001234" -> 1234)
-                number_part = int(max_code.replace("STU", ""))
-                base_number = max(base_number, number_part + 1)
-            except (ValueError, AttributeError):
-                # If parsing fails, start from base_number
-                pass
-
-        # Generate new code
-        student_code = f"STU{base_number:06d}"
-
-        # Ensure uniqueness (in case of race conditions)
-        while True:
-            existing = await db.execute(
-                select(Student).where(Student.student_code == student_code)
-            )
-            if not existing.scalar_one_or_none():
-                break
-            base_number += 1
-            student_code = f"STU{base_number:06d}"
-
-        return student_code
 
     async def get_classes(self, db, page: int = 1, limit: int = 50, search: Optional[str] = None, year_group: Optional[int] = None) -> Dict:
         """Get paginated list of classes with optional filters."""

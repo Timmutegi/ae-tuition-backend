@@ -50,9 +50,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",
         "http://localhost:4200",
-        "http://127.0.0.1:4200",
         "https://d2nylqijymu9wv.cloudfront.net"
     ],
     allow_credentials=True,

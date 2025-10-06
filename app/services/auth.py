@@ -6,16 +6,40 @@ from sqlalchemy import select
 from fastapi import HTTPException, status
 
 from app.models.user import User, UserRole
+from app.models.student import Student
 from app.schemas.user import UserCreate, UserUpdate, LoginRequest
 from app.core.security import verify_password, get_password_hash, create_access_token
 
 class AuthService:
     @staticmethod
-    async def authenticate_user(db: AsyncSession, email: str, password: str) -> Optional[User]:
-        """Authenticate user with email and password."""
-        # Find user by email
-        result = await db.execute(select(User).where(User.email == email))
-        user = result.scalars().first()
+    async def authenticate_user(db: AsyncSession, identifier: str, password: str) -> Optional[User]:
+        """
+        Authenticate user with identifier (student code, email, or username) and password.
+        For students, student code is the primary login method.
+        For admins, email or username can be used.
+        """
+        user = None
+
+        # Try to find user by student code first (for students)
+        try:
+            result = await db.execute(
+                select(User)
+                .join(Student, User.id == Student.user_id)
+                .where(Student.student_code == identifier.upper())
+            )
+            user = result.scalars().first()
+        except Exception:
+            pass
+
+        # If not found by student code, try email
+        if not user:
+            result = await db.execute(select(User).where(User.email == identifier))
+            user = result.scalars().first()
+
+        # If not found by email, try username
+        if not user:
+            result = await db.execute(select(User).where(User.username == identifier))
+            user = result.scalars().first()
 
         if not user:
             return None

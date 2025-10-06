@@ -16,18 +16,20 @@ async def login(
 ):
     """
     Unified login endpoint for both admin and student users.
+    Students can login with their student code.
+    Admins can login with email or username.
     Returns JWT token and user information.
     """
     user = await AuthService.authenticate_user(
         db=db,
-        email=login_data.email,
+        identifier=login_data.identifier,
         password=login_data.password
     )
 
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
+            detail="Incorrect student code/email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
 

@@ -38,7 +38,7 @@ UserResponse = User
 
 # Schema for login request
 class LoginRequest(BaseModel):
-    email: EmailStr
+    identifier: str  # Can be student code, email, or username
     password: str
 
 # Schema for token response

@@ -43,6 +43,11 @@ class CSVProcessorService:
             for row_num, row in enumerate(csv_reader, start=2):  # Start at 2 (header is row 1)
                 # Clean up column names (remove extra spaces)
                 cleaned_row = {k.strip(): v.strip() if v else '' for k, v in row.items()}
+
+                # Skip empty rows (rows where all values are empty)
+                if all(not value for value in cleaned_row.values()):
+                    continue
+
                 cleaned_row['row_number'] = row_num
                 students.append(cleaned_row)
 
@@ -76,21 +81,21 @@ class CSVProcessorService:
                     detail=f"Missing required columns: {', '.join(missing_columns)}"
                 )
 
-        # Get existing emails from database
-        existing_emails = set()
+        # Get existing student codes from database
+        existing_student_codes = set()
         result = await db_session.execute(
-            text("SELECT email FROM users")
+            text("SELECT student_code FROM students WHERE student_code IS NOT NULL")
         )
         for row in result:
-            existing_emails.add(row[0].lower())
+            existing_student_codes.add(row[0].upper())
 
         # Validate each record
-        seen_emails = set()
+        seen_student_codes = set()
         for record in data:
             row_num = record.get('row_number', 0)
             record_errors = []
 
-            # Validate email
+            # Validate email format (but allow duplicates for siblings)
             email = record.get('Email Address', '').lower()
             if not email:
                 record_errors.append({
@@ -102,18 +107,26 @@ class CSVProcessorService:
                     'field': 'Email Address',
                     'error': 'Invalid email format'
                 })
-            elif email in existing_emails:
+
+            # Validate Student ID (student_code) uniqueness
+            student_code = record.get('Student ID', '').strip().upper()
+            if not student_code:
                 record_errors.append({
-                    'field': 'Email Address',
-                    'error': 'Email already exists in system'
+                    'field': 'Student ID',
+                    'error': 'Student ID is required'
                 })
-            elif email in seen_emails:
+            elif student_code in existing_student_codes:
                 record_errors.append({
-                    'field': 'Email Address',
-                    'error': 'Duplicate email in CSV'
+                    'field': 'Student ID',
+                    'error': 'Student ID already exists in system'
+                })
+            elif student_code in seen_student_codes:
+                record_errors.append({
+                    'field': 'Student ID',
+                    'error': 'Duplicate Student ID in CSV'
                 })
             else:
-                seen_emails.add(email)
+                seen_student_codes.add(student_code)
 
             # Validate First Name and Surname
             if not record.get('First Name'):
@@ -126,13 +139,6 @@ class CSVProcessorService:
                 record_errors.append({
                     'field': 'Surname',
                     'error': 'Surname is required'
-                })
-
-            # Validate Student ID
-            if not record.get('Student ID'):
-                record_errors.append({
-                    'field': 'Student ID',
-                    'error': 'Student ID is required'
                 })
 
             # Validate Year Group
