@@ -7,13 +7,15 @@ from datetime import datetime
 
 from app.models import (
     Test, TestQuestion, TestAssignment, Question, ReadingPassage, AnswerOption,
-    TestType, TestStatus, AssignmentStatus, Class, User
+    TestType, TestStatus, AssignmentStatus, Class, User, Student
 )
+from app.models.test import StudentTestAssignment
 from app.models.question_set import TestQuestionSet, QuestionSet
 from app.schemas.test import (
     TestCreate, TestUpdate, TestResponse, TestWithDetails, TestFilters,
     TestQuestionCreate, TestAssignmentCreate, TestAssignmentUpdate,
-    BulkAssignmentRequest, TestCloneRequest, TestStatsResponse
+    BulkAssignmentRequest, BulkStudentAssignmentRequest, MixedAssignmentRequest,
+    TestCloneRequest, TestStatsResponse, StudentTestAssignmentUpdate
 )
 
 
@@ -48,6 +50,8 @@ class TestService:
             .options(
                 selectinload(Test.test_questions).selectinload(TestQuestion.question),
                 selectinload(Test.test_assignments).selectinload(TestAssignment.class_info),
+                selectinload(Test.student_test_assignments).selectinload(StudentTestAssignment.student).selectinload(Student.user),
+                selectinload(Test.student_test_assignments).selectinload(StudentTestAssignment.student).selectinload(Student.class_info),
                 selectinload(Test.test_question_sets).selectinload(TestQuestionSet.question_set),
                 selectinload(Test.creator)
             )
@@ -397,9 +401,9 @@ class TestService:
         if not test.test_questions and not test.test_question_sets:
             raise ValueError("Cannot publish test without questions or question sets")
 
-        # Validate test has student assignments
-        if not test.test_assignments:
-            raise ValueError("Cannot publish test without student assignments. Please assign the test to at least one class.")
+        # Validate test has student assignments (either class or individual student assignments)
+        if not test.test_assignments and not test.student_test_assignments:
+            raise ValueError("Cannot publish test without assignments. Please assign the test to at least one class or student.")
 
         test.status = TestStatus.PUBLISHED
         await db.commit()
@@ -492,3 +496,196 @@ class TestService:
             total_assignments=total_assignments,
             active_assignments=active_assignments
         )
+
+    @staticmethod
+    async def assign_test_to_students(db: AsyncSession, test_id: UUID, assignment_data: BulkStudentAssignmentRequest, user_id: UUID) -> List[StudentTestAssignment]:
+        """Assign test to individual students with duplicate validation"""
+        test = await TestService.get_test_by_id(db, test_id)
+        if not test:
+            raise ValueError("Test not found")
+
+        # Allow assignment for DRAFT and PUBLISHED tests
+        if test.status not in [TestStatus.DRAFT, TestStatus.PUBLISHED]:
+            raise ValueError("Can only assign tests that are in draft or published status")
+
+        # Check for already assigned students
+        existing_result = await db.execute(
+            select(StudentTestAssignment.student_id)
+            .where(StudentTestAssignment.test_id == test_id)
+        )
+        existing_student_ids = {row[0] for row in existing_result.fetchall()}
+
+        # Find duplicates
+        duplicate_student_ids = [student_id for student_id in assignment_data.student_ids if student_id in existing_student_ids]
+
+        if duplicate_student_ids:
+            # Get names of duplicate students for better error message
+            duplicate_names_result = await db.execute(
+                select(User.full_name)
+                .join(Student, Student.user_id == User.id)
+                .where(Student.id.in_(duplicate_student_ids))
+            )
+            duplicate_names = [row[0] for row in duplicate_names_result.fetchall()]
+
+            error_msg = f"The test is already assigned to the following students: {', '.join(duplicate_names)}. Please remove duplicate selections."
+            raise ValueError(error_msg)
+
+        # Verify all students exist
+        student_result = await db.execute(
+            select(Student.id, User.full_name)
+            .join(User, Student.user_id == User.id)
+            .where(Student.id.in_(assignment_data.student_ids))
+        )
+        existing_students = {student_id: name for student_id, name in student_result.fetchall()}
+
+        invalid_student_ids = [student_id for student_id in assignment_data.student_ids if student_id not in existing_students]
+
+        if invalid_student_ids:
+            error_msg = f"The following students do not exist: {', '.join(str(student_id) for student_id in invalid_student_ids)}"
+            raise ValueError(error_msg)
+
+        # Create assignments for all valid students
+        assignments = []
+        # Exclude extended_time_students field as it only applies to class assignments
+        assignment_fields = {k: v for k, v in assignment_data.assignment_data.model_dump().items()
+                           if k != 'extended_time_students'}
+
+        for student_id in assignment_data.student_ids:
+            assignment = StudentTestAssignment(
+                test_id=test_id,
+                student_id=student_id,
+                **assignment_fields,
+                status=AssignmentStatus.SCHEDULED,
+                created_by=user_id
+            )
+            db.add(assignment)
+            assignments.append(assignment)
+
+        await db.commit()
+
+        # Refresh assignments to get IDs populated
+        for assignment in assignments:
+            await db.refresh(assignment)
+
+        # Load relationships to avoid MissingGreenlet error in response validation
+        assignment_ids = [assignment.id for assignment in assignments]
+        result = await db.execute(
+            select(StudentTestAssignment)
+            .options(
+                selectinload(StudentTestAssignment.student).selectinload(Student.user),
+                selectinload(StudentTestAssignment.student).selectinload(Student.class_info)
+            )
+            .where(StudentTestAssignment.id.in_(assignment_ids))
+        )
+        return result.scalars().all()
+
+    @staticmethod
+    async def assign_test_mixed(db: AsyncSession, test_id: UUID, assignment_data: MixedAssignmentRequest, user_id: UUID) -> Dict[str, Any]:
+        """Assign test to both classes and individual students"""
+        class_assignments = []
+        student_assignments = []
+
+        # Assign to classes if provided
+        if assignment_data.class_ids:
+            bulk_class_request = BulkAssignmentRequest(
+                class_ids=assignment_data.class_ids,
+                assignment_data=assignment_data.assignment_data
+            )
+            class_assignments = await TestService.assign_test_to_classes(db, test_id, bulk_class_request, user_id)
+
+        # Assign to students if provided
+        if assignment_data.student_ids:
+            bulk_student_request = BulkStudentAssignmentRequest(
+                student_ids=assignment_data.student_ids,
+                assignment_data=assignment_data.assignment_data
+            )
+            student_assignments = await TestService.assign_test_to_students(db, test_id, bulk_student_request, user_id)
+
+        return {
+            "class_assignments": class_assignments,
+            "student_assignments": student_assignments,
+            "total_classes": len(class_assignments),
+            "total_students": len(student_assignments)
+        }
+
+    @staticmethod
+    async def get_test_student_assignments(db: AsyncSession, test_id: UUID) -> List[StudentTestAssignment]:
+        """Get all student assignments for a test"""
+        result = await db.execute(
+            select(StudentTestAssignment)
+            .options(
+                selectinload(StudentTestAssignment.student).selectinload(Student.user),
+                selectinload(StudentTestAssignment.student).selectinload(Student.class_info)
+            )
+            .where(StudentTestAssignment.test_id == test_id)
+            .order_by(StudentTestAssignment.scheduled_start)
+        )
+        return result.scalars().all()
+
+    @staticmethod
+    async def update_student_test_assignment(db: AsyncSession, assignment_id: UUID, assignment_data: StudentTestAssignmentUpdate, user_id: UUID) -> Optional[StudentTestAssignment]:
+        """Update a student test assignment"""
+        assignment = await db.execute(
+            select(StudentTestAssignment)
+            .options(
+                selectinload(StudentTestAssignment.student).selectinload(Student.user),
+                selectinload(StudentTestAssignment.student).selectinload(Student.class_info)
+            )
+            .where(StudentTestAssignment.id == assignment_id)
+        )
+        assignment = assignment.scalar_one_or_none()
+
+        if not assignment or assignment.created_by != user_id:
+            return None
+
+        update_data = assignment_data.model_dump(exclude_unset=True)
+        if update_data:
+            for field, value in update_data.items():
+                setattr(assignment, field, value)
+
+            await db.commit()
+            await db.refresh(assignment)
+
+            # Reload the assignment with relationships after refresh
+            result = await db.execute(
+                select(StudentTestAssignment)
+                .options(
+                    selectinload(StudentTestAssignment.student).selectinload(Student.user),
+                    selectinload(StudentTestAssignment.student).selectinload(Student.class_info)
+                )
+                .where(StudentTestAssignment.id == assignment_id)
+            )
+            assignment = result.scalar_one()
+
+        return assignment
+
+    @staticmethod
+    async def remove_student_test_assignment(db: AsyncSession, test_id: UUID, student_id: UUID, user_id: UUID) -> bool:
+        """Remove student test assignment"""
+        assignment = await db.execute(
+            select(StudentTestAssignment).where(
+                and_(
+                    StudentTestAssignment.test_id == test_id,
+                    StudentTestAssignment.student_id == student_id,
+                    StudentTestAssignment.created_by == user_id
+                )
+            )
+        )
+        assignment = assignment.scalar_one_or_none()
+
+        if not assignment:
+            return False
+
+        # Check if there are any attempts
+        from app.models.test import TestAttempt
+        attempt_result = await db.execute(
+            select(func.count(TestAttempt.id)).where(TestAttempt.student_assignment_id == assignment.id)
+        )
+        attempt_count = attempt_result.scalar()
+
+        if attempt_count > 0:
+            raise ValueError("Cannot remove assignment with existing attempts")
+
+        await db.delete(assignment)
+        await db.commit()
+        return True

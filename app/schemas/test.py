@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, ConfigDict, field_validator
+from pydantic import BaseModel, Field, ConfigDict, field_validator, field_serializer
 from typing import Optional, List, Any, Dict, TYPE_CHECKING
 from datetime import datetime
 from uuid import UUID
@@ -6,11 +6,12 @@ from enum import Enum
 
 from app.models.test import TestType, TestFormat, TestStatus, QuestionOrder, AssignmentStatus, AttemptStatus, ResultStatus
 
-# Import ClassResponse and TestQuestionSetResponse directly to avoid forward reference issues
+# Import ClassResponse, StudentResponse and TestQuestionSetResponse directly to avoid forward reference issues
 try:
-    from app.schemas.student import ClassResponse
+    from app.schemas.student import ClassResponse, StudentResponse
 except ImportError:
     ClassResponse = None
+    StudentResponse = None
 
 try:
     from app.schemas.question_set import TestQuestionSetResponse
@@ -119,11 +120,87 @@ class TestAssignmentResponse(TestAssignmentBase):
     class_info: Optional[ClassResponse] = None
 
 
+class StudentTestAssignmentBase(BaseModel):
+    student_id: UUID
+    scheduled_start: datetime
+    scheduled_end: datetime
+    buffer_time_minutes: int = Field(default=0, ge=0)
+    allow_late_submission: bool = False
+    late_submission_grace_minutes: int = Field(default=0, ge=0)
+    auto_submit: bool = True
+    custom_instructions: Optional[str] = None
+
+
+class StudentTestAssignmentCreate(StudentTestAssignmentBase):
+    pass
+
+
+class StudentTestAssignmentUpdate(BaseModel):
+    scheduled_start: Optional[datetime] = None
+    scheduled_end: Optional[datetime] = None
+    buffer_time_minutes: Optional[int] = Field(None, ge=0)
+    allow_late_submission: Optional[bool] = None
+    late_submission_grace_minutes: Optional[int] = Field(None, ge=0)
+    auto_submit: Optional[bool] = None
+    custom_instructions: Optional[str] = None
+    status: Optional[AssignmentStatus] = None
+
+
+class StudentAssignmentInfo(BaseModel):
+    """Minimal student info for assignment responses"""
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    user_id: UUID
+    student_code: Optional[str] = None
+    year_group: int
+    user: Optional[Any] = None  # Contains user info like full_name, email
+    class_info: Optional[Any] = None  # Contains class info
+
+    @field_serializer('user')
+    def serialize_user(self, user: Any, _info):
+        if user is None:
+            return None
+        if hasattr(user, '__dict__'):
+            return {
+                'id': str(user.id) if hasattr(user, 'id') else None,
+                'email': user.email if hasattr(user, 'email') else None,
+                'full_name': user.full_name if hasattr(user, 'full_name') else None,
+                'username': user.username if hasattr(user, 'username') else None,
+            }
+        return user
+
+    @field_serializer('class_info')
+    def serialize_class_info(self, class_info: Any, _info):
+        if class_info is None:
+            return None
+        if hasattr(class_info, '__dict__'):
+            return {
+                'id': str(class_info.id) if hasattr(class_info, 'id') else None,
+                'name': class_info.name if hasattr(class_info, 'name') else None,
+                'year_group': class_info.year_group if hasattr(class_info, 'year_group') else None,
+            }
+        return class_info
+
+
+class StudentTestAssignmentResponse(StudentTestAssignmentBase):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    test_id: UUID
+    status: AssignmentStatus
+    created_by: UUID
+    created_at: datetime
+    updated_at: datetime
+    student: Optional[StudentAssignmentInfo] = None  # Will contain student info
+
+
 class TestWithDetails(TestResponse):
     model_config = ConfigDict(from_attributes=True)
 
     test_questions: List[TestQuestionResponse] = []
     test_assignments: List[TestAssignmentResponse] = []
+    student_test_assignments: List[StudentTestAssignmentResponse] = []
     test_question_sets: List[TestQuestionSetResponse] = []
 
 
@@ -158,6 +235,17 @@ class BulkAssignmentData(BaseModel):
 
 class BulkAssignmentRequest(BaseModel):
     class_ids: List[UUID]
+    assignment_data: BulkAssignmentData
+
+
+class BulkStudentAssignmentRequest(BaseModel):
+    student_ids: List[UUID]
+    assignment_data: BulkAssignmentData
+
+
+class MixedAssignmentRequest(BaseModel):
+    class_ids: List[UUID] = []
+    student_ids: List[UUID] = []
     assignment_data: BulkAssignmentData
 
 

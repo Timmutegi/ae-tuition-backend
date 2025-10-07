@@ -91,7 +91,7 @@ async def bulk_create_students(
 @router.get("/students", response_model=StudentListResponse)
 async def list_students(
     page: int = Query(1, ge=1),
-    limit: int = Query(50, ge=1, le=100),
+    limit: int = Query(50, ge=1, le=1000),
     search: Optional[str] = Query(None),
     class_id: Optional[UUID] = Query(None),
     year_group: Optional[int] = Query(None, ge=1, le=13),
@@ -335,6 +335,86 @@ async def list_classes(
         page=result["page"],
         pages=result["pages"],
         limit=result["limit"]
+    )
+
+
+@router.get("/classes/{class_id}/students", response_model=StudentListResponse)
+async def get_students_by_class(
+    class_id: UUID,
+    page: int = Query(1, ge=1),
+    limit: int = Query(100, ge=1, le=500),
+    db: AsyncSession = Depends(get_db),
+    current_admin: User = Depends(get_current_admin_user)
+):
+    """Get all students in a specific class."""
+    from sqlalchemy import select, func
+    from app.models.student import Student
+    from app.models.user import User as UserModel
+    from app.models.class_model import Class
+    from sqlalchemy.orm import selectinload
+
+    # Verify class exists
+    class_result = await db.execute(select(Class).where(Class.id == class_id))
+    class_obj = class_result.scalar_one_or_none()
+
+    if not class_obj:
+        raise HTTPException(status_code=404, detail="Class not found")
+
+    # Count total students in class
+    count_query = select(func.count()).select_from(Student).where(Student.class_id == class_id)
+    total_result = await db.execute(count_query)
+    total = total_result.scalar()
+
+    # Get students
+    offset = (page - 1) * limit
+    query = (
+        select(Student)
+        .options(
+            selectinload(Student.user),
+            selectinload(Student.class_info)
+        )
+        .where(Student.class_id == class_id)
+        .offset(offset)
+        .limit(limit)
+        .order_by(UserModel.full_name)
+    )
+
+    result = await db.execute(query)
+    students = result.scalars().all()
+
+    # Format response
+    student_responses = []
+    for student in students:
+        student_responses.append({
+            "id": str(student.id),
+            "user_id": str(student.user_id),
+            "student_code": student.student_code,
+            "email": student.user.email,
+            "full_name": student.user.full_name,
+            "username": student.user.username,
+            "class_id": str(student.class_id) if student.class_id else None,
+            "year_group": student.year_group,
+            "enrollment_date": student.enrollment_date.isoformat() if student.enrollment_date else None,
+            "status": student.status.value,
+            "is_active": student.user.is_active,
+            "created_at": student.created_at.isoformat() if student.created_at else None,
+            "updated_at": student.updated_at.isoformat() if student.updated_at else None,
+            "class_info": {
+                "id": str(student.class_info.id),
+                "name": student.class_info.name,
+                "year_group": student.class_info.year_group,
+                "academic_year": student.class_info.academic_year
+            } if student.class_info else None
+        })
+
+    pages = (total + limit - 1) // limit
+
+    return StudentListResponse(
+        students=student_responses,
+        total=total,
+        page=page,
+        pages=pages,
+        limit=limit
     )
 
 

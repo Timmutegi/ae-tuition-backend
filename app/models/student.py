@@ -29,6 +29,7 @@ class Student(Base):
 
     user = relationship("User", back_populates="student_profile")
     class_info = relationship("Class", back_populates="students")
+    student_test_assignments = relationship("StudentTestAssignment", back_populates="student")
     test_attempts = relationship("TestAttempt", back_populates="student")
     test_results = relationship("TestResult", back_populates="student")
 

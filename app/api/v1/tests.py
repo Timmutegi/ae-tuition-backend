@@ -9,7 +9,9 @@ from app.models import User
 from app.schemas.test import (
     TestCreate, TestUpdate, TestResponse, TestWithDetails, TestFilters,
     TestQuestionCreate, TestAssignmentCreate, TestAssignmentUpdate, TestAssignmentResponse,
-    BulkAssignmentRequest, TestCloneRequest, TestStatsResponse, TestListResponse
+    BulkAssignmentRequest, BulkStudentAssignmentRequest, MixedAssignmentRequest,
+    StudentTestAssignmentResponse, StudentTestAssignmentUpdate,
+    TestCloneRequest, TestStatsResponse, TestListResponse
 )
 from app.schemas.question_set import BulkQuestionSetAssignment
 from app.services.test_service import TestService
@@ -305,6 +307,93 @@ async def assign_question_sets_to_test(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to assign question sets: {str(e)}"
+        )
+
+
+@router.post("/{test_id}/assign-students", response_model=List[StudentTestAssignmentResponse])
+async def assign_test_to_students(
+    test_id: UUID,
+    assignment_data: BulkStudentAssignmentRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_admin_user)
+):
+    """Assign test to individual students"""
+    try:
+        assignments = await TestService.assign_test_to_students(db, test_id, assignment_data, current_user.id)
+        return assignments
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+
+
+@router.post("/{test_id}/assign-mixed")
+async def assign_test_mixed(
+    test_id: UUID,
+    assignment_data: MixedAssignmentRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_admin_user)
+):
+    """Assign test to both classes and individual students"""
+    try:
+        result = await TestService.assign_test_mixed(db, test_id, assignment_data, current_user.id)
+        return result
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+
+
+@router.get("/{test_id}/student-assignments", response_model=List[StudentTestAssignmentResponse])
+async def get_test_student_assignments(
+    test_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_admin_user)
+):
+    """Get all student assignments for a test"""
+    assignments = await TestService.get_test_student_assignments(db, test_id)
+    return assignments
+
+
+@router.put("/student-assignments/{assignment_id}", response_model=StudentTestAssignmentResponse)
+async def update_student_test_assignment(
+    assignment_id: UUID,
+    assignment_data: StudentTestAssignmentUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_admin_user)
+):
+    """Update a student test assignment"""
+    assignment = await TestService.update_student_test_assignment(db, assignment_id, assignment_data, current_user.id)
+    if not assignment:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Assignment not found or access denied"
+        )
+    return assignment
+
+
+@router.delete("/{test_id}/student-assignments/{student_id}")
+async def remove_student_test_assignment(
+    test_id: UUID,
+    student_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_admin_user)
+):
+    """Remove student test assignment"""
+    try:
+        success = await TestService.remove_student_test_assignment(db, test_id, student_id, current_user.id)
+        if not success:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Assignment not found"
+            )
+        return {"message": "Student assignment removed successfully"}
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
         )
 
 
