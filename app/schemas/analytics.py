@@ -174,3 +174,104 @@ class AnalyticsReport(BaseModel):
     metrics: List[PerformanceMetric]
     data: Dict[str, Any]
     summary: str
+
+
+# Weekly Results Schemas
+
+def to_camel(string: str) -> str:
+    """Convert snake_case to camelCase."""
+    components = string.split('_')
+    return components[0] + ''.join(x.title() for x in components[1:])
+
+
+class AcademicWeekInfo(BaseModel):
+    """Information about an academic week."""
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+
+    week_number: int
+    start_date: str  # ISO format date
+    end_date: str  # ISO format date
+    is_break: bool
+    break_name: Optional[str] = None
+    week_label: str  # e.g., "Week1", "Week2"
+
+
+class SubjectScore(BaseModel):
+    """Score for a single subject."""
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+
+    subject: str  # English, VR GL, NVR, Maths
+    mark: Optional[int] = None
+    max_mark: Optional[int] = None
+    percentage: Optional[float] = None
+    test_id: Optional[str] = None
+    test_title: Optional[str] = None
+    submitted_at: Optional[str] = None
+
+
+class StudentWeeklyScores(BaseModel):
+    """All scores for a student in a specific week."""
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+
+    student_id: str
+    student_code: str
+    first_name: str
+    surname: str
+    full_name: str
+    class_id: str
+    class_name: str
+    year_group: int
+    scores: Dict[str, SubjectScore]  # Key: subject name (e.g., "English")
+
+
+class WeeklyResultsSummary(BaseModel):
+    """Results for all students in a specific week."""
+    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+
+    week_info: AcademicWeekInfo
+    students: List[StudentWeeklyScores]
+    total_students: int
+    subjects: List[str]  # List of all subjects
+
+
+class AllWeeksResults(BaseModel):
+    """Results for all 40 weeks."""
+    academic_year: str
+    current_week: int
+    weeks: List[WeeklyResultsSummary]  # All 40 weeks
+    total_weeks: int
+
+
+class AcademicCalendarConfigSchema(BaseModel):
+    """Academic calendar configuration."""
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    academic_year: str
+    year_start_date: str
+    total_weeks: int
+    break_periods: List[Dict[str, str]]  # List of break period dicts
+    week_start_day: str
+    week_end_day: str
+    notes: Optional[str] = None
+    is_active: bool
+    created_at: datetime
+    updated_at: datetime
+
+
+class AcademicCalendarConfigCreate(BaseModel):
+    """Schema for creating academic calendar configuration."""
+    academic_year: str
+    year_start_date: str
+    total_weeks: int = 40
+    break_periods: List[Dict[str, str]]
+    week_start_day: str = "Friday"
+    week_end_day: str = "Wednesday"
+    notes: Optional[str] = None
+
+
+class AcademicCalendarConfigUpdate(BaseModel):
+    """Schema for updating academic calendar configuration."""
+    break_periods: Optional[List[Dict[str, str]]] = None
+    notes: Optional[str] = None
+    is_active: Optional[bool] = None

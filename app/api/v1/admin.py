@@ -508,25 +508,41 @@ async def get_students_by_class(
     )
 
 
-@router.get("/results/export")
-async def export_results(
+@router.get("/results/by-week", response_model=None)
+async def get_results_by_week(
+    week: Optional[int] = Query(None, ge=1, le=40, description="Week number (1-40). If not provided, returns current week."),
+    class_id: Optional[UUID] = Query(None, description="Filter by class"),
     db: AsyncSession = Depends(get_db),
     current_admin: User = Depends(get_current_admin_user)
 ):
-    """Export all test results with student details to Excel file."""
-    from io import BytesIO
-    from openpyxl import Workbook
-    from openpyxl.styles import Font, PatternFill, Alignment
-    from datetime import datetime
-    from sqlalchemy import select
+    """
+    Get test results organized by academic week.
+
+    Returns results for a specific week (or current week if not specified),
+    organized by student and subject matching the Excel template format.
+    """
+    from sqlalchemy import select, and_
     from app.models.test import TestResult, Test
     from app.models.student import Student
-
-    # Fetch all results with student and test details
     from sqlalchemy.orm import selectinload
-    from app.models.user import User
     from app.models.class_model import Class
+    from app.services.academic_calendar_service import calendar_service
+    from app.schemas.analytics import (
+        WeeklyResultsSummary, StudentWeeklyScores, SubjectScore, AcademicWeekInfo
+    )
+    from collections import defaultdict
 
+    # Determine which week to show
+    target_week = week if week else calendar_service.get_current_week()
+
+    if target_week == 0:
+        raise HTTPException(status_code=400, detail="No active academic week")
+
+    # Get week information
+    week_info = calendar_service.get_week_info(target_week)
+    start_date, end_date = week_info.start_date, week_info.end_date
+
+    # Build query for results in this week
     query = (
         select(TestResult)
         .options(
@@ -534,94 +550,366 @@ async def export_results(
             selectinload(TestResult.student).selectinload(Student.class_info),
             selectinload(TestResult.test)
         )
-        .order_by(TestResult.submitted_at.desc())
+        .where(
+            and_(
+                TestResult.submitted_at >= start_date,
+                TestResult.submitted_at <= end_date
+            )
+        )
+    )
+
+    # Apply class filter if provided
+    if class_id:
+        query = query.join(Student).where(Student.class_id == class_id)
+
+    query = query.order_by(TestResult.submitted_at)
+
+    result = await db.execute(query)
+    week_results = result.scalars().all()
+
+    # Organize results by student
+    student_data = defaultdict(lambda: {
+        "info": {},
+        "scores": {}
+    })
+
+    subjects = ["English", "VR GL", "NVR", "Maths"]
+
+    for test_result in week_results:
+        if not test_result.student or not test_result.test:
+            continue
+
+        student = test_result.student
+        test = test_result.test
+        student_id = str(student.id)
+
+        # Store student info (once per student)
+        if not student_data[student_id]["info"]:
+            full_name = student.user.full_name if student.user else ""
+            name_parts = full_name.strip().split(maxsplit=1)
+            first_name = name_parts[0] if len(name_parts) > 0 else ""
+            surname = name_parts[1] if len(name_parts) > 1 else ""
+
+            student_data[student_id]["info"] = {
+                "student_id": student_id,
+                "student_code": student.student_code or "N/A",
+                "first_name": first_name,
+                "surname": surname,
+                "full_name": full_name,
+                "class_id": str(student.class_id) if student.class_id else "",
+                "class_name": student.class_info.name if student.class_info else "N/A",
+                "year_group": student.year_group
+            }
+
+        # Map test type to subject name
+        test_type = test.type.value if hasattr(test.type, 'value') else str(test.type)
+        subject_map = {
+            "English": "English",
+            "Verbal Reasoning": "VR GL",
+            "Non-Verbal Reasoning": "NVR",
+            "Mathematics": "Maths"
+        }
+        subject_name = subject_map.get(test_type, test_type)
+
+        # Store subject score
+        student_data[student_id]["scores"][subject_name] = {
+            "subject": subject_name,
+            "mark": test_result.total_score,
+            "max_mark": test_result.max_score,
+            "percentage": round(test_result.percentage, 2) if test_result.percentage else None,
+            "test_id": str(test.id),
+            "test_title": test.title,
+            "submitted_at": test_result.submitted_at.isoformat() if test_result.submitted_at else None
+        }
+
+    # Build response
+    students_list = []
+    for student_id, data in sorted(
+        student_data.items(),
+        key=lambda x: (x[1]["info"].get("class_name", ""), x[1]["info"].get("surname", ""))
+    ):
+        info = data["info"]
+        scores = data["scores"]
+
+        # Ensure all subjects are present (even if no score)
+        all_scores = {}
+        for subject in subjects:
+            if subject in scores:
+                all_scores[subject] = SubjectScore(**scores[subject])
+            else:
+                all_scores[subject] = SubjectScore(
+                    subject=subject,
+                    mark=None,
+                    max_mark=None,
+                    percentage=None,
+                    test_id=None,
+                    test_title=None,
+                    submitted_at=None
+                )
+
+        students_list.append(
+            StudentWeeklyScores(
+                student_id=info["student_id"],
+                student_code=info["student_code"],
+                first_name=info["first_name"],
+                surname=info["surname"],
+                full_name=info["full_name"],
+                class_id=info["class_id"],
+                class_name=info["class_name"],
+                year_group=info["year_group"],
+                scores=all_scores
+            )
+        )
+
+    # Create week info response
+    week_info_response = AcademicWeekInfo(
+        week_number=week_info.week_number,
+        start_date=week_info.start_date.isoformat(),
+        end_date=week_info.end_date.isoformat(),
+        is_break=week_info.is_break,
+        break_name=week_info.break_name,
+        week_label=calendar_service.get_week_label(target_week)
+    )
+
+    result = WeeklyResultsSummary(
+        week_info=week_info_response,
+        students=students_list,
+        total_students=len(students_list),
+        subjects=subjects
+    )
+
+    # Return with camelCase aliases for frontend
+    return result.model_dump(by_alias=True)
+
+
+@router.get("/results/export")
+async def export_results(
+    db: AsyncSession = Depends(get_db),
+    current_admin: User = Depends(get_current_admin_user)
+):
+    """
+    Export all test results in 40-week format matching Excel template.
+
+    Format:
+    - Row 1: Week headers (Week1, Week2, ..., Week40)
+    - Row 2: Subject names under each week (English, VR GL, NVR, Maths)
+    - Row 3: Column headers (Class ID, Student ID, First Name, Surname, then Mark/% for each subject per week)
+    - Data rows: Student information + scores organized by week and subject
+    """
+    from io import BytesIO
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+    from datetime import datetime
+    from sqlalchemy import select
+    from app.models.test import TestResult, Test
+    from app.models.student import Student
+    from sqlalchemy.orm import selectinload
+    from app.models.user import User
+    from app.models.class_model import Class
+    from app.services.academic_calendar_service import calendar_service
+    from collections import defaultdict
+
+    # Fetch all results with student and test details
+    query = (
+        select(TestResult)
+        .options(
+            selectinload(TestResult.student).selectinload(Student.user),
+            selectinload(TestResult.student).selectinload(Student.class_info),
+            selectinload(TestResult.test)
+        )
+        .order_by(TestResult.submitted_at)
     )
 
     result = await db.execute(query)
-    results = result.scalars().all()
+    all_results = result.scalars().all()
+
+    # Organize results by student and week
+    # Structure: {student_id: {week_num: {subject: {mark, percentage, ...}}}}
+    student_data = defaultdict(lambda: {"info": {}, "weeks": defaultdict(lambda: defaultdict(dict))})
+
+    for test_result in all_results:
+        if not test_result.student or not test_result.test or not test_result.submitted_at:
+            continue
+
+        student = test_result.student
+        test = test_result.test
+
+        # Determine academic week from submission date
+        submission_date = test_result.submitted_at.date()
+        week_number = calendar_service.date_to_week_number(submission_date)
+
+        # Skip if outside academic calendar
+        if week_number == 0:
+            continue
+
+        # Extract student info (only once per student)
+        student_id = str(student.id)
+        if not student_data[student_id]["info"]:
+            # Split full name into first name and surname
+            full_name = student.user.full_name if student.user else ""
+            name_parts = full_name.strip().split(maxsplit=1)
+            first_name = name_parts[0] if len(name_parts) > 0 else ""
+            surname = name_parts[1] if len(name_parts) > 1 else ""
+
+            student_data[student_id]["info"] = {
+                "class_id": student.class_info.name if student.class_info else "N/A",
+                "student_code": student.student_code or "N/A",
+                "first_name": first_name,
+                "surname": surname,
+                "year_group": student.year_group
+            }
+
+        # Map test type to subject name (matching Excel template)
+        test_type = test.type.value if hasattr(test.type, 'value') else str(test.type)
+        subject_map = {
+            "English": "English",
+            "Verbal Reasoning": "VR GL",
+            "Non-Verbal Reasoning": "NVR",
+            "Mathematics": "Maths"
+        }
+        subject_name = subject_map.get(test_type, test_type)
+
+        # Store result for this week and subject
+        student_data[student_id]["weeks"][week_number][subject_name] = {
+            "mark": test_result.total_score or 0,
+            "percentage": round(test_result.percentage, 2) if test_result.percentage else 0
+        }
 
     # Create workbook
     wb = Workbook()
     ws = wb.active
     ws.title = "Test Results"
 
-    # Header style
-    header_fill = PatternFill(start_color="1C2536", end_color="1C2536", fill_type="solid")
-    header_font = Font(color="FFFFFF", bold=True, size=12)
-    header_alignment = Alignment(horizontal="center", vertical="center")
+    # Define styles
+    header_fill = PatternFill(start_color="DB2E1D", end_color="DB2E1D", fill_type="solid")
+    header_font = Font(color="FFFFFF", bold=True, size=11)
+    header_alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    data_alignment = Alignment(horizontal="center", vertical="center")
+    border = Border(
+        left=Side(style='thin'),
+        right=Side(style='thin'),
+        top=Side(style='thin'),
+        bottom=Side(style='thin')
+    )
 
-    # Headers
-    headers = [
-        "Student ID", "Student Name", "Student Email", "Class",
-        "Test Title", "Test Type", "Score", "Total Marks",
-        "Percentage", "Pass/Fail", "Time Taken (minutes)",
-        "Submitted At", "Status"
-    ]
+    # Subjects in order (matching Excel template)
+    subjects = ["English", "VR GL", "NVR", "Maths"]
 
-    for col_num, header in enumerate(headers, 1):
-        cell = ws.cell(row=1, column=col_num)
-        cell.value = header
+    # Calculate total columns: 4 (student info) + 40 weeks × 4 subjects × 2 columns (Mark + %)
+    # = 4 + 320 = 324 columns total
+
+    current_col = 1
+
+    # Row 1: Week headers
+    # Columns A-D: Empty for student info
+    current_col = 5  # Start after student info columns (A-D)
+
+    for week_num in range(1, 41):
+        # Each week spans 8 columns (4 subjects × 2 columns each)
+        week_label = f"Week{week_num}"
+        cell = ws.cell(row=1, column=current_col)
+        cell.value = week_label
         cell.fill = header_fill
         cell.font = header_font
         cell.alignment = header_alignment
 
-    # Data rows
-    for row_num, test_result in enumerate(results, 2):
-        student = test_result.student
-        test = test_result.test
+        # Merge cells for week header (8 columns: 4 subjects × 2 fields)
+        ws.merge_cells(start_row=1, start_column=current_col, end_row=1, end_column=current_col + 7)
 
-        if not student or not test:
-            continue
+        current_col += 8
 
-        # Calculate pass/fail
-        pass_fail = "Pass" if test_result.percentage >= test.pass_mark else "Fail"
+    # Row 2: Subject names
+    current_col = 5
+    for week_num in range(1, 41):
+        for subject in subjects:
+            cell = ws.cell(row=2, column=current_col)
+            cell.value = subject
+            cell.fill = header_fill
+            cell.font = header_font
+            cell.alignment = header_alignment
+            # Merge 2 columns for subject name (Mark and %)
+            ws.merge_cells(start_row=2, start_column=current_col, end_row=2, end_column=current_col + 1)
+            current_col += 2
 
-        # Format time taken
-        time_taken = ""
-        if test_result.time_taken:
-            time_taken = f"{test_result.time_taken // 60}"
+    # Row 3: Column headers
+    # Student info headers
+    student_headers = ["Class ID", "Student ID", "First Name", "Surname"]
+    for col_num, header in enumerate(student_headers, 1):
+        cell = ws.cell(row=3, column=col_num)
+        cell.value = header
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = header_alignment
+        cell.border = border
 
-        # Format submitted at
-        submitted_at = ""
-        if test_result.submitted_at:
-            submitted_at = test_result.submitted_at.strftime("%Y-%m-%d %H:%M:%S")
+    # Mark and % headers for each subject in each week
+    current_col = 5
+    for week_num in range(1, 41):
+        for subject in subjects:
+            # Mark column
+            cell = ws.cell(row=3, column=current_col)
+            cell.value = "Mark"
+            cell.fill = header_fill
+            cell.font = header_font
+            cell.alignment = header_alignment
+            cell.border = border
 
-        # Get student name, email, and class
-        student_name = student.user.full_name if student.user else "N/A"
-        student_email = student.user.email if student.user else "N/A"
-        class_name = student.class_info.name if student.class_info else "N/A"
+            # % column
+            cell = ws.cell(row=3, column=current_col + 1)
+            cell.value = "%"
+            cell.fill = header_fill
+            cell.font = header_font
+            cell.alignment = header_alignment
+            cell.border = border
 
-        row_data = [
-            str(student.id),
-            student_name,
-            student_email,
-            class_name,
-            test.title,
-            test.type.value if hasattr(test.type, 'value') else str(test.type),
-            test_result.total_score if test_result.total_score else 0,
-            test_result.max_score if test_result.max_score else 0,
-            f"{test_result.percentage:.2f}" if test_result.percentage else "0.00",
-            pass_fail,
-            time_taken,
-            submitted_at,
-            test_result.status.value if hasattr(test_result.status, 'value') else str(test_result.status)
-        ]
+            current_col += 2
 
-        for col_num, value in enumerate(row_data, 1):
-            ws.cell(row=row_num, column=col_num, value=value)
+    # Data rows (starting from row 4)
+    row_num = 4
+    for student_id, data in sorted(student_data.items(), key=lambda x: (x[1]["info"].get("class_id", ""), x[1]["info"].get("surname", ""))):
+        info = data["info"]
+        weeks = data["weeks"]
 
-    # Adjust column widths
-    for column in ws.columns:
-        max_length = 0
-        column_letter = column[0].column_letter
-        for cell in column:
-            try:
-                if len(str(cell.value)) > max_length:
-                    max_length = len(str(cell.value))
-            except:
-                pass
-        adjusted_width = min(max_length + 2, 50)
-        ws.column_dimensions[column_letter].width = adjusted_width
+        # Student info columns
+        ws.cell(row=row_num, column=1, value=info["class_id"]).alignment = data_alignment
+        ws.cell(row=row_num, column=2, value=info["student_code"]).alignment = data_alignment
+        ws.cell(row=row_num, column=3, value=info["first_name"]).alignment = data_alignment
+        ws.cell(row=row_num, column=4, value=info["surname"]).alignment = data_alignment
+
+        # Scores for each week and subject
+        current_col = 5
+        for week_num in range(1, 41):
+            week_data = weeks.get(week_num, {})
+            for subject in subjects:
+                subject_data = week_data.get(subject, {})
+
+                # Mark
+                mark = subject_data.get("mark", "")
+                ws.cell(row=row_num, column=current_col, value=mark if mark != "" else "").alignment = data_alignment
+
+                # Percentage
+                percentage = subject_data.get("percentage", "")
+                ws.cell(row=row_num, column=current_col + 1, value=percentage if percentage != "" else "").alignment = data_alignment
+
+                current_col += 2
+
+        row_num += 1
+
+    # Set column widths
+    # Student info columns
+    ws.column_dimensions['A'].width = 12  # Class ID
+    ws.column_dimensions['B'].width = 15  # Student ID
+    ws.column_dimensions['C'].width = 15  # First Name
+    ws.column_dimensions['D'].width = 15  # Surname
+
+    # Week columns (Mark and % columns)
+    from openpyxl.utils import get_column_letter
+    for col_num in range(5, 5 + (40 * 8)):
+        col_letter = get_column_letter(col_num)
+        ws.column_dimensions[col_letter].width = 8
+
+    # Freeze top 3 rows and first 4 columns
+    ws.freeze_panes = 'E4'
 
     # Save to BytesIO
     output = BytesIO()
@@ -638,3 +926,162 @@ async def export_results(
             "Content-Disposition": f"attachment; filename={filename}"
         }
     )
+
+
+# Academic Calendar Configuration Endpoints
+
+@router.get("/academic-calendar/current-week")
+async def get_current_academic_week(
+    current_admin: User = Depends(get_current_admin_user)
+):
+    """Get information about the current academic week."""
+    from app.services.academic_calendar_service import calendar_service
+    from app.schemas.analytics import AcademicWeekInfo
+
+    current_week_num = calendar_service.get_current_week()
+
+    if current_week_num == 0:
+        return {
+            "current_week": 0,
+            "message": "No active academic week",
+            "academic_year": calendar_service.get_academic_year_string()
+        }
+
+    week_info = calendar_service.get_week_info(current_week_num)
+
+    week_info_obj = AcademicWeekInfo(
+        week_number=week_info.week_number,
+        start_date=week_info.start_date.isoformat(),
+        end_date=week_info.end_date.isoformat(),
+        is_break=week_info.is_break,
+        break_name=week_info.break_name,
+        week_label=calendar_service.get_week_label(current_week_num)
+    )
+
+    return {
+        "currentWeek": current_week_num,
+        "weekInfo": week_info_obj.model_dump(by_alias=True),
+        "academicYear": calendar_service.get_academic_year_string(),
+        "totalWeeks": calendar_service.TOTAL_WEEKS
+    }
+
+
+@router.get("/academic-calendar/all-weeks")
+async def get_all_academic_weeks(
+    current_admin: User = Depends(get_current_admin_user)
+):
+    """Get information about all 40 academic weeks."""
+    from app.services.academic_calendar_service import calendar_service
+    from app.schemas.analytics import AcademicWeekInfo
+
+    all_weeks_info = calendar_service.get_all_weeks_info()
+    current_week = calendar_service.get_current_week()
+
+    weeks_response = []
+    for week_info in all_weeks_info:
+        weeks_response.append(AcademicWeekInfo(
+            week_number=week_info.week_number,
+            start_date=week_info.start_date.isoformat(),
+            end_date=week_info.end_date.isoformat(),
+            is_break=week_info.is_break,
+            break_name=week_info.break_name,
+            week_label=calendar_service.get_week_label(week_info.week_number)
+        ))
+
+    return {
+        "academic_year": calendar_service.get_academic_year_string(),
+        "current_week": current_week,
+        "total_weeks": calendar_service.TOTAL_WEEKS,
+        "weeks": weeks_response
+    }
+
+
+@router.get("/academic-calendar/config")
+async def get_academic_calendar_config(
+    db: AsyncSession = Depends(get_db),
+    current_admin: User = Depends(get_current_admin_user)
+):
+    """Get the current academic calendar configuration."""
+    from app.models.academic_calendar import AcademicCalendarConfig
+    from sqlalchemy import select
+    from app.services.academic_calendar_service import calendar_service
+
+    # Try to get config from database
+    query = select(AcademicCalendarConfig).where(
+        AcademicCalendarConfig.is_active == True
+    ).order_by(AcademicCalendarConfig.created_at.desc())
+
+    result = await db.execute(query)
+    config = result.scalar_one_or_none()
+
+    if not config:
+        # Return default configuration
+        return {
+            "academic_year": calendar_service.get_academic_year_string(),
+            "year_start_date": calendar_service.ACADEMIC_YEAR_START.isoformat(),
+            "total_weeks": calendar_service.TOTAL_WEEKS,
+            "break_periods": [
+                {
+                    "name": bp.name,
+                    "start_date": bp.start_date.isoformat(),
+                    "end_date": bp.end_date.isoformat()
+                }
+                for bp in calendar_service.DEFAULT_BREAKS
+            ],
+            "week_start_day": "Friday",
+            "week_end_day": "Wednesday",
+            "is_active": True,
+            "notes": "Default configuration"
+        }
+
+    # Return database configuration
+    from app.schemas.analytics import AcademicCalendarConfigSchema
+    return AcademicCalendarConfigSchema.model_validate(config)
+
+
+@router.put("/academic-calendar/config")
+async def update_academic_calendar_config(
+    config_data: dict,
+    db: AsyncSession = Depends(get_db),
+    current_admin: User = Depends(get_current_admin_user)
+):
+    """
+    Update the academic calendar configuration (primarily break periods).
+
+    Note: This is simplified for MVP. For production, use proper schema validation.
+    """
+    from app.models.academic_calendar import AcademicCalendarConfig
+    from sqlalchemy import select
+
+    # Get or create config
+    query = select(AcademicCalendarConfig).where(
+        AcademicCalendarConfig.is_active == True
+    ).order_by(AcademicCalendarConfig.created_at.desc())
+
+    result = await db.execute(query)
+    config = result.scalar_one_or_none()
+
+    if not config:
+        # Create new config
+        from app.services.academic_calendar_service import calendar_service
+
+        config = AcademicCalendarConfig(
+            academic_year=calendar_service.get_academic_year_string(),
+            year_start_date=calendar_service.ACADEMIC_YEAR_START,
+            total_weeks=calendar_service.TOTAL_WEEKS,
+            break_periods=config_data.get("break_periods", []),
+            notes=config_data.get("notes"),
+            created_by=current_admin.id
+        )
+        db.add(config)
+    else:
+        # Update existing config
+        if "break_periods" in config_data:
+            config.break_periods = config_data["break_periods"]
+        if "notes" in config_data:
+            config.notes = config_data["notes"]
+
+    await db.commit()
+    await db.refresh(config)
+
+    return {"message": "Configuration updated successfully", "config_id": str(config.id)}
