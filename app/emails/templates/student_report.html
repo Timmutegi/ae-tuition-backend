@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Performance Report - AE Tuition</title>
+    <style>
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            font-family: "Segoe UI", Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+        }
+        .header {
+            background-color: #4F46E5;
+            height: 150px;
+            line-height: 150px;
+            padding-right: 50px;
+            padding-bottom: 20px;
+            color: white;
+        }
+        .header h1 {
+            text-align: center;
+        }
+        .content {
+            min-height: 100px;
+        }
+        .footer {
+            height: 100px;
+            background-color: #4F46E5;
+            padding-top: 30px;
+            padding-bottom: 30px;
+            color: white;
+            font-size: 13px;
+            line-height: 20px;
+        }
+        .footer p {
+            margin-top: 0px;
+            margin-bottom: 0px;
+            text-align: center;
+        }
+        .footer a {
+            color: white;
+        }
+        .report-summary-box {
+            background-color: #f0f9ff;
+            border: 2px solid #0369a1;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <div class="header">
+                <h1>AE Tuition</h1>
+            </div>
+            <div class="content">
+                <div style="max-width: 560px; padding: 20px; background: #ffffff; border-radius: 5px; margin: 40px auto; font-family: Open Sans,Helvetica,Arial; font-size: 15px; color: #666;">
+                    <div style="color: #444444; font-weight: normal;">
+                        <div style="text-align: center; font-weight: 600; font-size: 24px; padding: 10px 0; border-bottom: solid 3px #eeeeee;">AE Tuition</div>
+                        <div style="clear: both;"> </div>
+                    </div>
+                    <div style="padding: 0 30px 30px 30px; border-bottom: 3px solid #eeeeee;">
+
+                        <!-- Title -->
+                        <div style="font-size: 18px; text-align: center; line-height: 25px; margin-top: 20px; margin-bottom: 20px;">
+                            <strong>📊 Performance Report for {{student_name}}</strong>
+                        </div>
+
+                        <!-- Introduction -->
+                        <div style="font-size: 15px; text-align: center; line-height: 25px; margin-bottom: 20px;">
+                            Your performance report for {{report_period}} is now available.
+                        </div>
+
+                        <!-- Report Summary Box -->
+                        <div class="report-summary-box">
+                            <div style="text-align: center; font-size: 18px; font-weight: 600; color: #0369a1; margin-bottom: 15px;">
+                                Report Summary
+                            </div>
+
+                            <div style="font-size: 14px; color: #1f2937; margin: 10px 0;">
+                                <strong>Report Period:</strong> {{report_period}}
+                            </div>
+                            <div style="font-size: 14px; color: #1f2937; margin: 10px 0;">
+                                <strong>Class:</strong> {{class_name}} ({{year_group}})
+                            </div>
+                            <div style="font-size: 14px; color: #1f2937; margin: 10px 0;">
+                                <strong>Overall Average:</strong> {{overall_average}}
+                            </div>
+                            <div style="font-size: 14px; color: #1f2937; margin: 10px 0;">
+                                <strong>Class Rank:</strong> {{class_rank}}
+                            </div>
+                        </div>
+
+                        <!-- Info Box -->
+                        <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 4px;">
+                            <div style="font-size: 14px; font-weight: 600; color: #92400e; margin-bottom: 8px;">
+                                📎 Report Attached
+                            </div>
+                            <div style="font-size: 13px; color: #78350f; line-height: 18px;">
+                                Your detailed performance report is attached to this email as a PDF document. Please review it carefully and discuss any questions with your instructor.
+                            </div>
+                        </div>
+
+                        <!-- Next Steps -->
+                        <div style="font-size: 14px; text-align: left; line-height: 20px; color: #6b7280; margin-top: 20px;">
+                            <p><strong>What's included in your report:</strong></p>
+                            <ul style="margin: 5px 0; padding-left: 20px;">
+                                <li>Subject-wise performance breakdown</li>
+                                <li>Identified strengths and achievements</li>
+                                <li>Areas for improvement</li>
+                                <li>Teacher's comments and recommendations</li>
+                                <li>Action plan for continued progress</li>
+                            </ul>
+                        </div>
+
+                        <!-- Call to Action -->
+                        <div style="padding: 20px 0 30px 0; text-align: center;">
+                            <a style="background: #4F46E5; color: #fff; padding: 12px 30px; text-decoration: none; border-radius: 3px; letter-spacing: 0.3px; margin-right: 10px;"
+                               href="{{frontend_url}}/student/dashboard">
+                                View Dashboard
+                            </a>
+                        </div>
+
+                        <!-- Additional Info -->
+                        <div style="font-size: 13px; text-align: center; line-height: 18px; color: #6b7280; margin-top: 15px;">
+                            If you have any questions about your report, please don't hesitate to contact your instructor or reach out to our support team.
+                        </div>
+                    </div>
+
+                    <!-- Sign-off -->
+                    <div style="color: #999; padding: 20px 30px; font-size: 14px;">
+                        <div>Keep up the excellent work! We're here to support your learning journey.</div>
+                        <div style="margin-top: 10px;">Best regards,</div>
+                        <div>The <a style="color: #4F46E5; text-decoration: none;" href="{{frontend_url}}">AE Tuition</a> Team</div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <p><strong><a href="mailto:{{contact_email}}">{{contact_email}}</a></strong></p>
+                <p><strong>AE Tuition Support Team</strong></p>
+                <p><strong>Empowering Quality Education</strong></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

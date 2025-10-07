@@ -1,6 +1,7 @@
 import os
 import logging
 import asyncio
+import base64
 from typing import Dict, List, Optional
 import resend
 from pathlib import Path
@@ -136,3 +137,68 @@ class EmailService:
                 })
 
         return results
+
+    async def send_student_report(self, student: dict, report_data: dict, pdf_buffer) -> bool:
+        """
+        Send student performance report email with PDF attachment.
+
+        Args:
+            student: Dictionary containing student information (email, full_name, etc.)
+            report_data: Dictionary containing report metadata (period, class, averages)
+            pdf_buffer: BytesIO buffer containing the PDF report
+
+        Returns:
+            Boolean indicating success/failure
+        """
+        try:
+            template = self._load_template("student_report.html")
+
+            from datetime import datetime
+            report_period = report_data.get("report_period", datetime.now().strftime("%B %Y"))
+
+            variables = {
+                "student_name": student.get("full_name", "Student"),
+                "report_period": report_period,
+                "class_name": report_data.get("class_name", "N/A"),
+                "year_group": report_data.get("year_group", "N/A"),
+                "overall_average": report_data.get("overall_average", "N/A"),
+                "class_rank": report_data.get("class_rank", "N/A"),
+                "frontend_url": self.frontend_url,
+                "contact_email": "support@ae-tuition.com"
+            }
+
+            html_content = self._render_template(template, variables)
+
+            # Read PDF content and encode as base64
+            pdf_content = pdf_buffer.read()
+            pdf_base64 = base64.b64encode(pdf_content).decode('utf-8')
+
+            # Generate filename
+            student_name_safe = student.get("full_name", "Student").replace(" ", "_")
+            filename = f"Performance_Report_{student_name_safe}_{report_period.replace(' ', '_')}.pdf"
+
+            email_data = {
+                "from": self.from_email,
+                "to": [student["email"]],
+                "subject": f"Your Performance Report - {report_period}",
+                "html": html_content,
+                "attachments": [
+                    {
+                        "filename": filename,
+                        "content": pdf_base64
+                    }
+                ]
+            }
+
+            try:
+                response = resend.Emails.send(email_data)
+            except Exception as e:
+                logger.error(f"Email send failed: {str(e)}")
+                return False
+
+            logger.info(f"Student report email sent to {student['email']}: {response}")
+            return True
+
+        except Exception as e:
+            logger.error(f"Failed to send report email to {student['email']}: {str(e)}")
+            return False

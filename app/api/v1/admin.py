@@ -14,9 +14,12 @@ from app.schemas.student import (
 from app.schemas.analytics import (
     AdminDashboardOverview, StudentAnalytics, ClassAnalytics, TestAnalytics
 )
+from app.schemas.report import ReportGenerationRequest, ReportGenerationResponse
 from app.services.student_service import StudentService
 from app.services.csv_processor import CSVProcessorService
 from app.services.analytics_service import AnalyticsService
+from app.services.report_service import ReportService
+from app.services.email_service import EmailService
 
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -228,6 +231,93 @@ async def reset_student_password(
         message=result["message"],
         email_sent=result["email_sent"]
     )
+
+
+@router.post("/students/{student_id}/generate-report", response_model=ReportGenerationResponse)
+async def generate_student_report(
+    student_id: UUID,
+    report_data: ReportGenerationRequest,
+    db: AsyncSession = Depends(get_db),
+    current_admin: User = Depends(get_current_admin_user)
+):
+    """
+    Generate a comprehensive PDF report for a student and send it via email.
+
+    This endpoint:
+    1. Fetches student data and calculates performance metrics
+    2. Generates a PDF report with admin-provided qualitative feedback
+    3. Sends the report to the student's email address as an attachment
+    """
+    try:
+        # Get student information
+        student = await student_service.get_student(db, student_id)
+        if not student:
+            raise HTTPException(status_code=404, detail="Student not found")
+
+        # Prepare student dict for services
+        student_dict = {
+            "email": student.user.email,
+            "full_name": student.user.full_name,
+            "student_code": student.student_code
+        }
+
+        # Initialize services
+        report_service = ReportService()
+        email_service = EmailService()
+
+        # Generate PDF report
+        pdf_buffer = await report_service.generate_student_report(
+            db=db,
+            student_id=str(student_id),
+            report_data={
+                "strengths": report_data.strengths,
+                "areas_for_improvement": report_data.areas_for_improvement,
+                "teacher_comment": report_data.teacher_comment,
+                "intervention_recommendation": report_data.intervention_recommendation,
+                "next_steps": report_data.next_steps
+            }
+        )
+
+        # Get performance data for email
+        performance_data = await report_service._calculate_performance_metrics(db, str(student_id))
+        student_data = await report_service._fetch_student_data(db, str(student_id))
+
+        # Prepare report metadata for email
+        from datetime import datetime
+        report_metadata = {
+            "report_period": datetime.now().strftime("%B %Y"),
+            "class_name": student_data.get("class_name", "N/A"),
+            "year_group": student_data.get("year_group", "N/A"),
+            "overall_average": performance_data.get("overall_average", "N/A"),
+            "class_rank": performance_data.get("class_rank", "N/A")
+        }
+
+        # Send email with PDF attachment
+        email_sent = await email_service.send_student_report(
+            student=student_dict,
+            report_data=report_metadata,
+            pdf_buffer=pdf_buffer
+        )
+
+        if not email_sent:
+            raise HTTPException(
+                status_code=500,
+                detail="Report generated but failed to send email"
+            )
+
+        return ReportGenerationResponse(
+            success=True,
+            message="Report generated and sent successfully",
+            student_email=student.user.email
+        )
+
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to generate report: {str(e)}"
+        )
 
 
 @router.get("/students/template/download")
