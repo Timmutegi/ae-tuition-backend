@@ -128,8 +128,10 @@ class ReportService:
         all_scores = []
 
         for test_result, test in results:
-            if test.type in subject_scores:
-                subject_scores[test.type].append(test_result.percentage)
+            # Convert Enum to string value for comparison
+            test_type = test.type.value if hasattr(test.type, 'value') else str(test.type)
+            if test_type in subject_scores:
+                subject_scores[test_type].append(test_result.percentage)
                 all_scores.append(test_result.percentage)
 
         # Calculate averages
@@ -229,8 +231,8 @@ class ReportService:
             parent=styles['Heading2'],
             fontSize=14,
             textColor=colors.HexColor('#1e40af'),
-            spaceAfter=8,
-            spaceBefore=12,
+            spaceAfter=4,
+            spaceBefore=6,
             fontName='Helvetica-Bold'
         )
 
@@ -244,7 +246,7 @@ class ReportService:
         # Title
         title = Paragraph("AE Tuition – Student Progress Report", title_style)
         elements.append(title)
-        elements.append(Spacer(1, 0.2 * inch))
+        elements.append(Spacer(1, 0.1 * inch))
 
         # Student Information Table
         student_info = [
@@ -275,7 +277,7 @@ class ReportService:
         ]))
 
         elements.append(info_table)
-        elements.append(Spacer(1, 0.3 * inch))
+        elements.append(Spacer(1, 0.15 * inch))
 
         # Overall Summary
         elements.append(Paragraph("Overall Summary", heading_style))
@@ -304,7 +306,7 @@ class ReportService:
         ]))
 
         elements.append(summary_table)
-        elements.append(Spacer(1, 0.3 * inch))
+        elements.append(Spacer(1, 0.15 * inch))
 
         # Subject Performance
         elements.append(Paragraph("Subject Performance", heading_style))
@@ -336,25 +338,25 @@ class ReportService:
         ]))
 
         elements.append(subject_table)
-        elements.append(Spacer(1, 0.3 * inch))
+        elements.append(Spacer(1, 0.15 * inch))
 
         # Strengths
         elements.append(Paragraph("Strengths", heading_style))
         strengths_text = Paragraph(report_data.get('strengths', 'N/A'), normal_style)
         elements.append(strengths_text)
-        elements.append(Spacer(1, 0.2 * inch))
+        elements.append(Spacer(1, 0.1 * inch))
 
         # Areas for Improvement
         elements.append(Paragraph("Areas for Improvement", heading_style))
         improvement_text = Paragraph(report_data.get('areas_for_improvement', 'N/A'), normal_style)
         elements.append(improvement_text)
-        elements.append(Spacer(1, 0.2 * inch))
+        elements.append(Spacer(1, 0.1 * inch))
 
         # Intervention Recommendation
         elements.append(Paragraph("Intervention Recommendation (5-Week Review)", heading_style))
         intervention_text = Paragraph(report_data.get('intervention_recommendation', 'N/A'), normal_style)
         elements.append(intervention_text)
-        elements.append(Spacer(1, 0.2 * inch))
+        elements.append(Spacer(1, 0.1 * inch))
 
         # Next Steps
         elements.append(Paragraph("Next Steps", heading_style))
