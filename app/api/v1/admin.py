@@ -611,7 +611,7 @@ async def get_results_by_week(
         }
         subject_name = subject_map.get(test_type, test_type)
 
-        # Store subject score
+        # Store/overwrite subject score (only one test per subject per week, latest wins)
         student_data[student_id]["scores"][subject_name] = {
             "subject": subject_name,
             "mark": test_result.total_score,
@@ -769,7 +769,7 @@ async def export_results(
         }
         subject_name = subject_map.get(test_type, test_type)
 
-        # Store result for this week and subject
+        # Store/overwrite result for this week and subject (only one test per subject per week, latest wins)
         student_data[student_id]["weeks"][week_number][subject_name] = {
             "mark": test_result.total_score or 0,
             "percentage": round(test_result.percentage, 2) if test_result.percentage else 0
@@ -791,6 +791,13 @@ async def export_results(
         top=Side(style='thin'),
         bottom=Side(style='thin')
     )
+    # Thick border for week end separator (only right border is thick)
+    week_end_border = Border(
+        # left=Side(style='thin'),
+        right=Side(style='thick', color='000000'),  # Thick black border on the right only
+        top=Side(style='thin'),
+        # bottom=Side(style='thin')
+    )
 
     # Subjects in order (matching Excel template)
     subjects = ["English", "VR GL", "NVR", "Maths"]
@@ -807,6 +814,9 @@ async def export_results(
     for week_num in range(1, 41):
         # Each week spans 8 columns (4 subjects × 2 columns each)
         week_label = f"Week{week_num}"
+        week_end_col = current_col + 7
+
+        # Set week header in first cell
         cell = ws.cell(row=1, column=current_col)
         cell.value = week_label
         cell.fill = header_fill
@@ -814,24 +824,45 @@ async def export_results(
         cell.alignment = header_alignment
 
         # Merge cells for week header (8 columns: 4 subjects × 2 fields)
-        ws.merge_cells(start_row=1, start_column=current_col, end_row=1, end_column=current_col + 7)
+        ws.merge_cells(start_row=1, start_column=current_col, end_row=1, end_column=week_end_col)
+
+        # Apply thick border to last cell of each week header
+        for col in range(current_col, week_end_col + 1):
+            header_cell = ws.cell(row=1, column=col)
+            if col == week_end_col:
+                header_cell.border = week_end_border
+            else:
+                header_cell.border = border
 
         current_col += 8
 
     # Row 2: Subject names
     current_col = 5
     for week_num in range(1, 41):
-        for subject in subjects:
+        for subject_idx, subject in enumerate(subjects):
+            is_last_subject = (subject_idx == len(subjects) - 1)
+            subject_end_col = current_col + 1
+
             cell = ws.cell(row=2, column=current_col)
             cell.value = subject
             cell.fill = header_fill
             cell.font = header_font
             cell.alignment = header_alignment
+
             # Merge 2 columns for subject name (Mark and %)
-            ws.merge_cells(start_row=2, start_column=current_col, end_row=2, end_column=current_col + 1)
+            ws.merge_cells(start_row=2, start_column=current_col, end_row=2, end_column=subject_end_col)
+
+            # Apply thick border to last subject column of each week
+            for col in range(current_col, subject_end_col + 1):
+                subject_cell = ws.cell(row=2, column=col)
+                if is_last_subject and col == subject_end_col:
+                    subject_cell.border = week_end_border
+                else:
+                    subject_cell.border = border
+
             current_col += 2
 
-    # Row 3: Column headers
+    # Row 3: Column headers (Mark and %)
     # Student info headers
     student_headers = ["Class ID", "Student ID", "First Name", "Surname"]
     for col_num, header in enumerate(student_headers, 1):
@@ -845,7 +876,9 @@ async def export_results(
     # Mark and % headers for each subject in each week
     current_col = 5
     for week_num in range(1, 41):
-        for subject in subjects:
+        for subject_idx, subject in enumerate(subjects):
+            is_last_subject = (subject_idx == len(subjects) - 1)
+
             # Mark column
             cell = ws.cell(row=3, column=current_col)
             cell.value = "Mark"
@@ -854,13 +887,17 @@ async def export_results(
             cell.alignment = header_alignment
             cell.border = border
 
-            # % column
+            # % column (last column of week gets thick border)
             cell = ws.cell(row=3, column=current_col + 1)
             cell.value = "%"
             cell.fill = header_fill
             cell.font = header_font
             cell.alignment = header_alignment
-            cell.border = border
+            # Apply thick border to last column of each week
+            if is_last_subject:
+                cell.border = week_end_border
+            else:
+                cell.border = border
 
             current_col += 2
 
@@ -880,16 +917,22 @@ async def export_results(
         current_col = 5
         for week_num in range(1, 41):
             week_data = weeks.get(week_num, {})
-            for subject in subjects:
+            for subject_idx, subject in enumerate(subjects):
+                is_last_subject = (subject_idx == len(subjects) - 1)
                 subject_data = week_data.get(subject, {})
 
                 # Mark
                 mark = subject_data.get("mark", "")
-                ws.cell(row=row_num, column=current_col, value=mark if mark != "" else "").alignment = data_alignment
+                mark_cell = ws.cell(row=row_num, column=current_col, value=mark if mark != "" else "")
+                mark_cell.alignment = data_alignment
 
-                # Percentage
+                # Percentage (last column of week gets thick border)
                 percentage = subject_data.get("percentage", "")
-                ws.cell(row=row_num, column=current_col + 1, value=percentage if percentage != "" else "").alignment = data_alignment
+                pct_cell = ws.cell(row=row_num, column=current_col + 1, value=percentage if percentage != "" else "")
+                pct_cell.alignment = data_alignment
+                # Apply thick border to last column of each week
+                if is_last_subject:
+                    pct_cell.border = week_end_border
 
                 current_col += 2
 
@@ -916,8 +959,8 @@ async def export_results(
     wb.save(output)
     output.seek(0)
 
-    # Generate filename with current date
-    filename = f"test-results-{datetime.now().strftime('%Y-%m-%d')}.xlsx"
+    # Generate filename with current date and timestamp
+    filename = f"test-results-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.xlsx"
 
     return Response(
         content=output.getvalue(),
