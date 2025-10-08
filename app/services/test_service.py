@@ -208,7 +208,17 @@ class TestService:
 
         await db.commit()
         await db.refresh(new_test)
-        return new_test
+
+        # Load relationships to avoid MissingGreenlet error in response validation
+        result = await db.execute(
+            select(Test)
+            .options(
+                selectinload(Test.test_question_sets).selectinload(TestQuestionSet.question_set),
+                selectinload(Test.creator)
+            )
+            .where(Test.id == new_test.id)
+        )
+        return result.scalar_one()
 
     @staticmethod
     async def assign_questions_to_test(db: AsyncSession, test_id: UUID, questions: List[TestQuestionCreate], user_id: UUID) -> bool:
