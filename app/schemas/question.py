@@ -24,12 +24,16 @@ class ReadingPassageCreate(ReadingPassageBase):
     @classmethod
     def validate_passage_content(cls, v, info):
         """Validate that either content or image_url is provided"""
+        # Treat empty strings as None
+        content = v.strip() if v else None
+
         image_url = info.data.get('image_url')
 
-        if not v and not image_url:
+        if not content and not image_url:
             raise ValueError('Either content (text) or image_url must be provided for the passage')
 
-        return v
+        # Return None instead of empty string if no content provided
+        return content if content else None
 
 
 class ReadingPassageUpdate(BaseModel):
@@ -89,7 +93,7 @@ class AnswerOptionResponse(AnswerOptionBase):
 
 
 class QuestionBase(BaseModel):
-    question_text: Optional[str] = Field(None, min_length=1)
+    question_text: Optional[str] = None
     question_type: QuestionType
     question_format: QuestionFormat = QuestionFormat.STANDARD
     passage_id: Optional[UUID] = None
@@ -106,18 +110,38 @@ class QuestionBase(BaseModel):
 class QuestionCreate(QuestionBase):
     answer_options: List[AnswerOptionCreate] = []
 
+    @field_validator('passage_id', mode='before')
+    @classmethod
+    def validate_passage_id(cls, v):
+        """Convert empty strings to None for passage_id"""
+        if v == '' or v is None:
+            return None
+        return v
+
+    @field_validator('subject', 'passage_reference_lines', 'explanation', 'instruction_text', 's3_key', mode='before')
+    @classmethod
+    def validate_optional_strings(cls, v):
+        """Convert empty strings to None for optional string fields"""
+        if v == '' or (isinstance(v, str) and not v.strip()):
+            return None
+        return v
+
     @field_validator('question_text')
     @classmethod
     def validate_question_content(cls, v, info):
         """Validate that either question_text or image_url is provided"""
+        # Treat empty strings as None
+        question_text = v.strip() if v else None
+
         # Get the image_url value from the data being validated
         image_url = info.data.get('image_url')
 
         # Check if both are missing
-        if not v and not image_url:
+        if not question_text and not image_url:
             raise ValueError('Either question_text or image_url must be provided')
 
-        return v
+        # Return None instead of empty string if no text provided
+        return question_text if question_text else None
 
 
 class QuestionUpdate(BaseModel):
