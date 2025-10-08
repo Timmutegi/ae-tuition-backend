@@ -221,7 +221,7 @@ class StudentWeeklyScores(BaseModel):
     class_id: str
     class_name: str
     year_group: int
-    scores: Dict[str, SubjectScore]  # Key: subject name (e.g., "English")
+    scores: Dict[str, SubjectScore]  # Key: subject name (e.g., "English"), one test per subject per week
 
 
 class WeeklyResultsSummary(BaseModel):
