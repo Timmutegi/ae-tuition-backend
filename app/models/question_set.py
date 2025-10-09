@@ -12,7 +12,6 @@ class QuestionSet(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(String(255), nullable=False)
-    description = Column(Text)
     subject = Column(String(50))
     grade_level = Column(String(20))
     total_points = Column(Integer, default=0)

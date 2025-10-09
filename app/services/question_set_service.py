@@ -27,7 +27,6 @@ class QuestionSetService:
         # Create the question set
         question_set = QuestionSet(
             name=question_set_data.name,
-            description=question_set_data.description,
             subject=question_set_data.subject,
             grade_level=question_set_data.grade_level,
             metadata_json=question_set_data.metadata_json,
@@ -78,7 +77,6 @@ class QuestionSetService:
         question_set_dict = {
             "id": question_set.id,
             "name": question_set.name,
-            "description": question_set.description,
             "subject": question_set.subject,
             "grade_level": question_set.grade_level,
             "metadata_json": question_set.metadata_json,
@@ -153,7 +151,6 @@ class QuestionSetService:
             conditions.append(
                 or_(
                     QuestionSet.name.ilike(search_term),
-                    QuestionSet.description.ilike(search_term),
                     QuestionSet.subject.ilike(search_term)
                 )
             )
@@ -209,7 +206,6 @@ class QuestionSetService:
         question_set_dict = {
             "id": question_set.id,
             "name": question_set.name,
-            "description": question_set.description,
             "subject": question_set.subject,
             "grade_level": question_set.grade_level,
             "metadata_json": question_set.metadata_json,
