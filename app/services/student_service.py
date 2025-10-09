@@ -255,7 +255,23 @@ class StudentService:
             # Get user_id before deleting student
             user_id = student.user_id
 
-            # Delete student record first
+            # Import necessary models for cascade deletion
+            from app.models.test import TestResult, TestAttempt
+            from sqlalchemy import delete as sql_delete
+
+            # Delete test results first (they reference both student and test_attempts)
+            await db.execute(
+                sql_delete(TestResult).where(TestResult.student_id == student_id)
+            )
+            await db.flush()
+
+            # Delete test attempts (they reference student)
+            await db.execute(
+                sql_delete(TestAttempt).where(TestAttempt.student_id == student_id)
+            )
+            await db.flush()
+
+            # Now delete student record
             await db.delete(student)
             await db.flush()
 
@@ -265,7 +281,7 @@ class StudentService:
                 await db.delete(user)
 
             await db.commit()
-            logger.info(f"Permanently deleted student {student_id} and user {user_id}")
+            logger.info(f"Permanently deleted student {student_id}, associated test data, and user {user_id}")
             return True
 
         except Exception as e:
