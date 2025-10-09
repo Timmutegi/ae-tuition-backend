@@ -512,6 +512,7 @@ async def get_students_by_class(
 async def get_results_by_week(
     week: Optional[int] = Query(None, ge=1, le=40, description="Week number (1-40). If not provided, returns current week."),
     class_id: Optional[UUID] = Query(None, description="Filter by class"),
+    student_code: Optional[str] = Query(None, description="Filter by student code"),
     db: AsyncSession = Depends(get_db),
     current_admin: User = Depends(get_current_admin_user)
 ):
@@ -542,6 +543,10 @@ async def get_results_by_week(
     week_info = calendar_service.get_week_info(target_week)
     start_date, end_date = week_info.start_date, week_info.end_date
 
+    # Convert end_date to end of day to include all submissions on that date
+    from datetime import datetime, time
+    end_datetime = datetime.combine(end_date, time(23, 59, 59))
+
     # Build query for results in this week
     query = (
         select(TestResult)
@@ -553,14 +558,18 @@ async def get_results_by_week(
         .where(
             and_(
                 TestResult.submitted_at >= start_date,
-                TestResult.submitted_at <= end_date
+                TestResult.submitted_at <= end_datetime
             )
         )
     )
 
-    # Apply class filter if provided
-    if class_id:
-        query = query.join(Student).where(Student.class_id == class_id)
+    # Apply filters if provided
+    if class_id or student_code:
+        query = query.join(Student)
+        if class_id:
+            query = query.where(Student.class_id == class_id)
+        if student_code:
+            query = query.where(Student.student_code == student_code)
 
     query = query.order_by(TestResult.submitted_at)
 
