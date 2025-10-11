@@ -282,11 +282,14 @@ class TestAttemptCreate(TestAttemptBase):
     ip_address: Optional[str] = None
 
 
-class TestAttemptResponse(TestAttemptBase):
+class TestAttemptResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
+    test_id: UUID
     student_id: UUID
+    assignment_id: Optional[UUID] = None  # Can be None for individual student assignments
+    student_assignment_id: Optional[UUID] = None  # For individual student assignments
     started_at: datetime
     submitted_at: Optional[datetime] = None
     time_taken: Optional[int] = None

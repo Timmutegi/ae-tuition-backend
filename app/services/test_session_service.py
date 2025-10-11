@@ -8,7 +8,7 @@ from decimal import Decimal
 from datetime import timezone
 
 from app.models import (
-    Test, TestQuestion, TestAssignment, TestAttempt, TestResult,
+    Test, TestQuestion, TestAssignment, StudentTestAssignment, TestAttempt, TestResult,
     Question, AnswerOption, QuestionResponse, Student, User,
     AttemptStatus, ResultStatus, AssignmentStatus, TestStatus,
     QuestionType, ReadingPassage, TestQuestionSet, QuestionSet, QuestionSetItem
@@ -41,7 +41,7 @@ class TestSessionService:
         if not test:
             raise ValueError("Test not found or not published")
 
-        # Check if assignment exists and is active
+        # Check if assignment exists and is active (check both class and individual assignments)
         assignment_result = await db.execute(
             select(TestAssignment)
             .where(and_(
@@ -51,35 +51,33 @@ class TestSessionService:
             ))
         )
         assignment = assignment_result.scalar_one_or_none()
+        is_student_assignment = False
+
+        # If not found in class assignments, check individual student assignments
+        if not assignment:
+            student_assignment_result = await db.execute(
+                select(StudentTestAssignment)
+                .where(and_(
+                    StudentTestAssignment.id == assignment_id,
+                    StudentTestAssignment.test_id == test_id,
+                    StudentTestAssignment.status.in_([AssignmentStatus.SCHEDULED, AssignmentStatus.ACTIVE])
+                ))
+            )
+            assignment = student_assignment_result.scalar_one_or_none()
+            is_student_assignment = True
+
         if not assignment:
             raise ValueError("Test assignment not found or not active")
 
-        # Check if within scheduled time window
+        # Check if within scheduled time window (student can start as long as end time hasn't been reached)
         now = datetime.now(timezone.utc)
 
         # Ensure assignment times are timezone-aware
-        scheduled_start = assignment.scheduled_start
-        if scheduled_start.tzinfo is None:
-            scheduled_start = scheduled_start.replace(tzinfo=timezone.utc)
-
         scheduled_end = assignment.scheduled_end
         if scheduled_end.tzinfo is None:
             scheduled_end = scheduled_end.replace(tzinfo=timezone.utc)
 
-        # Calculate buffer times and ensure they are timezone-aware
-        buffer_start = scheduled_start - timedelta(minutes=assignment.buffer_time_minutes)
-        if buffer_start.tzinfo is None:
-            buffer_start = buffer_start.replace(tzinfo=timezone.utc)
-
-        buffer_end = scheduled_end + timedelta(
-            minutes=assignment.late_submission_grace_minutes if assignment.allow_late_submission else 0
-        )
-        if buffer_end.tzinfo is None:
-            buffer_end = buffer_end.replace(tzinfo=timezone.utc)
-
-        if now < buffer_start:
-            raise ValueError("Test has not started yet")
-        if now > buffer_end:
+        if now > scheduled_end:
             raise ValueError("Test time window has expired")
 
         # Check if student already has an attempt for this test
@@ -99,21 +97,37 @@ class TestSessionService:
             else:
                 raise ValueError("Test has already been completed")
 
-        # Create new attempt
-        attempt = TestAttempt(
-            test_id=test_id,
-            student_id=student_id,
-            assignment_id=assignment_id,
-            started_at=now,
-            status=AttemptStatus.IN_PROGRESS,
-            browser_info=browser_info,
-            ip_address=ip_address,
-            answers={}
-        )
+        # Create new attempt with correct foreign key column based on assignment type
+        if is_student_assignment:
+            # For individual student assignments, use student_assignment_id column
+            attempt = TestAttempt(
+                test_id=test_id,
+                student_id=student_id,
+                assignment_id=None,
+                student_assignment_id=assignment_id,
+                started_at=now,
+                status=AttemptStatus.IN_PROGRESS,
+                browser_info=browser_info,
+                ip_address=ip_address,
+                answers={}
+            )
+        else:
+            # For class assignments, use assignment_id column
+            attempt = TestAttempt(
+                test_id=test_id,
+                student_id=student_id,
+                assignment_id=assignment_id,
+                student_assignment_id=None,
+                started_at=now,
+                status=AttemptStatus.IN_PROGRESS,
+                browser_info=browser_info,
+                ip_address=ip_address,
+                answers={}
+            )
         db.add(attempt)
 
-        # Update assignment status if needed
-        if assignment.status == AssignmentStatus.SCHEDULED and now >= scheduled_start:
+        # Update assignment status to ACTIVE when first student starts
+        if assignment.status == AssignmentStatus.SCHEDULED:
             assignment.status = AssignmentStatus.ACTIVE
 
         await db.commit()

@@ -8,7 +8,7 @@ from .question import (
     QuestionType, QuestionFormat, OptionType
 )
 from .test import (
-    Test, TestQuestion, TestAssignment, TestAttempt, TestResult,
+    Test, TestQuestion, TestAssignment, StudentTestAssignment, TestAttempt, TestResult,
     TestType, TestFormat, TestStatus, QuestionOrder, AssignmentStatus,
     AttemptStatus, ResultStatus
 )

@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 
 from app.core.database import get_db
 from app.core.security import get_current_user
-from app.models import User, Student, TestAssignment, Test, TestAttempt, TestResult, Class
+from app.models import User, Student, TestAssignment, StudentTestAssignment, Test, TestAttempt, TestResult, Class
 from app.models.user import UserRole
 from app.models.test import AssignmentStatus, TestStatus, AttemptStatus
 from app.schemas.test import (
@@ -44,22 +44,62 @@ async def get_student_dashboard(
     if not student:
         raise HTTPException(status_code=404, detail="Student profile not found")
 
-    # Get upcoming tests (only published tests)
+    # Get upcoming tests (both class assignments and individual assignments, only published tests)
     now = datetime.now(timezone.utc)
-    upcoming_tests = await db.execute(
-        select(TestAssignment, Test)
-        .join(Test, TestAssignment.test_id == Test.id)
+    upcoming = []
+
+    # 1. Get class assignments
+    if student.class_id:
+        class_assignments = await db.execute(
+            select(TestAssignment, Test)
+            .join(Test, TestAssignment.test_id == Test.id)
+            .where(and_(
+                TestAssignment.class_id == student.class_id,
+                TestAssignment.status.in_([AssignmentStatus.SCHEDULED, AssignmentStatus.ACTIVE]),
+                TestAssignment.scheduled_end > now,
+                Test.status == TestStatus.PUBLISHED  # Only show published tests
+            ))
+            .order_by(TestAssignment.scheduled_start)
+        )
+
+        for assignment, test in class_assignments:
+            # Check if student has an attempt
+            attempt_result = await db.execute(
+                select(TestAttempt)
+                .where(and_(
+                    TestAttempt.test_id == test.id,
+                    TestAttempt.student_id == student.id
+                ))
+            )
+            attempt = attempt_result.scalar_one_or_none()
+
+            upcoming.append({
+                "assignment_id": str(assignment.id),
+                "test_id": str(test.id),
+                "test_title": test.title,
+                "test_type": test.type.value,
+                "scheduled_start": assignment.scheduled_start.isoformat(),
+                "scheduled_end": assignment.scheduled_end.isoformat(),
+                "duration_minutes": test.duration_minutes,
+                "status": "completed" if attempt and attempt.status != AttemptStatus.IN_PROGRESS else
+                          "in_progress" if attempt else "not_started",
+                "attempt_id": str(attempt.id) if attempt else None
+            })
+
+    # 2. Get individual student assignments
+    student_assignments = await db.execute(
+        select(StudentTestAssignment, Test)
+        .join(Test, StudentTestAssignment.test_id == Test.id)
         .where(and_(
-            TestAssignment.class_id == student.class_id,
-            TestAssignment.status.in_([AssignmentStatus.SCHEDULED, AssignmentStatus.ACTIVE]),
-            TestAssignment.scheduled_end > now,
+            StudentTestAssignment.student_id == student.id,
+            StudentTestAssignment.status.in_([AssignmentStatus.SCHEDULED, AssignmentStatus.ACTIVE]),
+            StudentTestAssignment.scheduled_end > now,
             Test.status == TestStatus.PUBLISHED  # Only show published tests
         ))
-        .order_by(TestAssignment.scheduled_start)
+        .order_by(StudentTestAssignment.scheduled_start)
     )
 
-    upcoming = []
-    for assignment, test in upcoming_tests:
+    for assignment, test in student_assignments:
         # Check if student has an attempt
         attempt_result = await db.execute(
             select(TestAttempt)
@@ -82,6 +122,9 @@ async def get_student_dashboard(
                       "in_progress" if attempt else "not_started",
             "attempt_id": str(attempt.id) if attempt else None
         })
+
+    # Sort by scheduled_start time
+    upcoming.sort(key=lambda x: x["scheduled_start"])
 
     # Get recent results (only for published tests)
     recent_results = await db.execute(
@@ -129,7 +172,7 @@ async def get_available_tests(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
-    """Get all tests available to the student"""
+    """Get all tests available to the student (both class assignments and individual assignments)"""
     if current_user.role != UserRole.STUDENT:
         raise HTTPException(status_code=403, detail="Not authorized")
 
@@ -141,21 +184,95 @@ async def get_available_tests(
     if not student:
         raise HTTPException(status_code=404, detail="Student profile not found")
 
-    # Get all test assignments for student's class (only PUBLISHED tests)
     now = datetime.now(timezone.utc)
-    assignments = await db.execute(
-        select(TestAssignment, Test)
-        .join(Test, TestAssignment.test_id == Test.id)
+    available_tests = []
+
+    # 1. Get all test assignments for student's class (only PUBLISHED tests)
+    if student.class_id:
+        class_assignments = await db.execute(
+            select(TestAssignment, Test)
+            .join(Test, TestAssignment.test_id == Test.id)
+            .where(and_(
+                TestAssignment.class_id == student.class_id,
+                TestAssignment.status.in_([AssignmentStatus.SCHEDULED, AssignmentStatus.ACTIVE]),
+                Test.status == TestStatus.PUBLISHED  # Only show published tests to students
+            ))
+            .order_by(TestAssignment.scheduled_start)
+        )
+
+        for assignment, test in class_assignments:
+            # Check if student has an attempt
+            attempt_result = await db.execute(
+                select(TestAttempt)
+                .where(and_(
+                    TestAttempt.test_id == test.id,
+                    TestAttempt.student_id == student.id
+                ))
+            )
+            attempt = attempt_result.scalar_one_or_none()
+
+            # Determine if test is available for taking
+            # Student can start test only if current time is between scheduled_start and scheduled_end
+            can_start = False
+            if not attempt or attempt.status == AttemptStatus.IN_PROGRESS:
+                # Ensure database datetimes are timezone-aware for comparison
+                scheduled_start = assignment.scheduled_start
+                scheduled_end = assignment.scheduled_end
+                if scheduled_start.tzinfo is None:
+                    scheduled_start = scheduled_start.replace(tzinfo=timezone.utc)
+                if scheduled_end.tzinfo is None:
+                    scheduled_end = scheduled_end.replace(tzinfo=timezone.utc)
+
+                can_start = now >= scheduled_start and now <= scheduled_end
+
+            # For completed tests, get the result ID
+            result_id = None
+            if attempt and attempt.status != AttemptStatus.IN_PROGRESS:
+                result_query = await db.execute(
+                    select(TestResult)
+                    .where(and_(
+                        TestResult.test_id == test.id,
+                        TestResult.student_id == student.id,
+                        TestResult.attempt_id == attempt.id
+                    ))
+                )
+                test_result = result_query.scalar_one_or_none()
+                if test_result:
+                    result_id = str(test_result.id)
+
+            available_tests.append({
+                "assignment_id": str(assignment.id),
+                "test_id": str(test.id),
+                "title": test.title,
+                "description": test.description,
+                "type": test.type.value,
+                "duration_minutes": test.duration_minutes,
+                "total_marks": test.total_marks,
+                "pass_mark": test.pass_mark,
+                "scheduled_start": assignment.scheduled_start.isoformat(),
+                "scheduled_end": assignment.scheduled_end.isoformat(),
+                "can_start": can_start,
+                "status": "completed" if attempt and attempt.status != AttemptStatus.IN_PROGRESS else
+                          "in_progress" if attempt and attempt.status == AttemptStatus.IN_PROGRESS else
+                          "not_started",
+                "attempt_id": str(attempt.id) if attempt else None,
+                "result_id": result_id,
+                "custom_instructions": assignment.custom_instructions
+            })
+
+    # 2. Get all individual student test assignments (only PUBLISHED tests)
+    student_assignments = await db.execute(
+        select(StudentTestAssignment, Test)
+        .join(Test, StudentTestAssignment.test_id == Test.id)
         .where(and_(
-            TestAssignment.class_id == student.class_id,
-            TestAssignment.status.in_([AssignmentStatus.SCHEDULED, AssignmentStatus.ACTIVE]),
+            StudentTestAssignment.student_id == student.id,
+            StudentTestAssignment.status.in_([AssignmentStatus.SCHEDULED, AssignmentStatus.ACTIVE]),
             Test.status == TestStatus.PUBLISHED  # Only show published tests to students
         ))
-        .order_by(TestAssignment.scheduled_start)
+        .order_by(StudentTestAssignment.scheduled_start)
     )
 
-    available_tests = []
-    for assignment, test in assignments:
+    for assignment, test in student_assignments:
         # Check if student has an attempt
         attempt_result = await db.execute(
             select(TestAttempt)
@@ -167,22 +284,18 @@ async def get_available_tests(
         attempt = attempt_result.scalar_one_or_none()
 
         # Determine if test is available for taking
+        # Student can start test only if current time is between scheduled_start and scheduled_end
         can_start = False
         if not attempt or attempt.status == AttemptStatus.IN_PROGRESS:
             # Ensure database datetimes are timezone-aware for comparison
             scheduled_start = assignment.scheduled_start
+            scheduled_end = assignment.scheduled_end
             if scheduled_start.tzinfo is None:
                 scheduled_start = scheduled_start.replace(tzinfo=timezone.utc)
-
-            scheduled_end = assignment.scheduled_end
             if scheduled_end.tzinfo is None:
                 scheduled_end = scheduled_end.replace(tzinfo=timezone.utc)
 
-            buffer_start = scheduled_start - timedelta(minutes=assignment.buffer_time_minutes)
-            buffer_end = scheduled_end + timedelta(
-                minutes=assignment.late_submission_grace_minutes if assignment.allow_late_submission else 0
-            )
-            can_start = buffer_start <= now <= buffer_end
+            can_start = now >= scheduled_start and now <= scheduled_end
 
         # For completed tests, get the result ID
         result_id = None
@@ -218,6 +331,9 @@ async def get_available_tests(
             "result_id": result_id,
             "custom_instructions": assignment.custom_instructions
         })
+
+    # Sort by scheduled_start time
+    available_tests.sort(key=lambda x: x["scheduled_start"])
 
     return available_tests
 
