@@ -17,7 +17,7 @@ from app.services.question_set_service import QuestionSetService
 router = APIRouter(prefix="/question-sets", tags=["Question Sets"])
 
 
-@router.post("/", response_model=QuestionSetWithItems)
+@router.post("", response_model=QuestionSetWithItems)
 async def create_question_set(
     question_set_data: QuestionSetCreate,
     db: AsyncSession = Depends(get_db),
@@ -41,7 +41,7 @@ async def create_question_set(
         )
 
 
-@router.get("/", response_model=QuestionSetListResponse)
+@router.get("", response_model=QuestionSetListResponse)
 async def get_question_sets(
     subject: Optional[str] = Query(None),
     grade_level: Optional[str] = Query(None),

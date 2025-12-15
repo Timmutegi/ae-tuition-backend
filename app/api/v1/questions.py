@@ -19,7 +19,7 @@ router = APIRouter(prefix="/questions", tags=["Question Management"])
 
 
 # Question endpoints
-@router.post("/", response_model=QuestionResponse)
+@router.post("", response_model=QuestionResponse)
 async def create_question(
     question_data: QuestionCreate,
     db: AsyncSession = Depends(get_db),
@@ -31,7 +31,7 @@ async def create_question(
     return question_response
 
 
-@router.get("/", response_model=dict)
+@router.get("", response_model=dict)
 async def get_questions(
     question_type: Optional[str] = Query(None),
     question_format: Optional[str] = Query(None),

@@ -157,7 +157,7 @@ async def get_my_tests(
 # Admin-only endpoints for teacher management
 # ============================================================
 
-@router.post("/", response_model=TeacherProfileResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=TeacherProfileResponse, status_code=status.HTTP_201_CREATED)
 async def create_teacher(
     teacher_data: TeacherCreateRequest,
     db: AsyncSession = Depends(get_db),
@@ -174,7 +174,7 @@ async def create_teacher(
         )
 
 
-@router.get("/", response_model=List[TeacherListResponse])
+@router.get("", response_model=List[TeacherListResponse])
 async def get_all_teachers(
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=500),

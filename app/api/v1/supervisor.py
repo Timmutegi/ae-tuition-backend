@@ -169,7 +169,7 @@ async def get_my_class_students(
 # Admin-only endpoints for supervisor management
 # ============================================================
 
-@router.post("/", response_model=SupervisorProfileResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=SupervisorProfileResponse, status_code=status.HTTP_201_CREATED)
 async def create_supervisor(
     supervisor_data: SupervisorCreateRequest,
     db: AsyncSession = Depends(get_db),
@@ -186,7 +186,7 @@ async def create_supervisor(
         )
 
 
-@router.get("/", response_model=List[SupervisorListResponse])
+@router.get("", response_model=List[SupervisorListResponse])
 async def get_all_supervisors(
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=500),

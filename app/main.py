@@ -43,7 +43,8 @@ app = FastAPI(
     title="AE Tuition API",
     description="Ed-Tech platform API for online test management and administration",
     version="1.0.0",
-    lifespan=lifespan
+    lifespan=lifespan,
+    redirect_slashes=False  # Disable automatic redirects to prevent 307 errors with CloudFront
 )
 
 # Configure CORS

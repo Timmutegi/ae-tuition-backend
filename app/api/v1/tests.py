@@ -19,7 +19,7 @@ from app.services.test_service import TestService
 router = APIRouter(prefix="/tests", tags=["Test Management"])
 
 
-@router.post("/", response_model=TestResponse)
+@router.post("", response_model=TestResponse)
 async def create_test(
     test_data: TestCreate,
     db: AsyncSession = Depends(get_db),
@@ -36,7 +36,7 @@ async def create_test(
         )
 
 
-@router.get("/", response_model=TestListResponse)
+@router.get("", response_model=TestListResponse)
 async def get_tests(
     type: Optional[str] = Query(None),
     status: Optional[str] = Query(None),
