@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     POSTGRES_DB: str = "ae_tuition"
     POSTGRES_HOST: str = "localhost"
     POSTGRES_PORT: int = 5440
+    SQL_ECHO: bool = False  # Set to True for SQL query debugging
 
     # AWS settings
     AWS_ACCESS_KEY: Optional[str] = None
