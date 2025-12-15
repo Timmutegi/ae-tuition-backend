@@ -106,5 +106,64 @@ async def get_current_student(
         )
     return current_user
 
+
+async def get_current_teacher(
+    current_user = Depends(get_current_user)
+):
+    """Get current teacher user. Also allows admins."""
+    from app.models.user import UserRole  # Import here to avoid circular import
+    if current_user.role not in [UserRole.TEACHER, UserRole.ADMIN]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions. Teacher access required."
+        )
+    return current_user
+
+
+async def get_current_supervisor(
+    current_user = Depends(get_current_user)
+):
+    """Get current supervisor user. Also allows admins."""
+    from app.models.user import UserRole  # Import here to avoid circular import
+    if current_user.role not in [UserRole.SUPERVISOR, UserRole.ADMIN]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions. Supervisor access required."
+        )
+    return current_user
+
+
+async def get_current_teacher_or_supervisor(
+    current_user = Depends(get_current_user)
+):
+    """Get current teacher or supervisor. Also allows admins."""
+    from app.models.user import UserRole  # Import here to avoid circular import
+    if current_user.role not in [UserRole.TEACHER, UserRole.SUPERVISOR, UserRole.ADMIN]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions. Teacher or Supervisor access required."
+        )
+    return current_user
+
+
+async def verify_teacher_class_access(
+    teacher_id: str,
+    class_id: str,
+    db
+) -> bool:
+    """Verify that a teacher has access to a specific class."""
+    from app.models.teacher import TeacherClassAssignment
+    from sqlalchemy import select
+
+    result = await db.execute(
+        select(TeacherClassAssignment).where(
+            TeacherClassAssignment.teacher_id == teacher_id,
+            TeacherClassAssignment.class_id == class_id
+        )
+    )
+    assignment = result.scalars().first()
+    return assignment is not None
+
+
 # Alias for backwards compatibility
 get_current_admin_user = get_current_admin

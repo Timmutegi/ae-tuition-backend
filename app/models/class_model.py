@@ -21,6 +21,7 @@ class Class(Base):
     students = relationship("Student", back_populates="class_info")
     teacher = relationship("User", foreign_keys=[teacher_id])
     test_assignments = relationship("TestAssignment", back_populates="class_info")
+    teacher_assignments = relationship("TeacherClassAssignment", back_populates="class_info")
 
     def __repr__(self):
         return f"<Class(name='{self.name}', year_group={self.year_group})>"

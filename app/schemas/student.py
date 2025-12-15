@@ -164,3 +164,27 @@ class StudentStatsResponse(BaseModel):
     badges_earned: List[str]
     class_rank: Optional[int] = None
     class_size: Optional[int] = None
+
+
+# Creative Writing Schemas
+class CreativeWorkUploadRequest(BaseModel):
+    title: str = Field(..., min_length=1, max_length=255)
+    description: Optional[str] = None
+
+
+class CreativeWorkResponse(BaseModel):
+    id: UUID
+    title: str
+    description: Optional[str] = None
+    image_url: str
+    status: str
+    feedback: Optional[str] = None
+    submitted_at: datetime
+    reviewed_at: Optional[datetime] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class CreativeWorkListResponse(BaseModel):
+    submissions: List[CreativeWorkResponse]
+    total: int

@@ -1,15 +1,17 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, UploadFile, File, Form
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_, or_, func
 from typing import List, Optional, Dict, Any
 from uuid import UUID
 from datetime import datetime, timedelta, timezone
+import io
 
 from app.core.database import get_db
 from app.core.security import get_current_user
 from app.models import User, Student, TestAssignment, StudentTestAssignment, Test, TestAttempt, TestResult, Class
 from app.models.user import UserRole
 from app.models.test import AssignmentStatus, TestStatus, AttemptStatus
+from app.models.marking import StudentCreativeWork, StudentCreativeWorkStatus
 from app.schemas.test import (
     TestAttemptCreate, TestAttemptResponse, TestSessionResponse,
     QuestionResponseCreate, QuestionResponseUpdate, QuestionResponseDetail,
@@ -17,11 +19,12 @@ from app.schemas.test import (
 )
 from app.schemas.student import (
     StudentProfileResponse, StudentProfileUpdate, ChangePasswordRequest, ChangePasswordResponse,
-    StudentProgressResponse, StudentStatsResponse
+    StudentProgressResponse, StudentStatsResponse, CreativeWorkResponse, CreativeWorkListResponse
 )
 from app.schemas.analytics import StudentAnalytics
 from app.services.test_session_service import TestSessionService
 from app.services.analytics_service import AnalyticsService
+from app.services.s3_service import s3_service
 from app.core.security import get_password_hash, verify_password
 
 router = APIRouter(prefix="/student", tags=["Student"])
@@ -966,3 +969,168 @@ async def get_student_analytics(
         return StudentAnalytics(**analytics)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get analytics: {str(e)}")
+
+
+# ============================================================
+# Creative Writing Endpoints
+# ============================================================
+
+
+@router.get("/creative-writing")
+async def get_creative_writing_submissions(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+) -> CreativeWorkListResponse:
+    """Get all creative writing submissions for the current student"""
+    if current_user.role != UserRole.STUDENT:
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    # Get student record
+    student_result = await db.execute(
+        select(Student).where(Student.user_id == current_user.id)
+    )
+    student = student_result.scalar_one_or_none()
+    if not student:
+        raise HTTPException(status_code=404, detail="Student profile not found")
+
+    # Get all submissions for this student
+    submissions_result = await db.execute(
+        select(StudentCreativeWork)
+        .where(StudentCreativeWork.student_id == student.id)
+        .order_by(StudentCreativeWork.submitted_at.desc())
+    )
+    submissions = submissions_result.scalars().all()
+
+    return CreativeWorkListResponse(
+        submissions=[
+            CreativeWorkResponse(
+                id=sub.id,
+                title=sub.title,
+                description=sub.description,
+                image_url=sub.image_url,
+                status=sub.status.value,
+                feedback=sub.feedback,
+                submitted_at=sub.submitted_at,
+                reviewed_at=sub.reviewed_at
+            )
+            for sub in submissions
+        ],
+        total=len(submissions)
+    )
+
+
+@router.post("/creative-writing/upload")
+async def upload_creative_writing(
+    file: UploadFile = File(...),
+    title: str = Form(...),
+    description: str = Form(None),
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+) -> CreativeWorkResponse:
+    """Upload a new creative writing submission"""
+    if current_user.role != UserRole.STUDENT:
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    # Get student record
+    student_result = await db.execute(
+        select(Student).where(Student.user_id == current_user.id)
+    )
+    student = student_result.scalar_one_or_none()
+    if not student:
+        raise HTTPException(status_code=404, detail="Student profile not found")
+
+    # Validate file
+    if not file.content_type or not file.content_type.startswith('image/'):
+        raise HTTPException(status_code=400, detail="Only image files are allowed")
+
+    # Read file content
+    file_content = await file.read()
+    file_size = len(file_content)
+
+    # Validate file size (max 10MB)
+    if file_size > 10 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="File size must be less than 10MB")
+
+    # Reset file pointer for upload
+    file_obj = io.BytesIO(file_content)
+
+    # Upload to S3
+    upload_result = await s3_service.upload_file(
+        file=file_obj,
+        file_name=file.filename or "creative_work.jpg",
+        folder="creative-writing"
+    )
+
+    if not upload_result:
+        raise HTTPException(status_code=500, detail="Failed to upload file")
+
+    # Create database record
+    creative_work = StudentCreativeWork(
+        student_id=student.id,
+        title=title,
+        description=description,
+        image_url=upload_result["public_url"],
+        s3_key=upload_result["s3_key"],
+        original_filename=file.filename,
+        file_size_bytes=file_size,
+        mime_type=file.content_type
+    )
+
+    db.add(creative_work)
+    await db.commit()
+    await db.refresh(creative_work)
+
+    return CreativeWorkResponse(
+        id=creative_work.id,
+        title=creative_work.title,
+        description=creative_work.description,
+        image_url=creative_work.image_url,
+        status=creative_work.status.value,
+        feedback=creative_work.feedback,
+        submitted_at=creative_work.submitted_at,
+        reviewed_at=creative_work.reviewed_at
+    )
+
+
+@router.delete("/creative-writing/{submission_id}")
+async def delete_creative_writing(
+    submission_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Delete a creative writing submission (only if pending)"""
+    if current_user.role != UserRole.STUDENT:
+        raise HTTPException(status_code=403, detail="Not authorized")
+
+    # Get student record
+    student_result = await db.execute(
+        select(Student).where(Student.user_id == current_user.id)
+    )
+    student = student_result.scalar_one_or_none()
+    if not student:
+        raise HTTPException(status_code=404, detail="Student profile not found")
+
+    # Get submission
+    submission_result = await db.execute(
+        select(StudentCreativeWork).where(
+            StudentCreativeWork.id == submission_id,
+            StudentCreativeWork.student_id == student.id
+        )
+    )
+    submission = submission_result.scalar_one_or_none()
+
+    if not submission:
+        raise HTTPException(status_code=404, detail="Submission not found")
+
+    if submission.status != StudentCreativeWorkStatus.PENDING:
+        raise HTTPException(status_code=400, detail="Can only delete pending submissions")
+
+    # Delete from S3
+    if submission.s3_key:
+        await s3_service.delete_file(submission.s3_key)
+
+    # Delete from database
+    await db.delete(submission)
+    await db.commit()
+
+    return {"message": "Submission deleted successfully"}

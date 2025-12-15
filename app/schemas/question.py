@@ -106,6 +106,15 @@ class QuestionBase(BaseModel):
     instruction_text: Optional[str] = None
     pattern_sequence: Optional[Dict[str, Any]] = None
 
+    # Auto-marking fields
+    correct_answer: Optional[str] = None  # For text-based answers
+    correct_answers: Optional[Dict[str, str]] = None  # For multiple blanks {"1": "answer1", "2": "answer2"}
+    case_sensitive: bool = False
+    allow_partial_credit: bool = False
+    word_bank: Optional[List[str]] = None  # For word bank cloze questions
+    letter_template: Optional[Dict[str, Any]] = None  # For letter box questions
+    given_word: Optional[str] = Field(None, max_length=100)  # The word to find synonym/antonym for
+
 
 class QuestionCreate(QuestionBase):
     answer_options: List[AnswerOptionCreate] = []
@@ -156,6 +165,15 @@ class QuestionUpdate(BaseModel):
     explanation: Optional[str] = None
     instruction_text: Optional[str] = None
     pattern_sequence: Optional[Dict[str, Any]] = None
+
+    # Auto-marking fields
+    correct_answer: Optional[str] = None
+    correct_answers: Optional[Dict[str, str]] = None
+    case_sensitive: Optional[bool] = None
+    allow_partial_credit: Optional[bool] = None
+    word_bank: Optional[List[str]] = None
+    letter_template: Optional[Dict[str, Any]] = None
+    given_word: Optional[str] = Field(None, max_length=100)
 
 
 class QuestionResponse(QuestionBase):

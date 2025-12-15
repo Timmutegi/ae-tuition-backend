@@ -32,6 +32,13 @@ class Student(Base):
     student_test_assignments = relationship("StudentTestAssignment", back_populates="student")
     test_attempts = relationship("TestAttempt", back_populates="student")
     test_results = relationship("TestResult", back_populates="student")
+    supervisor_assignments = relationship("SupervisorStudentAssignment", back_populates="student")
+
+    # Support system relationships
+    attendance_records = relationship("AttendanceRecord", back_populates="student", cascade="all, delete-orphan")
+    support_sessions = relationship("SupportSession", back_populates="student", cascade="all, delete-orphan")
+    homework_records = relationship("HomeworkRecord", back_populates="student", cascade="all, delete-orphan")
+    parent_communications = relationship("ParentCommunication", back_populates="student", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Student(user_id='{self.user_id}', student_code='{self.student_code}')>"

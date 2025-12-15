@@ -663,15 +663,92 @@ class TestSessionService:
                     if correct_option and response.selected_options:
                         is_correct = str(correct_option.id) in [str(opt) for opt in response.selected_options]
 
-                elif question.question_type in [QuestionType.FILL_BLANK, QuestionType.WORD_COMPLETION]:
-                    # For fill-in-blank, check if answer matches correct option text
+                elif question.question_type in [QuestionType.FILL_BLANK, QuestionType.WORD_COMPLETION, QuestionType.TEXT_ENTRY]:
+                    # For fill-in-blank, check if answer matches correct option text or correct_answer field
+                    correct_answer = question.correct_answer
+                    if not correct_answer:
+                        question_options = options_by_question.get(question.id, [])
+                        correct_option = next(
+                            (opt for opt in question_options if opt.is_correct),
+                            None
+                        )
+                        if correct_option:
+                            correct_answer = correct_option.option_text
+
+                    if correct_answer and response.answer_text:
+                        case_sensitive = getattr(question, 'case_sensitive', False)
+                        if case_sensitive:
+                            is_correct = response.answer_text.strip() == correct_answer.strip()
+                        else:
+                            is_correct = response.answer_text.strip().lower() == correct_answer.strip().lower()
+
+                elif question.question_type in [QuestionType.SYNONYM_COMPLETION, QuestionType.ANTONYM_COMPLETION]:
+                    # For synonym/antonym completion (letter boxes), check against correct_answer
+                    correct_answer = question.correct_answer
+                    if not correct_answer and question.letter_template:
+                        correct_answer = question.letter_template.get("answer")
+
+                    if correct_answer and response.answer_text:
+                        case_sensitive = getattr(question, 'case_sensitive', False)
+                        if case_sensitive:
+                            is_correct = response.answer_text.strip() == correct_answer.strip()
+                        else:
+                            is_correct = response.answer_text.strip().lower() == correct_answer.strip().lower()
+
+                elif question.question_type in [QuestionType.SYNONYM_SELECTION, QuestionType.ANTONYM_SELECTION,
+                                                  QuestionType.ODD_ONE_OUT, QuestionType.DOUBLE_MEANING_MATCH,
+                                                  QuestionType.READING_COMPREHENSION]:
+                    # These all use multiple choice style - check selected option
                     question_options = options_by_question.get(question.id, [])
                     correct_option = next(
                         (opt for opt in question_options if opt.is_correct),
                         None
                     )
-                    if correct_option and response.answer_text:
-                        is_correct = response.answer_text.strip().lower() == correct_option.option_text.strip().lower()
+                    if correct_option and response.selected_options:
+                        is_correct = str(correct_option.id) in [str(opt) for opt in response.selected_options]
+
+                elif question.question_type == QuestionType.SENTENCE_REARRANGEMENT:
+                    # Check if the identified "wrong" word matches correct_answer
+                    correct_answer = question.correct_answer
+                    if correct_answer and response.answer_text:
+                        case_sensitive = getattr(question, 'case_sensitive', False)
+                        if case_sensitive:
+                            is_correct = response.answer_text.strip() == correct_answer.strip()
+                        else:
+                            is_correct = response.answer_text.strip().lower() == correct_answer.strip().lower()
+
+                elif question.question_type in [QuestionType.CLOZE_SELECT, QuestionType.WORD_BANK_CLOZE,
+                                                  QuestionType.FILL_MISSING_LETTERS]:
+                    # For multiple blank questions, check each answer
+                    correct_answers = question.correct_answers
+                    if correct_answers:
+                        user_answers = response.fill_in_answers or response.dropdown_selections or {}
+                        all_correct = True
+                        total_blanks = len(correct_answers)
+                        correct_count = 0
+
+                        for blank_id, expected in correct_answers.items():
+                            user_answer = user_answers.get(str(blank_id), "")
+                            case_sensitive = getattr(question, 'case_sensitive', False)
+
+                            if case_sensitive:
+                                if str(user_answer).strip() == str(expected).strip():
+                                    correct_count += 1
+                                else:
+                                    all_correct = False
+                            else:
+                                if str(user_answer).strip().lower() == str(expected).strip().lower():
+                                    correct_count += 1
+                                else:
+                                    all_correct = False
+
+                        # Check if partial credit is allowed
+                        allow_partial = getattr(question, 'allow_partial_credit', False)
+                        if allow_partial and total_blanks > 0:
+                            points_earned = int(points * (correct_count / total_blanks))
+                            is_correct = all_correct
+                        else:
+                            is_correct = all_correct
 
                 elif question.question_type == QuestionType.CLOZE_TEST and response.dropdown_selections:
                     # For cloze tests, check each dropdown selection

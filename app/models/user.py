@@ -9,6 +9,8 @@ from app.core.database import Base
 
 class UserRole(enum.Enum):
     ADMIN = "admin"
+    TEACHER = "teacher"
+    SUPERVISOR = "supervisor"
     STUDENT = "student"
 
 class User(Base):
@@ -22,11 +24,14 @@ class User(Base):
     role = Column(Enum(UserRole), nullable=False)
     timezone = Column(String(50), nullable=False, default='Europe/London')
     is_active = Column(Boolean, default=True, nullable=False)
+    must_change_password = Column(Boolean, default=False, nullable=False)  # Force password change on first login
     created_at = Column(DateTime(timezone=True), default=func.now())
     updated_at = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now())
     last_login = Column(DateTime(timezone=True), nullable=True)
 
     student_profile = relationship("Student", back_populates="user", uselist=False)
+    teacher_profile = relationship("TeacherProfile", back_populates="user", uselist=False)
+    supervisor_profile = relationship("SupervisorProfile", back_populates="user", uselist=False)
 
     def __repr__(self):
         return f"<User(email='{self.email}', role='{self.role.value}')>"

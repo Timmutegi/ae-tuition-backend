@@ -138,6 +138,76 @@ class EmailService:
 
         return results
 
+    async def send_teacher_welcome_email(self, teacher: dict, password: str) -> bool:
+        """Send welcome email to newly created teacher with login credentials."""
+        try:
+            template = self._load_template("teacher_welcome.html")
+
+            variables = {
+                "teacher_name": teacher.get("full_name", "Teacher"),
+                "username": teacher.get("username", ""),
+                "email": teacher["email"],
+                "password": password,
+                "frontend_url": self.frontend_url,
+                "contact_email": "support@ae-tuition.com"
+            }
+
+            html_content = self._render_template(template, variables)
+
+            email_data = {
+                "from": self.from_email,
+                "to": [teacher["email"]],
+                "subject": "Welcome to AE Tuition - Your Teacher Account Details",
+                "html": html_content
+            }
+
+            try:
+                response = resend.Emails.send(email_data)
+            except Exception as e:
+                logger.error(f"Email send failed: {str(e)}")
+                return False
+            logger.info(f"Teacher welcome email sent to {teacher['email']}: {response}")
+            return True
+
+        except Exception as e:
+            logger.error(f"Failed to send teacher welcome email to {teacher['email']}: {str(e)}")
+            return False
+
+    async def send_supervisor_welcome_email(self, supervisor: dict, password: str) -> bool:
+        """Send welcome email to newly created supervisor with login credentials."""
+        try:
+            template = self._load_template("supervisor_welcome.html")
+
+            variables = {
+                "supervisor_name": supervisor.get("full_name", "Supervisor"),
+                "username": supervisor.get("username", ""),
+                "email": supervisor["email"],
+                "password": password,
+                "frontend_url": self.frontend_url,
+                "contact_email": "support@ae-tuition.com"
+            }
+
+            html_content = self._render_template(template, variables)
+
+            email_data = {
+                "from": self.from_email,
+                "to": [supervisor["email"]],
+                "subject": "Welcome to AE Tuition - Your Supervisor Account Details",
+                "html": html_content
+            }
+
+            try:
+                response = resend.Emails.send(email_data)
+            except Exception as e:
+                logger.error(f"Email send failed: {str(e)}")
+                return False
+            logger.info(f"Supervisor welcome email sent to {supervisor['email']}: {response}")
+            return True
+
+        except Exception as e:
+            logger.error(f"Failed to send supervisor welcome email to {supervisor['email']}: {str(e)}")
+            return False
+
     async def send_student_report(self, student: dict, report_data: dict, pdf_buffer) -> bool:
         """
         Send student performance report email with PDF attachment.

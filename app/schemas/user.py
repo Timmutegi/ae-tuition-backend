@@ -13,6 +13,7 @@ class UserBase(BaseModel):
     role: UserRole
     timezone: str = 'Europe/London'
     is_active: bool = True
+    must_change_password: bool = False
 
 # Schema for creating a user
 class UserCreate(BaseModel):
@@ -58,3 +59,15 @@ class UserUpdate(BaseModel):
 # Schema for password reset
 class PasswordReset(BaseModel):
     new_password: str
+
+
+# Schema for change password request
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+
+
+# Schema for change password response
+class ChangePasswordResponse(BaseModel):
+    message: str
+    success: bool

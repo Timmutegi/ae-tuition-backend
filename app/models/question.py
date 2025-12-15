@@ -9,6 +9,7 @@ from app.core.database import Base
 
 
 class QuestionType(enum.Enum):
+    # Basic types
     MULTIPLE_CHOICE = "multiple_choice"
     TRUE_FALSE = "true_false"
     FILL_BLANK = "fill_blank"
@@ -18,6 +19,19 @@ class QuestionType(enum.Enum):
     WORD_COMPLETION = "word_completion"
     SENTENCE_COMPLETION = "sentence_completion"
     CLOZE_TEST = "cloze_test"
+
+    # 11+ Verbal Reasoning Types
+    SYNONYM_COMPLETION = "synonym_completion"  # Complete word meaning same (letter boxes)
+    ANTONYM_COMPLETION = "antonym_completion"  # Complete word meaning opposite (letter boxes)
+    SYNONYM_SELECTION = "synonym_selection"    # Select word meaning same from options
+    ANTONYM_SELECTION = "antonym_selection"    # Select word meaning opposite from options
+    ODD_ONE_OUT = "odd_one_out"               # Select word NOT related to others
+    SENTENCE_REARRANGEMENT = "sentence_rearrangement"  # Rearrange words, find one that doesn't fit
+    CLOZE_SELECT = "cloze_select"             # Fill blanks by selecting from word choices
+    FILL_MISSING_LETTERS = "fill_missing_letters"  # Fill letters in boxes to complete passage
+    WORD_BANK_CLOZE = "word_bank_cloze"       # Fill blanks using words from word bank
+    DOUBLE_MEANING_MATCH = "double_meaning_match"  # Find word matching both word pairs
+    TEXT_ENTRY = "text_entry"                 # Free text entry (for typed answers)
 
 
 class QuestionFormat(enum.Enum):
@@ -70,6 +84,16 @@ class Question(Base):
     explanation = Column(Text)
     instruction_text = Column(Text)
     pattern_sequence = Column(JSONB)
+
+    # Auto-marking fields
+    correct_answer = Column(Text)  # For text-based answers (synonym/antonym completion, fill blanks)
+    correct_answers = Column(JSONB)  # For multiple correct answers (e.g., {"1": "answer1", "2": "answer2"})
+    case_sensitive = Column(Boolean, default=False)  # Whether answer comparison is case-sensitive
+    allow_partial_credit = Column(Boolean, default=False)  # For questions with multiple parts
+    word_bank = Column(JSONB)  # For word bank cloze questions (list of available words)
+    letter_template = Column(JSONB)  # For letter box questions: {"template": "_ n t _ _ l _ g _ _ t", "answer": "intelligent"}
+    given_word = Column(String(100))  # For synonym/antonym questions - the word to match
+
     created_by = Column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=False)
     created_at = Column(DateTime(timezone=True), default=func.now())
     updated_at = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now())

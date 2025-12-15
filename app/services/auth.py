@@ -175,3 +175,30 @@ class AuthService:
         await db.refresh(user)
 
         return user
+
+    @staticmethod
+    def verify_password(plain_password: str, hashed_password: str) -> bool:
+        """Verify a plain password against a hashed password."""
+        return verify_password(plain_password, hashed_password)
+
+    @staticmethod
+    async def change_user_password(db: AsyncSession, user_id: UUID, new_password: str) -> User:
+        """Change user password and clear must_change_password flag."""
+        result = await db.execute(select(User).where(User.id == user_id))
+        user = result.scalars().first()
+
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+
+        # Hash the new password
+        user.password_hash = get_password_hash(new_password)
+        # Clear the must_change_password flag
+        user.must_change_password = False
+
+        await db.commit()
+        await db.refresh(user)
+
+        return user

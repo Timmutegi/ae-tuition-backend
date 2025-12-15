@@ -281,6 +281,20 @@ class AcademicCalendarService:
         start_year = AcademicCalendarService.ACADEMIC_YEAR_START.year
         return f"{start_year}-{start_year + 1}"
 
+    def get_academic_year_dates(self) -> Tuple[date, date]:
+        """
+        Get the start and end dates for the academic year.
+
+        Returns:
+            Tuple of (start_date, end_date) for the academic year
+        """
+        start_date = self.ACADEMIC_YEAR_START
+        # End date is the last day of week 40 (Wednesday)
+        # Week 40 starts at (40-1)*7 = 273 days from start
+        # End of week 40 is 273 + 6 = 279 days from start
+        end_date = start_date + timedelta(days=(self.TOTAL_WEEKS - 1) * 7 + 6)
+        return (start_date, end_date)
+
 
 # Create singleton instance
 calendar_service = AcademicCalendarService()

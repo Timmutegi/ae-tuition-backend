@@ -3,7 +3,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.core.security import get_current_user, get_current_admin
-from app.schemas.user import LoginRequest, TokenResponse, User as UserSchema, UserUpdate
+from app.schemas.user import (
+    LoginRequest, TokenResponse, User as UserSchema, UserUpdate,
+    ChangePasswordRequest, ChangePasswordResponse
+)
 from app.services.auth import AuthService
 from app.models.user import User
 
@@ -106,3 +109,39 @@ async def get_admin_info(
     Requires admin role.
     """
     return UserSchema.from_orm(current_admin)
+
+
+@router.post("/change-password", response_model=ChangePasswordResponse)
+async def change_password(
+    password_data: ChangePasswordRequest,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Change current user's password.
+    Works for all user roles (admin, teacher, supervisor, student).
+    Also clears the must_change_password flag if set.
+    """
+    # Verify current password
+    if not AuthService.verify_password(password_data.current_password, current_user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Current password is incorrect"
+        )
+
+    # Update password and clear must_change_password flag
+    try:
+        await AuthService.change_user_password(
+            db=db,
+            user_id=current_user.id,
+            new_password=password_data.new_password
+        )
+        return ChangePasswordResponse(
+            message="Password changed successfully",
+            success=True
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to change password: {str(e)}"
+        )

@@ -185,6 +185,10 @@ class TestAttempt(Base):
     question_responses = relationship("QuestionResponse", back_populates="attempt", cascade="all, delete-orphan")
     test_result = relationship("TestResult", back_populates="attempt", uselist=False)
 
+    # Anti-cheating relationships
+    suspicious_activities = relationship("SuspiciousActivityLog", back_populates="attempt", cascade="all, delete-orphan")
+    active_session = relationship("ActiveTestSession", back_populates="attempt", uselist=False, cascade="all, delete-orphan")
+
     def __repr__(self):
         return f"<TestAttempt(test_id='{self.test_id}', student_id='{self.student_id}', status='{self.status.value}')>"
 
