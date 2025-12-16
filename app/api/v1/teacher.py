@@ -189,8 +189,6 @@ async def get_all_teachers(
         result.append(TeacherListResponse(
             id=teacher.id,
             user_id=teacher.user_id,
-            specialization=teacher.specialization,
-            is_head_teacher=teacher.is_head_teacher,
             full_name=teacher.user.full_name if teacher.user else None,
             email=teacher.user.email if teacher.user else "",
             is_active=teacher.user.is_active if teacher.user else False,

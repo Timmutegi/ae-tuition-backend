@@ -72,9 +72,7 @@ class TeacherService:
 
         # Create teacher profile
         teacher_profile = TeacherProfile(
-            user_id=user.id,
-            specialization=teacher_data.specialization,
-            is_head_teacher=teacher_data.is_head_teacher
+            user_id=user.id
         )
         db.add(teacher_profile)
         await db.commit()

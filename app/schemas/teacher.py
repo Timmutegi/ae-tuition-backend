@@ -6,8 +6,7 @@ from uuid import UUID
 
 # Teacher Profile Schemas
 class TeacherProfileBase(BaseModel):
-    specialization: Optional[str] = None
-    is_head_teacher: bool = False
+    pass
 
 
 class TeacherProfileCreate(TeacherProfileBase):
@@ -15,8 +14,7 @@ class TeacherProfileCreate(TeacherProfileBase):
 
 
 class TeacherProfileUpdate(BaseModel):
-    specialization: Optional[str] = None
-    is_head_teacher: Optional[bool] = None
+    pass
 
 
 class TeacherProfileResponse(TeacherProfileBase):
@@ -80,16 +78,12 @@ class TeacherCreateRequest(BaseModel):
     email: EmailStr
     full_name: str
     timezone: str = "Europe/London"
-    specialization: Optional[str] = None
-    is_head_teacher: bool = False
 
 
 # Teacher list response
 class TeacherListResponse(BaseModel):
     id: UUID
     user_id: UUID
-    specialization: Optional[str]
-    is_head_teacher: bool
     full_name: Optional[str]
     email: str
     is_active: bool
