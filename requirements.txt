@@ -32,6 +32,7 @@ httpx==0.25.2
 
 # Rate limiting
 slowapi==0.1.9
+redis>=4.0.0
 
 # CSV processing
 pandas==2.1.4
