@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings
-from typing import Optional
+from typing import Optional, List
 import os
 
 class Settings(BaseSettings):
@@ -7,6 +7,9 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "your-secret-key-here"
     API_HOST: str = "0.0.0.0"
     API_PORT: int = 9000
+
+    # Environment setting (development/production)
+    ENVIRONMENT: str = "development"
 
     # JWT settings
     JWT_ALGORITHM: str = "HS256"
@@ -40,9 +43,28 @@ class Settings(BaseSettings):
     DEFAULT_ADMIN_PASSWORD: str = "Admin123!!"
     DEFAULT_ADMIN_FULL_NAME: str = "Admin"
 
+    # Security Settings (Production Only)
+    REDIS_URL: str = "memory://"
+    RATE_LIMIT_ENABLED: bool = True
+    RATE_LIMIT_AUTH: str = "5/minute"
+    RATE_LIMIT_DEFAULT: str = "200/minute"
+    IP_BLOCK_THRESHOLD: int = 10
+    IP_BLOCK_DURATION_MINUTES: int = 60
+    IP_TRACK_WINDOW_MINUTES: int = 5
+    SECURITY_ALERT_EMAIL: str = "support@ae-tuition.com"
+    TRUSTED_PROXIES: str = "127.0.0.1"
+
     @property
     def DATABASE_URL(self) -> str:
         return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+
+    @property
+    def is_production(self) -> bool:
+        return self.ENVIRONMENT == "production"
+
+    @property
+    def trusted_proxy_list(self) -> List[str]:
+        return [p.strip() for p in self.TRUSTED_PROXIES.split(",")]
 
     class Config:
         env_file = ".env"
