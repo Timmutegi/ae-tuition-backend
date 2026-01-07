@@ -1,0 +1,39 @@
+{
+  "uploaded_images": {},
+  "uploaded_passage_images": {},
+  "created_passages": {
+    "10": "8f44de06-81bb-49e9-b7c9-43fdfbf60f6c"
+  },
+  "created_cloze_passages": {},
+  "created_questions": {
+    "10_1": "09f21ac0-8dee-4cd1-959e-d25137e74ff7",
+    "10_2": "f32806c7-dd83-44b7-999f-c0b32ed0cc41",
+    "10_3": "fea6e153-1f8d-4e3f-a3f3-ddaa98f803ff",
+    "10_4": "c2298328-2deb-4497-9caf-487048703123",
+    "10_5": "be1b8973-142a-4db6-a72a-033841469ea8",
+    "10_6": "33904eb4-2de0-4011-a22d-7749ae9b041e",
+    "10_7": "0c0faf61-f4f8-44ef-9acf-b1cd86b0fc44",
+    "10_8": "db127854-1e36-4cd0-8121-ed04015f0838",
+    "10_9": "3b14d173-13d2-4f7a-9981-d953379eb064",
+    "10_10": "abd3ff7a-b13e-4190-80fc-508c448a4e0c",
+    "10_11": "cf2dc30f-f90e-4085-ad90-56a4b107fdeb",
+    "10_12": "5753f3e6-a29f-40e9-aea8-6e217b6eb3e1",
+    "10_13": "8c0a6736-80fb-4ee2-ae21-210e93d7ba6c",
+    "10_14": "e6b5db4c-b549-452d-8ba5-1ded30035356",
+    "10_15": "0319b0f2-b823-4cda-9ae1-3ffd48f3f8e5",
+    "10_16": "7d3b0801-0594-485f-a5cf-31824a96fcf9",
+    "10_17": "42889209-f58c-46b9-8b16-1bdb2729c4ee",
+    "10_18": "6c56ec8b-76e8-4045-9576-ab95801f191c",
+    "10_19": "49cbe1fb-75a7-4aad-879d-d1a236a072cf",
+    "10_20": "bbb8ba11-bc76-4309-9e07-b97c9217cbcd",
+    "10_21": "3f51f020-89f6-4b12-b627-dbcb283fbd80",
+    "10_22": "06f39de1-d8a3-47f4-b86f-3a5328805617",
+    "10_23": "93cfaf9c-8856-4d86-8dae-4286a5fb1e6b",
+    "10_24": "6ca6132f-a1c3-4e1d-b31e-ca033960540b",
+    "10_25": "fc33d1ca-06c8-4fe5-9703-00e1efa0ef06"
+  },
+  "created_question_sets": {
+    "10": "f640e9ab-32ed-4644-837f-03e650e78f02"
+  },
+  "created_tests": {}
+}

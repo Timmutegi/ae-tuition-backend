@@ -1,0 +1,415 @@
+{
+  "tests": {
+    "10": {
+      "test_num": 10,
+      "q11_20_type": "SYNONYM_LETTER",
+      "q21_25_type": "SYNONYM_LETTER",
+      "errors": [],
+      "reading_passage": {
+        "title": "Anne Frank",
+        "content": "Anne Frank was born in 1929 in Germany. When the Nazis took power in 1933 and began to persecute the Jews, the Frank family fled to Amsterdam. In 1940 the Germans invaded the Netherlands, and on 5th July 1942 Anne\u2019s sister, Margot, was commanded to report to a Nazi work camp. The family went into hiding the next day in concealed rooms at the back of their father Otto\u2019s workplace. The entrance to the \u2018Secret Annexe\u2019 was hidden behind a bookcase in Otto\u2019s former office, which was still in use. During the day, the family had to remain silent to prevent detection.\n\nTo pass the time, Anne wrote secretly in a diary she had received on her thirteenth birthday. She addressed her daily entries to Kitty, her imaginary friend. The first entry read, \u201cI hope I will be able to confide everything to you and you will be a great source of comfort and support.\u201d The family spent two years in hiding, never going outside, receiving provisions from trusted friends. This was demanding and Anne wrote on 3rd February 1944, \u201cI\u2019ve reached the point where I hardly care whether I live or die.\u201d\n\nThey were given away by an anonymous betrayer and on 4th August 1944 the Nazis stormed the apartment. Anne and her sister were transported to Auschwitz concentration camp in Poland where they were made to haul heavy stones. Eventually they were moved to Bergen-Belsen concentration camp in Germany, where food was scarce and they contracted typhus. Both sisters died a few weeks before the British soldiers liberated the camp in March 1945. Otto, the family\u2019s only surviving member, published her diary in 1952.\n\nAnne was just one of over a million Jewish children who died during the Holocaust.",
+        "passage_type": "reading",
+        "source": "\u00a9 2015 Stephen Curran",
+        "blank_options": null
+      },
+      "cloze_passage": null,
+      "questions": {
+        "1": {
+          "question_number": 1,
+          "question_text": "What country did the family escape to?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "letter": "a",
+              "text": "Germany"
+            },
+            {
+              "letter": "b",
+              "text": "Holland"
+            },
+            {
+              "letter": "c",
+              "text": "Belgium"
+            },
+            {
+              "letter": "d",
+              "text": "Poland"
+            }
+          ],
+          "instruction_text": null,
+          "context_text": null,
+          "given_word": null
+        },
+        "2": {
+          "question_number": 2,
+          "question_text": "For how long were the family in hiding?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "letter": "a",
+              "text": "7 months"
+            },
+            {
+              "letter": "b",
+              "text": "2 years and 1 month"
+            },
+            {
+              "letter": "c",
+              "text": "26 months"
+            },
+            {
+              "letter": "d",
+              "text": "1 year 7 months"
+            }
+          ],
+          "instruction_text": null,
+          "context_text": null,
+          "given_word": null
+        },
+        "3": {
+          "question_number": 3,
+          "question_text": "Which of the following ultimately caused Anne\u2019s death?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "letter": "a",
+              "text": "Hard labour"
+            },
+            {
+              "letter": "b",
+              "text": "Starvation"
+            },
+            {
+              "letter": "c",
+              "text": "Disease"
+            },
+            {
+              "letter": "d",
+              "text": "Torture"
+            }
+          ],
+          "instruction_text": null,
+          "context_text": null,
+          "given_word": null
+        },
+        "4": {
+          "question_number": 4,
+          "question_text": "What caused the family to move to the secret apartment?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "letter": "a",
+              "text": "The Nazi\u2019s invaded Amsterdam."
+            },
+            {
+              "letter": "b",
+              "text": "The Jews were being victimised."
+            },
+            {
+              "letter": "c",
+              "text": "The Nazi party took control of the government."
+            },
+            {
+              "letter": "d",
+              "text": "Margot was being forced to work for the Germans."
+            }
+          ],
+          "instruction_text": null,
+          "context_text": null,
+          "given_word": null
+        },
+        "5": {
+          "question_number": 5,
+          "question_text": "What do Anne\u2019s writings reveal about how she felt after being in hiding for a long period?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "letter": "a",
+              "text": "Depressed"
+            },
+            {
+              "letter": "b",
+              "text": "Hopeful"
+            },
+            {
+              "letter": "c",
+              "text": "Consoled"
+            },
+            {
+              "letter": "d",
+              "text": "Fearful"
+            }
+          ],
+          "instruction_text": null,
+          "context_text": null,
+          "given_word": null
+        },
+        "6": {
+          "question_number": 6,
+          "question_text": "Why was it dangerous to make noise during the day in the annexe?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "letter": "a",
+              "text": "Otto needed to sleep during the day."
+            },
+            {
+              "letter": "b",
+              "text": "Spies suspected they were living there."
+            },
+            {
+              "letter": "c",
+              "text": "The bookcase might not be soundproof."
+            },
+            {
+              "letter": "d",
+              "text": "The business was still in operation."
+            }
+          ],
+          "instruction_text": null,
+          "context_text": null,
+          "given_word": null
+        },
+        "7": {
+          "question_number": 7,
+          "question_text": "What was significant about the informer?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "letter": "a",
+              "text": "It was a personal friend."
+            },
+            {
+              "letter": "b",
+              "text": "It was someone who probably knew the family."
+            },
+            {
+              "letter": "c",
+              "text": "It was later revealed to be a work colleague."
+            },
+            {
+              "letter": "d",
+              "text": "It was a member of the Frank family."
+            }
+          ],
+          "instruction_text": null,
+          "context_text": null,
+          "given_word": null
+        },
+        "8": {
+          "question_number": 8,
+          "question_text": "Why did Anne write in her diary to Kitty?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "letter": "a",
+              "text": "She intended to give it to Kitty once she was free."
+            },
+            {
+              "letter": "b",
+              "text": "She needed a friend to confide in."
+            },
+            {
+              "letter": "c",
+              "text": "She wanted to publish her diary."
+            },
+            {
+              "letter": "d",
+              "text": "She did not want to talk to her family."
+            }
+          ],
+          "instruction_text": null,
+          "context_text": null,
+          "given_word": null
+        },
+        "9": {
+          "question_number": 9,
+          "question_text": "How did the family survive without being detected?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "letter": "a",
+              "text": "Food was supplied to them by allies."
+            },
+            {
+              "letter": "b",
+              "text": "They snuck out at night and stole food."
+            },
+            {
+              "letter": "c",
+              "text": "They grew their own food."
+            },
+            {
+              "letter": "d",
+              "text": "They collected their rations in disguise."
+            }
+          ],
+          "instruction_text": null,
+          "context_text": null,
+          "given_word": null
+        },
+        "10": {
+          "question_number": 10,
+          "question_text": "What do you think Anne Frank\u2019s story has come to symbolise?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "letter": "a",
+              "text": "The liberation of the concentration camps."
+            },
+            {
+              "letter": "b",
+              "text": "The suffering of Jewish children during the war."
+            },
+            {
+              "letter": "c",
+              "text": "The consequences of a betrayal of trust."
+            },
+            {
+              "letter": "d",
+              "text": "All those that died during the Second World War."
+            }
+          ],
+          "instruction_text": null,
+          "context_text": null,
+          "given_word": null
+        },
+        "11": {
+          "question_number": 11,
+          "question_text": "unattached -> i_s_c_o_n_n_t_d",
+          "question_type": "synonym_completion",
+          "options": [],
+          "instruction_text": "Complete the word on the right so that it means the same as, or nearly the same as, the word on the left.",
+          "context_text": "i_s_c_o_n_n_t_d",
+          "given_word": "unattached"
+        },
+        "12": {
+          "question_number": 12,
+          "question_text": "genial -> f_r_i_d_y",
+          "question_type": "synonym_completion",
+          "options": [],
+          "instruction_text": "Complete the word on the right so that it means the same as, or nearly the same as, the word on the left.",
+          "context_text": "f_r_i_d_y",
+          "given_word": "genial"
+        },
+        "13": {
+          "question_number": 13,
+          "question_text": "creative -> r_i_i_t_i",
+          "question_type": "synonym_completion",
+          "options": [],
+          "instruction_text": "Complete the word on the right so that it means the same as, or nearly the same as, the word on the left.",
+          "context_text": "r_i_i_t_i",
+          "given_word": "creative"
+        },
+        "14": {
+          "question_number": 14,
+          "question_text": "credible -> t_s_t_r_r_th",
+          "question_type": "synonym_completion",
+          "options": [],
+          "instruction_text": "Complete the word on the right so that it means the same as, or nearly the same as, the word on the left.",
+          "context_text": "t_s_t_r_r_th",
+          "given_word": "credible"
+        },
+        "15": {
+          "question_number": 15,
+          "question_text": "confront -> c_h_l_n_n_e",
+          "question_type": "synonym_completion",
+          "options": [],
+          "instruction_text": "Complete the word on the right so that it means the same as, or nearly the same as, the word on the left.",
+          "context_text": "c_h_l_n_n_e",
+          "given_word": "confront"
+        },
+        "16": {
+          "question_number": 16,
+          "question_text": "(stick, cane) -> staff",
+          "question_type": "synonym_completion",
+          "options": [],
+          "instruction_text": "Complete the word on the right so that it means the same as, or nearly the same as, the word on the left.",
+          "context_text": "staff",
+          "given_word": "(stick, cane)"
+        },
+        "17": {
+          "question_number": 17,
+          "question_text": "(vulgar, coarse) -> gross",
+          "question_type": "synonym_completion",
+          "options": [],
+          "instruction_text": "Complete the word on the right so that it means the same as, or nearly the same as, the word on the left.",
+          "context_text": "gross",
+          "given_word": "(vulgar, coarse)"
+        },
+        "18": {
+          "question_number": 18,
+          "question_text": "(prey, victim) -> target",
+          "question_type": "synonym_completion",
+          "options": [],
+          "instruction_text": "Complete the word on the right so that it means the same as, or nearly the same as, the word on the left.",
+          "context_text": "target",
+          "given_word": "(prey, victim)"
+        },
+        "19": {
+          "question_number": 19,
+          "question_text": "(universal, widespread) -> mass",
+          "question_type": "synonym_completion",
+          "options": [],
+          "instruction_text": "Complete the word on the right so that it means the same as, or nearly the same as, the word on the left.",
+          "context_text": "mass",
+          "given_word": "(universal, widespread)"
+        },
+        "20": {
+          "question_number": 20,
+          "question_text": "(folio, sheet) -> page",
+          "question_type": "synonym_completion",
+          "options": [],
+          "instruction_text": "Complete the word on the right so that it means the same as, or nearly the same as, the word on the left.",
+          "context_text": "page",
+          "given_word": "(folio, sheet)"
+        },
+        "21": {
+          "question_number": 21,
+          "question_text": "hoard -> s_q_a_d_r",
+          "question_type": "synonym_completion",
+          "options": [],
+          "instruction_text": "Choose the word that means the opposite of the word on the left.",
+          "context_text": "s_q_a_d_r",
+          "given_word": "hoard"
+        },
+        "22": {
+          "question_number": 22,
+          "question_text": "honourable -> c_r_u_t",
+          "question_type": "synonym_completion",
+          "options": [],
+          "instruction_text": "Choose the word that means the opposite of the word on the left.",
+          "context_text": "c_r_u_t",
+          "given_word": "honourable"
+        },
+        "23": {
+          "question_number": 23,
+          "question_text": "impulsive -> c_a_t_o_s",
+          "question_type": "synonym_completion",
+          "options": [],
+          "instruction_text": "Choose the word that means the opposite of the word on the left.",
+          "context_text": "c_a_t_o_s",
+          "given_word": "impulsive"
+        },
+        "24": {
+          "question_number": 24,
+          "question_text": "ill-tempered -> a_m_a_b_e",
+          "question_type": "synonym_completion",
+          "options": [],
+          "instruction_text": "Choose the word that means the opposite of the word on the left.",
+          "context_text": "a_m_a_b_e",
+          "given_word": "ill-tempered"
+        },
+        "25": {
+          "question_number": 25,
+          "question_text": "courteous -> r_d_",
+          "question_type": "synonym_completion",
+          "options": [],
+          "instruction_text": "Choose the word that means the opposite of the word on the left.",
+          "context_text": "r_d_",
+          "given_word": "courteous"
+        }
+      }
+    }
+  }
+}

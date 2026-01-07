@@ -1,0 +1,2036 @@
+{
+  "vr_test_1_q_21": {
+    "given_word": "smart",
+    "correct_answer": "intelligent",
+    "question_type": "synonym",
+    "distractors": [
+      "sharp",
+      "bright",
+      "witty"
+    ]
+  },
+  "vr_test_1_q_22": {
+    "given_word": "exact",
+    "correct_answer": "accurate",
+    "question_type": "synonym",
+    "distractors": [
+      "precise",
+      "exact",
+      "correct"
+    ]
+  },
+  "vr_test_1_q_23": {
+    "given_word": "sterile",
+    "correct_answer": "clean",
+    "question_type": "synonym",
+    "distractors": [
+      "pure",
+      "empty",
+      "shiny"
+    ]
+  },
+  "vr_test_1_q_24": {
+    "given_word": "wrong",
+    "correct_answer": "incorrect",
+    "question_type": "synonym",
+    "distractors": [
+      "unfair",
+      "faulty",
+      "invalid"
+    ]
+  },
+  "vr_test_1_q_25": {
+    "given_word": "level",
+    "correct_answer": "balanced",
+    "question_type": "synonym",
+    "distractors": [
+      "even",
+      "steady",
+      "equal"
+    ]
+  },
+  "vr_test_2_q_21": {
+    "given_word": "friend",
+    "correct_answer": "foe",
+    "question_type": "antonym",
+    "distractors": [
+      "ally",
+      "mate",
+      "pal"
+    ]
+  },
+  "vr_test_2_q_22": {
+    "given_word": "natural",
+    "correct_answer": "artificial",
+    "question_type": "antonym",
+    "distractors": [
+      "synthetic",
+      "unnatural",
+      "man-made"
+    ]
+  },
+  "vr_test_2_q_23": {
+    "given_word": "generous",
+    "correct_answer": "selfish",
+    "question_type": "antonym",
+    "distractors": [
+      "stingy",
+      "rude",
+      "frugal"
+    ]
+  },
+  "vr_test_2_q_24": {
+    "given_word": "deep",
+    "correct_answer": "shallow",
+    "question_type": "antonym",
+    "distractors": [
+      "narrow",
+      "steep",
+      "short"
+    ]
+  },
+  "vr_test_2_q_25": {
+    "given_word": "wealth",
+    "correct_answer": "poverty",
+    "question_type": "antonym",
+    "distractors": [
+      "riches",
+      "prosperity",
+      "luxury"
+    ]
+  },
+  "vr_test_3_q_21": {
+    "given_word": "panic",
+    "correct_answer": "fright",
+    "question_type": "synonym",
+    "distractors": [
+      "dread",
+      "worry",
+      "shock"
+    ]
+  },
+  "vr_test_3_q_22": {
+    "given_word": "brief",
+    "correct_answer": "hasty",
+    "question_type": "synonym",
+    "distractors": [
+      "short",
+      "swift",
+      "speedy"
+    ]
+  },
+  "vr_test_3_q_23": {
+    "given_word": "familiar",
+    "correct_answer": "common",
+    "question_type": "synonym",
+    "distractors": [
+      "usual",
+      "known",
+      "regular"
+    ]
+  },
+  "vr_test_3_q_24": {
+    "given_word": "mute",
+    "correct_answer": "muffle",
+    "question_type": "synonym",
+    "distractors": [
+      "silent",
+      "quiet",
+      "dull"
+    ]
+  },
+  "vr_test_3_q_25": {
+    "given_word": "sole",
+    "correct_answer": "only",
+    "question_type": "synonym",
+    "distractors": [
+      "lone",
+      "solely",
+      "some"
+    ]
+  },
+  "vr_test_4_q_21": {
+    "given_word": "sad",
+    "correct_answer": "elated",
+    "question_type": "synonym",
+    "distractors": [
+      "lonely",
+      "upset",
+      "gloomy"
+    ]
+  },
+  "vr_test_4_q_22": {
+    "given_word": "chameleon",
+    "correct_answer": "chameleon",
+    "question_type": "synonym",
+    "distractors": [
+      "crocodile",
+      "iguana",
+      "tortoise"
+    ]
+  },
+  "vr_test_4_q_23": {
+    "given_word": "jumping",
+    "correct_answer": "hoping",
+    "question_type": "synonym",
+    "distractors": [
+      "leaping",
+      "bouncing",
+      "skipping"
+    ]
+  },
+  "vr_test_4_q_24": {
+    "given_word": "college",
+    "correct_answer": "office",
+    "question_type": "synonym",
+    "distractors": [
+      "school",
+      "university",
+      "academy"
+    ]
+  },
+  "vr_test_4_q_25": {
+    "given_word": "true",
+    "correct_answer": "catalogue",
+    "question_type": "synonym",
+    "distractors": [
+      "genuine",
+      "accurate",
+      "legitimate"
+    ]
+  },
+  "vr_test_5_q_21": {
+    "given_word": "wait not further notice please until",
+    "correct_answer": "not",
+    "question_type": "synonym",
+    "distractors": [
+      "nor",
+      "yet",
+      "now"
+    ]
+  },
+  "vr_test_5_q_22": {
+    "given_word": "unreliable timekeeping was can his",
+    "correct_answer": "can",
+    "question_type": "synonym",
+    "distractors": [
+      "was",
+      "his",
+      "timekeeping"
+    ]
+  },
+  "vr_test_5_q_23": {
+    "given_word": "the it was disappointing were for a result team",
+    "correct_answer": "were",
+    "question_type": "synonym",
+    "distractors": [
+      "are",
+      "was",
+      "has"
+    ]
+  },
+  "vr_test_5_q_24": {
+    "given_word": "and can speak an English French he both",
+    "correct_answer": "an",
+    "question_type": "synonym",
+    "distractors": [
+      "the",
+      "can",
+      "both"
+    ]
+  },
+  "vr_test_5_q_25": {
+    "given_word": "had a sense of tense direction bad she",
+    "correct_answer": "tense",
+    "question_type": "synonym",
+    "distractors": [
+      "stiff",
+      "rigid",
+      "tight"
+    ]
+  },
+  "vr_test_6_q_21": {
+    "given_word": "mistakenly",
+    "correct_answer": "correctly",
+    "question_type": "synonym",
+    "distractors": [
+      "accidentally",
+      "wrongly",
+      "unintentionally"
+    ]
+  },
+  "vr_test_6_q_22": {
+    "given_word": "meritorious",
+    "correct_answer": "dishonourable",
+    "question_type": "synonym",
+    "distractors": [
+      "commendable",
+      "honourable",
+      "deserving"
+    ]
+  },
+  "vr_test_6_q_23": {
+    "given_word": "intuitive",
+    "correct_answer": "calculated",
+    "question_type": "synonym",
+    "distractors": [
+      "instinctive",
+      "analytical",
+      "rational"
+    ]
+  },
+  "vr_test_6_q_24": {
+    "given_word": "sour",
+    "correct_answer": "sweet",
+    "question_type": "synonym",
+    "distractors": [
+      "bitter",
+      "tart",
+      "sharp"
+    ]
+  },
+  "vr_test_6_q_25": {
+    "given_word": "unrefined",
+    "correct_answer": "cultured",
+    "question_type": "synonym",
+    "distractors": [
+      "barbaric",
+      "primitive",
+      "boorish"
+    ]
+  },
+  "vr_test_7_q_21": {
+    "given_word": "experienced",
+    "correct_answer": "novice",
+    "question_type": "synonym",
+    "distractors": [
+      "master",
+      "expert",
+      "adept"
+    ]
+  },
+  "vr_test_7_q_22": {
+    "given_word": "remarkable",
+    "correct_answer": "commonplace",
+    "question_type": "synonym",
+    "distractors": [
+      "extraordinary",
+      "impressive",
+      "noteworthy"
+    ]
+  },
+  "vr_test_7_q_23": {
+    "given_word": "distracted",
+    "correct_answer": "attentive",
+    "question_type": "synonym",
+    "distractors": [
+      "absorbed",
+      "focused",
+      "occupied"
+    ]
+  },
+  "vr_test_7_q_24": {
+    "given_word": "invisible",
+    "correct_answer": "detectable",
+    "question_type": "synonym",
+    "distractors": [
+      "unseen",
+      "hidden",
+      "undetectable"
+    ]
+  },
+  "vr_test_7_q_25": {
+    "given_word": "reprimand",
+    "correct_answer": "commend",
+    "question_type": "synonym",
+    "distractors": [
+      "rebuke",
+      "admonish",
+      "censure"
+    ]
+  },
+  "vr_test_8_q_21": {
+    "given_word": "unattached",
+    "correct_answer": "joined",
+    "question_type": "synonym",
+    "distractors": [
+      "separated",
+      "divided",
+      "isolated"
+    ]
+  },
+  "vr_test_8_q_22": {
+    "given_word": "plain",
+    "correct_answer": "decorative",
+    "question_type": "synonym",
+    "distractors": [
+      "ordinary",
+      "simple",
+      "basic"
+    ]
+  },
+  "vr_test_8_q_23": {
+    "given_word": "resolute",
+    "correct_answer": "hesitant",
+    "question_type": "synonym",
+    "distractors": [
+      "determined",
+      "steadfast",
+      "unyielding"
+    ]
+  },
+  "vr_test_8_q_24": {
+    "given_word": "civil",
+    "correct_answer": "foreign",
+    "question_type": "synonym",
+    "distractors": [
+      "polite",
+      "urban",
+      "social"
+    ]
+  },
+  "vr_test_8_q_25": {
+    "given_word": "undeveloped",
+    "correct_answer": "mature",
+    "question_type": "synonym",
+    "distractors": [
+      "immature",
+      "primitive",
+      "rudimentary"
+    ]
+  },
+  "vr_test_9_q_21": {
+    "given_word": "is at deepest the waters lake this point",
+    "correct_answer": "waters",
+    "question_type": "synonym",
+    "distractors": [
+      "depths",
+      "lakes",
+      "points"
+    ]
+  },
+  "vr_test_9_q_22": {
+    "given_word": "I know camera do shot not to use how this",
+    "correct_answer": "shot",
+    "question_type": "synonym",
+    "distractors": [
+      "snap",
+      "click",
+      "flash"
+    ]
+  },
+  "vr_test_9_q_23": {
+    "given_word": "can mail the lost in the got postcard",
+    "correct_answer": "can",
+    "question_type": "synonym",
+    "distractors": [
+      "will",
+      "may",
+      "must"
+    ]
+  },
+  "vr_test_9_q_24": {
+    "given_word": "for my a I present looking mother for am search",
+    "correct_answer": "search",
+    "question_type": "synonym",
+    "distractors": [
+      "look",
+      "find",
+      "seek"
+    ]
+  },
+  "vr_test_9_q_25": {
+    "given_word": "in train twenty the by journey minutes takes",
+    "correct_answer": "in",
+    "question_type": "synonym",
+    "distractors": [
+      "on",
+      "at",
+      "into"
+    ]
+  },
+  "vr_test_10_q_21": {
+    "given_word": "hoard",
+    "correct_answer": "squander",
+    "question_type": "synonym",
+    "distractors": [
+      "gather",
+      "collect",
+      "amass"
+    ]
+  },
+  "vr_test_10_q_22": {
+    "given_word": "honourable",
+    "correct_answer": "corrupt",
+    "question_type": "synonym",
+    "distractors": [
+      "noble",
+      "ethical",
+      "worthy"
+    ]
+  },
+  "vr_test_10_q_23": {
+    "given_word": "impulsive",
+    "correct_answer": "cautious",
+    "question_type": "synonym",
+    "distractors": [
+      "reckless",
+      "spontaneous",
+      "rash"
+    ]
+  },
+  "vr_test_10_q_24": {
+    "given_word": "ill-tempered",
+    "correct_answer": "amiable",
+    "question_type": "synonym",
+    "distractors": [
+      "grumpy",
+      "crabby",
+      "sullen"
+    ]
+  },
+  "vr_test_10_q_25": {
+    "given_word": "courteous",
+    "correct_answer": "rude",
+    "question_type": "synonym",
+    "distractors": [
+      "polite",
+      "kind",
+      "gracious"
+    ]
+  },
+  "vr_test_11_q_21": {
+    "given_word": "the by meeting attended staff the with entire was",
+    "correct_answer": "with",
+    "question_type": "synonym",
+    "distractors": [
+      "through",
+      "along",
+      "among"
+    ]
+  },
+  "vr_test_11_q_22": {
+    "given_word": "is the prizes winning worth novel award reading",
+    "correct_answer": "prizes",
+    "question_type": "synonym",
+    "distractors": [
+      "awards",
+      "trophy",
+      "medals"
+    ]
+  },
+  "vr_test_11_q_23": {
+    "given_word": "dictionary a hand at when too reading keep I close",
+    "correct_answer": "too",
+    "question_type": "synonym",
+    "distractors": [
+      "also",
+      "hand",
+      "keep"
+    ]
+  },
+  "vr_test_11_q_24": {
+    "given_word": "red suddenly our train a stopped at light can",
+    "correct_answer": "can",
+    "question_type": "synonym",
+    "distractors": [
+      "jar",
+      "box",
+      "pot"
+    ]
+  },
+  "vr_test_11_q_25": {
+    "given_word": "put take home remember the go out you please fire before to",
+    "correct_answer": "take",
+    "question_type": "synonym",
+    "distractors": [
+      "give",
+      "hold",
+      "push"
+    ]
+  },
+  "vr_test_12_q_21": {
+    "given_word": "panda",
+    "correct_answer": "snake",
+    "question_type": "synonym",
+    "distractors": [
+      "swan",
+      "tiger",
+      "mouse"
+    ]
+  },
+  "vr_test_12_q_22": {
+    "given_word": "pollute",
+    "correct_answer": "sanitise",
+    "question_type": "synonym",
+    "distractors": [
+      "contaminate",
+      "tarnish",
+      "befoul"
+    ]
+  },
+  "vr_test_12_q_23": {
+    "given_word": "twig",
+    "correct_answer": "sapling",
+    "question_type": "synonym",
+    "distractors": [
+      "branch",
+      "leaf",
+      "bark"
+    ]
+  },
+  "vr_test_12_q_24": {
+    "given_word": "brash",
+    "correct_answer": "brash",
+    "question_type": "synonym",
+    "distractors": [
+      "bold",
+      "loud",
+      "rash"
+    ]
+  },
+  "vr_test_12_q_25": {
+    "given_word": "invoiced",
+    "correct_answer": "misplaced",
+    "question_type": "synonym",
+    "distractors": [
+      "bargained",
+      "receipted",
+      "registered"
+    ]
+  },
+  "vr_test_13_q_21": {
+    "given_word": "outrageous",
+    "correct_answer": "disgraceful",
+    "question_type": "synonym",
+    "distractors": [
+      "shameful",
+      "unusual",
+      "terrific"
+    ]
+  },
+  "vr_test_13_q_22": {
+    "given_word": "uncouth",
+    "correct_answer": "vulgar",
+    "question_type": "synonym",
+    "distractors": [
+      "rude",
+      "harsh",
+      "crude"
+    ]
+  },
+  "vr_test_13_q_23": {
+    "given_word": "mammoth",
+    "correct_answer": "enormous",
+    "question_type": "synonym",
+    "distractors": [
+      "ancient",
+      "massive",
+      "prehistoric"
+    ]
+  },
+  "vr_test_13_q_24": {
+    "given_word": "sensible",
+    "correct_answer": "practical",
+    "question_type": "synonym",
+    "distractors": [
+      "logical",
+      "rational",
+      "reasonable"
+    ]
+  },
+  "vr_test_13_q_25": {
+    "given_word": "deft",
+    "correct_answer": "skilful",
+    "question_type": "synonym",
+    "distractors": [
+      "clumsy",
+      "swift",
+      "rough"
+    ]
+  },
+  "vr_test_14_q_21": {
+    "given_word": "villainous",
+    "correct_answer": "wicked",
+    "question_type": "synonym",
+    "distractors": [
+      "evil",
+      "cruel",
+      "mean"
+    ]
+  },
+  "vr_test_14_q_22": {
+    "given_word": "tolerant",
+    "correct_answer": "accepting",
+    "question_type": "synonym",
+    "distractors": [
+      "enduring",
+      "patient",
+      "forgiving"
+    ]
+  },
+  "vr_test_14_q_23": {
+    "given_word": "deferential",
+    "correct_answer": "respectful",
+    "question_type": "synonym",
+    "distractors": [
+      "obedient",
+      "submissive",
+      "considerate"
+    ]
+  },
+  "vr_test_14_q_24": {
+    "given_word": "outrun",
+    "correct_answer": "surpass",
+    "question_type": "synonym",
+    "distractors": [
+      "overtake",
+      "outpace",
+      "exceed"
+    ]
+  },
+  "vr_test_14_q_25": {
+    "given_word": "jocular",
+    "correct_answer": "humorous",
+    "question_type": "synonym",
+    "distractors": [
+      "serious",
+      "joyful",
+      "playful"
+    ]
+  },
+  "vr_test_15_q_21": {
+    "given_word": "goods must airport restricted you at for declare the",
+    "correct_answer": "for",
+    "question_type": "synonym",
+    "distractors": [
+      "from",
+      "at",
+      "with"
+    ]
+  },
+  "vr_test_15_q_22": {
+    "given_word": "taste around fashion the her was latest not to",
+    "correct_answer": "around",
+    "question_type": "synonym",
+    "distractors": [
+      "beside",
+      "nearby",
+      "option3"
+    ]
+  },
+  "vr_test_15_q_23": {
+    "given_word": "did diary he a to his daily resolution write made in",
+    "correct_answer": "did",
+    "question_type": "synonym",
+    "distractors": [
+      "wrote",
+      "kept",
+      "made"
+    ]
+  },
+  "vr_test_15_q_24": {
+    "given_word": "paint colour they could kitchen where the which to decide not",
+    "correct_answer": "where",
+    "question_type": "synonym",
+    "distractors": [
+      "which",
+      "there",
+      "place"
+    ]
+  },
+  "vr_test_15_q_25": {
+    "given_word": "served on Day when traditionally is turkey Christmas",
+    "correct_answer": "when",
+    "question_type": "synonym",
+    "distractors": [
+      "where",
+      "while",
+      "once"
+    ]
+  },
+  "vr_test_16_q_21": {
+    "given_word": "vulnerable",
+    "correct_answer": "defenceless",
+    "question_type": "synonym",
+    "distractors": [
+      "fragile",
+      "harmless",
+      "fearful"
+    ]
+  },
+  "vr_test_16_q_22": {
+    "given_word": "marine",
+    "correct_answer": "nautical",
+    "question_type": "synonym",
+    "distractors": [
+      "aquatic",
+      "terrestrial",
+      "celestial"
+    ]
+  },
+  "vr_test_16_q_23": {
+    "given_word": "upstanding",
+    "correct_answer": "vertical",
+    "question_type": "synonym",
+    "distractors": [
+      "horizontal",
+      "upright",
+      "elevated"
+    ]
+  },
+  "vr_test_16_q_24": {
+    "given_word": "attentive",
+    "correct_answer": "observant",
+    "question_type": "synonym",
+    "distractors": [
+      "alert",
+      "focused",
+      "aware"
+    ]
+  },
+  "vr_test_16_q_25": {
+    "given_word": "integrity",
+    "correct_answer": "honesty",
+    "question_type": "synonym",
+    "distractors": [
+      "loyalty",
+      "bravery",
+      "wisdom"
+    ]
+  },
+  "vr_test_17_q_21": {
+    "given_word": "enough back vote not was he yet old to",
+    "correct_answer": "back",
+    "question_type": "synonym",
+    "distractors": [
+      "front",
+      "vote",
+      "enough"
+    ]
+  },
+  "vr_test_17_q_22": {
+    "given_word": "trade such she of the him the tricks taught",
+    "correct_answer": "such",
+    "question_type": "synonym",
+    "distractors": [
+      "much",
+      "sure",
+      "thus"
+    ]
+  },
+  "vr_test_17_q_23": {
+    "given_word": "the opening the mayor attended ceremony were historic",
+    "correct_answer": "were",
+    "question_type": "synonym",
+    "distractors": [
+      "are",
+      "was",
+      "been"
+    ]
+  },
+  "vr_test_17_q_24": {
+    "given_word": "none to wet not on be the slip floor careful",
+    "correct_answer": "none",
+    "question_type": "synonym",
+    "distractors": [
+      "null",
+      "naught",
+      "nada"
+    ]
+  },
+  "vr_test_17_q_25": {
+    "given_word": "route will time journey take you the take down same whichever the",
+    "correct_answer": "down",
+    "question_type": "synonym",
+    "distractors": [
+      "around",
+      "along",
+      "up"
+    ]
+  },
+  "vr_test_18_q_21": {
+    "given_word": "(incubate, brood) (devise, concoct)",
+    "correct_answer": "hatch",
+    "question_type": "synonym",
+    "distractors": [
+      "nest",
+      "breed",
+      "plan"
+    ]
+  },
+  "vr_test_18_q_22": {
+    "given_word": "(mark, stroke) (click, clack)",
+    "correct_answer": "tick",
+    "question_type": "synonym",
+    "distractors": [
+      "flick",
+      "tock",
+      "clip"
+    ]
+  },
+  "vr_test_18_q_23": {
+    "given_word": "(beaker, cup) (assault, rob)",
+    "correct_answer": "mug",
+    "question_type": "synonym",
+    "distractors": [
+      "jar",
+      "steal",
+      "pint"
+    ]
+  },
+  "vr_test_18_q_24": {
+    "given_word": "(student, schoolchild) (iris, eye)",
+    "correct_answer": "pupil",
+    "question_type": "synonym",
+    "distractors": [
+      "teacher",
+      "retina",
+      "learner"
+    ]
+  },
+  "vr_test_18_q_25": {
+    "given_word": "(remainder, residue) (lounge, relax)",
+    "correct_answer": "rest",
+    "question_type": "synonym",
+    "distractors": [
+      "left",
+      "ease",
+      "dust"
+    ]
+  },
+  "vr_test_19_q_21": {
+    "given_word": "hostile",
+    "correct_answer": "friendly",
+    "question_type": "synonym",
+    "distractors": [
+      "aggressive",
+      "unfriendly",
+      "fierce"
+    ]
+  },
+  "vr_test_19_q_22": {
+    "given_word": "honest",
+    "correct_answer": "deceitful",
+    "question_type": "synonym",
+    "distractors": [
+      "truthful",
+      "sincere",
+      "genuine"
+    ]
+  },
+  "vr_test_19_q_23": {
+    "given_word": "qualify",
+    "correct_answer": "fail",
+    "question_type": "synonym",
+    "distractors": [
+      "pass",
+      "succeed",
+      "excel"
+    ]
+  },
+  "vr_test_19_q_24": {
+    "given_word": "grouchy",
+    "correct_answer": "cheerful",
+    "question_type": "synonym",
+    "distractors": [
+      "grumpy",
+      "cranky",
+      "moody"
+    ]
+  },
+  "vr_test_19_q_25": {
+    "given_word": "contract",
+    "correct_answer": "expand",
+    "question_type": "synonym",
+    "distractors": [
+      "shrink",
+      "reduce",
+      "narrow"
+    ]
+  },
+  "vr_test_20_q_21": {
+    "given_word": "communicative",
+    "correct_answer": "outgoing",
+    "question_type": "synonym",
+    "distractors": [
+      "talkative",
+      "expressive",
+      "eloquent"
+    ]
+  },
+  "vr_test_20_q_22": {
+    "given_word": "covetous",
+    "correct_answer": "envious",
+    "question_type": "synonym",
+    "distractors": [
+      "greedy",
+      "jealous",
+      "craving"
+    ]
+  },
+  "vr_test_20_q_23": {
+    "given_word": "evade",
+    "correct_answer": "avoid",
+    "question_type": "synonym",
+    "distractors": [
+      "ignore",
+      "confront",
+      "embrace"
+    ]
+  },
+  "vr_test_20_q_24": {
+    "given_word": "contrast",
+    "correct_answer": "compare",
+    "question_type": "synonym",
+    "distractors": [
+      "contrast",
+      "separate",
+      "differentiate"
+    ]
+  },
+  "vr_test_20_q_25": {
+    "given_word": "fallow",
+    "correct_answer": "unsown",
+    "question_type": "synonym",
+    "distractors": [
+      "fertile",
+      "barren",
+      "ploughed"
+    ]
+  },
+  "vr_test_4_q_11_tpl_n_a_r_r_o_w": {
+    "given_word": "wide",
+    "correct_answer": "narrow",
+    "question_type": "antonym",
+    "letter_template": "n_a_r_r_o_w",
+    "distractors": [
+      "shallow",
+      "normal",
+      "sparse"
+    ]
+  },
+  "vr_test_4_q_12_tpl_m_o_d_e_r_n": {
+    "given_word": "ancient",
+    "correct_answer": "modern",
+    "question_type": "antonym",
+    "letter_template": "m_o_d_e_r_n",
+    "distractors": [
+      "mature",
+      "former",
+      "outdated"
+    ]
+  },
+  "vr_test_4_q_13_tpl_e_m_p_t_y": {
+    "given_word": "full",
+    "correct_answer": "empty",
+    "question_type": "antonym",
+    "letter_template": "e_m_p_t_y",
+    "distractors": [
+      "heavy",
+      "stale",
+      "option3"
+    ]
+  },
+  "vr_test_4_q_14_tpl_c_o_w_a_r_d_l_y": {
+    "given_word": "courageous",
+    "correct_answer": "cowardly",
+    "question_type": "antonym",
+    "letter_template": "c_o_w_a_r_d_l_y",
+    "distractors": [
+      "carefully",
+      "clumsily",
+      "crudely"
+    ]
+  },
+  "vr_test_4_q_15_tpl_d_e_p_a_r_t_u_r_e": {
+    "given_word": "arrival",
+    "correct_answer": "departure",
+    "question_type": "antonym",
+    "letter_template": "d_e_p_a_r_t_u_r_e",
+    "distractors": [
+      "desperate",
+      "destructive",
+      "option3"
+    ]
+  },
+  "vr_test_4_q_16_tpl_s_t_i_c_k": {
+    "given_word": "twig",
+    "correct_answer": "stick",
+    "question_type": "antonym",
+    "letter_template": "s_t_i_c_k",
+    "distractors": [
+      "stalk",
+      "stone",
+      "straw"
+    ]
+  },
+  "vr_test_4_q_17_tpl_c_o_u_n_t": {
+    "given_word": "calculate",
+    "correct_answer": "count",
+    "question_type": "antonym",
+    "letter_template": "c_o_u_n_t",
+    "distractors": [
+      "clout",
+      "cloud",
+      "crust"
+    ]
+  },
+  "vr_test_4_q_18_tpl_f_o_r_c_e": {
+    "given_word": "strength",
+    "correct_answer": "might",
+    "question_type": "antonym",
+    "letter_template": "f_o_r_c_e",
+    "distractors": [
+      "force",
+      "fierce",
+      "forge"
+    ]
+  },
+  "vr_test_4_q_19_tpl_b_l_i_s_s": {
+    "given_word": "joy",
+    "correct_answer": "pride",
+    "question_type": "antonym",
+    "letter_template": "b_l_i_s_s",
+    "distractors": [
+      "blight",
+      "bliss",
+      "brave"
+    ]
+  },
+  "vr_test_4_q_20_tpl_p_a_r_t": {
+    "given_word": "fragment",
+    "correct_answer": "scrap",
+    "question_type": "antonym",
+    "letter_template": "p_a_r_t",
+    "distractors": [
+      "spare",
+      "sprat",
+      "spark"
+    ]
+  },
+  "vr_test_10_q_11_tpl_i_s_c_o_n_n_t_d": {
+    "given_word": "unattached",
+    "correct_answer": "disconnected",
+    "question_type": "antonym",
+    "letter_template": "i_s_c_o_n_n_t_d",
+    "distractors": [
+      "discontented",
+      "disassembled",
+      "disrespectful"
+    ]
+  },
+  "vr_test_10_q_12_tpl_f_r__d_y": {
+    "given_word": "genial",
+    "correct_answer": "friendly",
+    "question_type": "antonym",
+    "letter_template": "f_r__d_y",
+    "distractors": [
+      "fruity",
+      "frosty",
+      "feisty"
+    ]
+  },
+  "vr_test_10_q_13_tpl__r_i_t_i_": {
+    "given_word": "creative",
+    "correct_answer": "artistic",
+    "question_type": "antonym",
+    "letter_template": "_r_i_t_i_",
+    "distractors": [
+      "critical",
+      "pragmatic",
+      "restrictive"
+    ]
+  },
+  "vr_test_10_q_14_tpl_t__s_t_r_th": {
+    "given_word": "credible",
+    "correct_answer": "trustworthy",
+    "question_type": "antonym",
+    "letter_template": "t__s_t_r_th",
+    "distractors": [
+      "unreliable",
+      "dishonest",
+      "unfaithful"
+    ]
+  },
+  "vr_test_10_q_15_tpl_c_h_l_n_e": {
+    "given_word": "confront",
+    "correct_answer": "challenge",
+    "question_type": "antonym",
+    "letter_template": "c_h_l_n_e",
+    "distractors": [
+      "champion",
+      "cherish",
+      "change"
+    ]
+  },
+  "vr_test_10_q_16_tpl_s_a_f_f": {
+    "given_word": "stick",
+    "correct_answer": "staff",
+    "question_type": "antonym",
+    "letter_template": "s_a_f_f",
+    "distractors": [
+      "scarf",
+      "shaft",
+      "sniff"
+    ]
+  },
+  "vr_test_10_q_17_tpl_r_u_d_e": {
+    "given_word": "vulgar",
+    "correct_answer": "gross",
+    "question_type": "antonym",
+    "letter_template": "r_u_d_e",
+    "distractors": [
+      "rude",
+      "crude",
+      "prude"
+    ]
+  },
+  "vr_test_10_q_18_tpl_t_a_r_g_e_t": {
+    "given_word": "prey",
+    "correct_answer": "quarry",
+    "question_type": "antonym",
+    "letter_template": "t_a_r_g_e_t",
+    "distractors": [
+      "target",
+      "hunter",
+      "predator"
+    ]
+  },
+  "vr_test_10_q_19_tpl_c_o_l_l_e_c_t_i_v_e": {
+    "given_word": "universal",
+    "correct_answer": "mass",
+    "question_type": "antonym",
+    "letter_template": "c_o_l_l_e_c_t_i_v_e",
+    "distractors": [
+      "class",
+      "group",
+      "crowd"
+    ]
+  },
+  "vr_test_10_q_20_tpl_p_a_g_e": {
+    "given_word": "folio",
+    "correct_answer": "page",
+    "question_type": "antonym",
+    "letter_template": "p_a_g_e",
+    "distractors": [
+      "stage",
+      "plage",
+      "prage"
+    ]
+  },
+  "vr_test_12_q_11_tpl_a_c_racy": {
+    "given_word": "error",
+    "correct_answer": "blunder",
+    "question_type": "antonym",
+    "letter_template": "a_c_racy",
+    "distractors": [
+      "accuracy",
+      "clanger",
+      "slipup"
+    ]
+  },
+  "vr_test_12_q_12_tpl_m_n_ane": {
+    "given_word": "inspirational",
+    "correct_answer": "encouraging",
+    "question_type": "antonym",
+    "letter_template": "m_n_ane",
+    "distractors": [
+      "discouraging",
+      "depressing",
+      "mundane"
+    ]
+  },
+  "vr_test_12_q_13_tpl_i_c_r_rupt": {
+    "given_word": "indecent",
+    "correct_answer": "offensive",
+    "question_type": "antonym",
+    "letter_template": "i_c_r_rupt",
+    "distractors": [
+      "interrupt",
+      "incorrect",
+      "incurable"
+    ]
+  },
+  "vr_test_12_q_14_tpl_d_s_onest": {
+    "given_word": "ethical",
+    "correct_answer": "principled",
+    "question_type": "antonym",
+    "letter_template": "d_s_onest",
+    "distractors": [
+      "dishonest",
+      "desperate",
+      "discourteous"
+    ]
+  },
+  "vr_test_12_q_15_tpl_i_ept": {
+    "given_word": "experienced",
+    "correct_answer": "skilled",
+    "question_type": "antonym",
+    "letter_template": "i_ept",
+    "distractors": [
+      "inept",
+      "idiot",
+      "inefficient"
+    ]
+  },
+  "vr_test_12_q_16_tpl_r_e_e_se": {
+    "given_word": "restrain",
+    "correct_answer": "release",
+    "question_type": "antonym",
+    "letter_template": "r_e_e_se",
+    "distractors": [
+      "repress",
+      "reserve",
+      "rescind"
+    ]
+  },
+  "vr_test_12_q_17_tpl_e_i_a_le": {
+    "given_word": "placid",
+    "correct_answer": "excitable",
+    "question_type": "antonym",
+    "letter_template": "e_i_a_le",
+    "distractors": [
+      "edible",
+      "eligible",
+      "erasable"
+    ]
+  },
+  "vr_test_12_q_18_tpl_t_r_i_": {
+    "given_word": "prompt",
+    "correct_answer": "tardy",
+    "question_type": "antonym",
+    "letter_template": "t_r_i_",
+    "distractors": [
+      "trick",
+      "train",
+      "treat"
+    ]
+  },
+  "vr_test_12_q_19_tpl_u_r_p_t_n": {
+    "given_word": "remorseful",
+    "correct_answer": "unrepentant",
+    "question_type": "antonym",
+    "letter_template": "u_r_p_t_n",
+    "distractors": [
+      "ungrateful",
+      "unforgiving",
+      "unsympathetic"
+    ]
+  },
+  "vr_test_12_q_20_tpl_p_e_s_nt": {
+    "given_word": "foul",
+    "correct_answer": "pleasant",
+    "question_type": "antonym",
+    "letter_template": "p_e_s_nt",
+    "distractors": [
+      "present",
+      "prudent",
+      "patient"
+    ]
+  },
+  "vr_test_16_q_11_tpl_d_i_s_r_e_s_p_e_c_t_f_u_l": {
+    "given_word": "reverent",
+    "correct_answer": "disrespectful",
+    "question_type": "antonym",
+    "letter_template": "d_i_s_r_e_s_p_e_c_t_f_u_l",
+    "distractors": [
+      "disregardful",
+      "disinterested",
+      "disgraceful"
+    ]
+  },
+  "vr_test_16_q_12_tpl_f_a_i_l_u_r_e": {
+    "given_word": "successful",
+    "correct_answer": "failed",
+    "question_type": "antonym",
+    "letter_template": "f_a_i_l_u_r_e",
+    "distractors": [
+      "frustrate",
+      "fearful",
+      "failure"
+    ]
+  },
+  "vr_test_16_q_13_tpl_m_e_r_c_i_l_e_s_s": {
+    "given_word": "forgiving",
+    "correct_answer": "merciless",
+    "question_type": "antonym",
+    "letter_template": "m_e_r_c_i_l_e_s_s",
+    "distractors": [
+      "vindictive",
+      "relentless",
+      "unyielding"
+    ]
+  },
+  "vr_test_16_q_14_tpl_l_o_a_t_h_i_n_g": {
+    "given_word": "loving",
+    "correct_answer": "loathing",
+    "question_type": "antonym",
+    "letter_template": "l_o_a_t_h_i_n_g",
+    "distractors": [
+      "loatsing",
+      "loatming",
+      "loafing"
+    ]
+  },
+  "vr_test_16_q_15_tpl_w_e_a_k": {
+    "given_word": "resilient",
+    "correct_answer": "weak",
+    "question_type": "antonym",
+    "letter_template": "w_e_a_k",
+    "distractors": [
+      "meek",
+      "peak",
+      "weakly"
+    ]
+  },
+  "vr_test_16_q_16_tpl_h_i_d_e_o_u_s": {
+    "given_word": "revealing",
+    "correct_answer": "revealing",
+    "question_type": "antonym",
+    "letter_template": "h_i_d_e_o_u_s",
+    "distractors": [
+      "hiding",
+      "obscure",
+      "secretive"
+    ]
+  },
+  "vr_test_16_q_17_tpl_c_a_n_i_n_e": {
+    "given_word": "feline",
+    "correct_answer": "sly",
+    "question_type": "antonym",
+    "letter_template": "c_a_n_i_n_e",
+    "distractors": [
+      "shy",
+      "slyly",
+      "clumsy"
+    ]
+  },
+  "vr_test_16_q_18_tpl_a_n_y": {
+    "given_word": "because",
+    "correct_answer": "any",
+    "question_type": "antonym",
+    "letter_template": "a_n_y",
+    "distractors": [
+      "also",
+      "many",
+      "only"
+    ]
+  },
+  "vr_test_16_q_19_tpl_s_m_a_r_t": {
+    "given_word": "straw",
+    "correct_answer": "storm",
+    "question_type": "antonym",
+    "letter_template": "s_m_a_r_t",
+    "distractors": [
+      "stare",
+      "smart",
+      "stamp"
+    ]
+  },
+  "vr_test_16_q_20_tpl_s_m_u_d_g_e": {
+    "given_word": "dash",
+    "correct_answer": "smudge",
+    "question_type": "antonym",
+    "letter_template": "s_m_u_d_g_e",
+    "distractors": [
+      "spruce",
+      "sponge",
+      "squirm"
+    ]
+  },
+  "vr_test_18_q_11_tpl_d_p_e_d_b_e": {
+    "given_word": "trustworthy",
+    "correct_answer": "irritable",
+    "question_type": "antonym",
+    "letter_template": "d_p_e_d_b_e",
+    "distractors": [
+      "dependable",
+      "displeasure",
+      "disreputable"
+    ]
+  },
+  "vr_test_18_q_12_tpl_t_r_a_g_h_t_f_r_w_r_d": {
+    "given_word": "simple",
+    "correct_answer": "weariness",
+    "question_type": "antonym",
+    "letter_template": "t_r_a_g_h_t_f_r_w_r_d",
+    "distractors": [
+      "straightforward",
+      "complicated",
+      "understood"
+    ]
+  },
+  "vr_test_18_q_13_tpl_n_c_l_s_e": {
+    "given_word": "confine",
+    "correct_answer": "eager",
+    "question_type": "antonym",
+    "letter_template": "n_c_l_s_e",
+    "distractors": [
+      "enclose",
+      "excite",
+      "entice"
+    ]
+  },
+  "vr_test_18_q_14_tpl_i_n_s_g_h_t_f_u_l": {
+    "given_word": "perceptive",
+    "correct_answer": "indifferent",
+    "question_type": "antonym",
+    "letter_template": "i_n_s_g_h_t_f_u_l",
+    "distractors": [
+      "insensitive",
+      "uninspired",
+      "inattentive"
+    ]
+  },
+  "vr_test_18_q_15_tpl_b_e_a_t_f_u_l": {
+    "given_word": "exquisite",
+    "correct_answer": "eccentric",
+    "question_type": "antonym",
+    "letter_template": "b_e_a_t_f_u_l",
+    "distractors": [
+      "beneficial",
+      "extraordinary",
+      "efficacious"
+    ]
+  },
+  "vr_test_18_q_16_tpl_c_r_i_a_l": {
+    "given_word": "waspish",
+    "correct_answer": "dependable",
+    "question_type": "antonym",
+    "letter_template": "c_r_i_a_l",
+    "distractors": [
+      "careful",
+      "cordial",
+      "cynical"
+    ]
+  },
+  "vr_test_18_q_17_tpl_v_i_g_o_r": {
+    "given_word": "lethargy",
+    "correct_answer": "straightforward",
+    "question_type": "antonym",
+    "letter_template": "v_i_g_o_r",
+    "distractors": [
+      "vigorously",
+      "vibration",
+      "vigilance"
+    ]
+  },
+  "vr_test_18_q_18_tpl_e_a_g_e_r": {
+    "given_word": "keen",
+    "correct_answer": "enclose",
+    "question_type": "antonym",
+    "letter_template": "e_a_g_e_r",
+    "distractors": [
+      "enlarge",
+      "engage",
+      "endanger"
+    ]
+  },
+  "vr_test_18_q_19_tpl_i_n_d_i_f_f_e_r_e_n_t": {
+    "given_word": "apathetic",
+    "correct_answer": "insightful",
+    "question_type": "antonym",
+    "letter_template": "i_n_d_i_f_f_e_r_e_n_t",
+    "distractors": [
+      "indolent",
+      "insolvent",
+      "indifferent"
+    ]
+  },
+  "vr_test_18_q_20_tpl_e_c_c_e_n_t_r_i_c": {
+    "given_word": "zany",
+    "correct_answer": "beautiful",
+    "question_type": "antonym",
+    "letter_template": "e_c_c_e_n_t_r_i_c",
+    "distractors": [
+      "eccentric",
+      "peculiar",
+      "uncommon"
+    ]
+  },
+  "vr_test_20_q_11_tpl_a_a_h_tic": {
+    "given_word": "enthusiastic",
+    "correct_answer": "apathetic",
+    "question_type": "antonym",
+    "letter_template": "a_a_h_tic",
+    "distractors": [
+      "anesthetic",
+      "apothetic",
+      "anarchic"
+    ]
+  },
+  "vr_test_20_q_12_tpl_c_r_l_ss": {
+    "given_word": "conscientious",
+    "correct_answer": "careless",
+    "question_type": "antonym",
+    "letter_template": "c_r_l_ss",
+    "distractors": [
+      "reckless",
+      "curtly",
+      "careful"
+    ]
+  },
+  "vr_test_20_q_13_tpl_f_r_ign": {
+    "given_word": "indigenous",
+    "correct_answer": "foreign",
+    "question_type": "antonym",
+    "letter_template": "f_r_ign",
+    "distractors": [
+      "familiar",
+      "far-flung",
+      "forlorn"
+    ]
+  },
+  "vr_test_20_q_14_tpl_s_r_f_y": {
+    "given_word": "smart",
+    "correct_answer": "scruffy",
+    "question_type": "antonym",
+    "letter_template": "s_r_f_y",
+    "distractors": [
+      "sloppy",
+      "shabby",
+      "sniffy"
+    ]
+  },
+  "vr_test_20_q_15_tpl_e_r_h_y": {
+    "given_word": "celestial",
+    "correct_answer": "earthly",
+    "question_type": "antonym",
+    "letter_template": "e_r_h_y",
+    "distractors": [
+      "earthy",
+      "heavenly",
+      "reality"
+    ]
+  },
+  "vr_test_20_q_16_tpl_l_i_ure": {
+    "given_word": "pursuit",
+    "correct_answer": "interest",
+    "question_type": "antonym",
+    "letter_template": "l_i_ure",
+    "distractors": [
+      "leisure",
+      "failure",
+      "fixture"
+    ]
+  },
+  "vr_test_20_q_17_tpl_j_t": {
+    "given_word": "river",
+    "correct_answer": "jet",
+    "question_type": "antonym",
+    "letter_template": "j_t",
+    "distractors": [
+      "jut",
+      "jot",
+      "hat"
+    ]
+  },
+  "vr_test_20_q_18_tpl_s_em": {
+    "given_word": "source",
+    "correct_answer": "stem",
+    "question_type": "antonym",
+    "letter_template": "s_em",
+    "distractors": [
+      "seam",
+      "sled",
+      "slim"
+    ]
+  },
+  "vr_test_20_q_19_tpl_e_b_em": {
+    "given_word": "flag",
+    "correct_answer": "flag",
+    "question_type": "antonym",
+    "letter_template": "e_b_em",
+    "distractors": [
+      "emblem",
+      "ribbon",
+      "badge"
+    ]
+  },
+  "vr_test_20_q_20_tpl_p_u_": {
+    "given_word": "hollow",
+    "correct_answer": "plug",
+    "question_type": "antonym",
+    "letter_template": "p_u_",
+    "distractors": [
+      "push",
+      "puff",
+      "punt"
+    ]
+  },
+  "vr_test_10_q_14_tpl_t_s_t_r_r_th": {
+    "given_word": "credible",
+    "correct_answer": "trustworthy",
+    "question_type": "antonym",
+    "letter_template": "t_s_t_r_r_th",
+    "distractors": [
+      "untrustful",
+      "distrustful",
+      "unfaithful"
+    ]
+  },
+  "vr_test_10_q_16_tpl_s_t_f_f": {
+    "given_word": "stick",
+    "correct_answer": "staff",
+    "question_type": "antonym",
+    "letter_template": "s_t_f_f",
+    "distractors": [
+      "stiff",
+      "stuff",
+      "stiffy"
+    ]
+  },
+  "vr_test_10_q_17_tpl_g_r_o_s_s": {
+    "given_word": "vulgar",
+    "correct_answer": "gross",
+    "question_type": "antonym",
+    "letter_template": "g_r_o_s_s",
+    "distractors": [
+      "gruff",
+      "crude",
+      "grossly"
+    ]
+  },
+  "vr_test_10_q_18_tpl_q_u_a_r_r_y": {
+    "given_word": "prey",
+    "correct_answer": "quarry",
+    "question_type": "antonym",
+    "letter_template": "q_u_a_r_r_y",
+    "distractors": [
+      "quality",
+      "quarrel",
+      "quarter"
+    ]
+  },
+  "vr_test_12_q_12_tpl_b_r_ng": {
+    "given_word": "inspirational",
+    "correct_answer": "encouraging",
+    "question_type": "antonym",
+    "letter_template": "b_r_ng",
+    "distractors": [
+      "boring",
+      "baring",
+      "burning"
+    ]
+  },
+  "vr_test_12_q_13_tpl_o_f_nsive": {
+    "given_word": "indecent",
+    "correct_answer": "offensive",
+    "question_type": "antonym",
+    "letter_template": "o_f_nsive",
+    "distractors": [
+      "obscene",
+      "obnoxious",
+      "option3"
+    ]
+  },
+  "vr_test_12_q_14_tpl_d_sh_nest": {
+    "given_word": "ethical",
+    "correct_answer": "principled",
+    "question_type": "antonym",
+    "letter_template": "d_sh_nest",
+    "distractors": [
+      "dishonest",
+      "immoral",
+      "corrupt"
+    ]
+  },
+  "vr_test_12_q_15_tpl_a_ate_r": {
+    "given_word": "experienced",
+    "correct_answer": "skilled",
+    "question_type": "antonym",
+    "letter_template": "a_ate_r",
+    "distractors": [
+      "starter",
+      "amateur",
+      "clumsy"
+    ]
+  },
+  "vr_test_12_q_18_tpl_t_r_i_d": {
+    "given_word": "prompt",
+    "correct_answer": "tardy",
+    "question_type": "antonym",
+    "letter_template": "t_r_i_d",
+    "distractors": [
+      "trend",
+      "turnip",
+      "torrid"
+    ]
+  },
+  "vr_test_12_q_19_tpl_u_r_p_t_nt": {
+    "given_word": "remorseful",
+    "correct_answer": "unrepentant",
+    "question_type": "antonym",
+    "letter_template": "u_r_p_t_nt",
+    "distractors": [
+      "ungrateful",
+      "unaffected",
+      "unresponsive"
+    ]
+  },
+  "vr_test_12_q_20_tpl_p_e_a_t": {
+    "given_word": "foul",
+    "correct_answer": "pleasant",
+    "question_type": "antonym",
+    "letter_template": "p_e_a_t",
+    "distractors": [
+      "peaceful",
+      "present",
+      "pungent"
+    ]
+  },
+  "vr_test_16_q_18_tpl_u_n_l_e_s_s": {
+    "given_word": "because",
+    "correct_answer": "any",
+    "question_type": "antonym",
+    "letter_template": "u_n_l_e_s_s",
+    "distractors": [
+      "under",
+      "until",
+      "often"
+    ]
+  },
+  "vr_test_16_q_19_tpl_s_t_o_r_m": {
+    "given_word": "straw",
+    "correct_answer": "storm",
+    "question_type": "antonym",
+    "letter_template": "s_t_o_r_m",
+    "distractors": [
+      "scream",
+      "steam",
+      "stormy"
+    ]
+  },
+  "vr_test_18_q_11_tpl_i_r_t_ble": {
+    "given_word": "waspish",
+    "correct_answer": "irritable",
+    "question_type": "antonym",
+    "letter_template": "i_r_t_ble",
+    "distractors": [
+      "invincible",
+      "incredible",
+      "insatiable"
+    ]
+  },
+  "vr_test_18_q_12_tpl_v_g_ur": {
+    "given_word": "lethargy",
+    "correct_answer": "weariness",
+    "question_type": "antonym",
+    "letter_template": "v_g_ur",
+    "distractors": [
+      "vigor",
+      "energy",
+      "zeal"
+    ]
+  },
+  "vr_test_18_q_13_tpl_e_g_r": {
+    "given_word": "keen",
+    "correct_answer": "eager",
+    "question_type": "antonym",
+    "letter_template": "e_g_r",
+    "distractors": [
+      "enter",
+      "edger",
+      "anger"
+    ]
+  },
+  "vr_test_18_q_14_tpl_i_d_f_er_nt": {
+    "given_word": "apathetic",
+    "correct_answer": "indifferent",
+    "question_type": "antonym",
+    "letter_template": "i_d_f_er_nt",
+    "distractors": [
+      "indolent",
+      "insolvent",
+      "insistent"
+    ]
+  },
+  "vr_test_18_q_15_tpl_e_c_ntr_c": {
+    "given_word": "zany",
+    "correct_answer": "eccentric",
+    "question_type": "antonym",
+    "letter_template": "e_c_ntr_c",
+    "distractors": [
+      "electric",
+      "economic",
+      "erratic"
+    ]
+  },
+  "vr_test_18_q_16_tpl_d_p_nd_ble": {
+    "given_word": "trustworthy",
+    "correct_answer": "dependable",
+    "question_type": "antonym",
+    "letter_template": "d_p_nd_ble",
+    "distractors": [
+      "despicable",
+      "disposable",
+      "dislikable"
+    ]
+  },
+  "vr_test_18_q_17_tpl_st_a_ghtf_rw_rd": {
+    "given_word": "simple",
+    "correct_answer": "straightforward",
+    "question_type": "antonym",
+    "letter_template": "st_a_ghtf_rw_rd",
+    "distractors": [
+      "straightaway",
+      "straightened",
+      "straightening"
+    ]
+  },
+  "vr_test_18_q_18_tpl_ncl_s_": {
+    "given_word": "confine",
+    "correct_answer": "enclose",
+    "question_type": "antonym",
+    "letter_template": "ncl_s_",
+    "distractors": [
+      "include",
+      "enlist",
+      "unfold"
+    ]
+  },
+  "vr_test_18_q_19_tpl_i_s_ghtf_l": {
+    "given_word": "perceptive",
+    "correct_answer": "insightful",
+    "question_type": "antonym",
+    "letter_template": "i_s_ghtf_l",
+    "distractors": [
+      "insightless",
+      "impractical",
+      "insensitive"
+    ]
+  },
+  "vr_test_18_q_20_tpl_b_a_t_f_l": {
+    "given_word": "exquisite",
+    "correct_answer": "beautiful",
+    "question_type": "antonym",
+    "letter_template": "b_a_t_f_l",
+    "distractors": [
+      "bountiful",
+      "blissful",
+      "beneficial"
+    ]
+  },
+  "vr_test_20_q_17_tpl_r_v_n": {
+    "given_word": "river",
+    "correct_answer": "jet",
+    "question_type": "antonym",
+    "letter_template": "r_v_n",
+    "distractors": [
+      "raven",
+      "oven",
+      "reign"
+    ]
+  },
+  "vr_test_20_q_18_tpl_s_e_": {
+    "given_word": "source",
+    "correct_answer": "stem",
+    "question_type": "antonym",
+    "letter_template": "s_e_",
+    "distractors": [
+      "seed",
+      "spew",
+      "smog"
+    ]
+  },
+  "vr_test_20_q_19_tpl_e_b_e_": {
+    "given_word": "flag",
+    "correct_answer": "flag",
+    "question_type": "antonym",
+    "letter_template": "e_b_e_",
+    "distractors": [
+      "ember",
+      "ebber",
+      "enter"
+    ]
+  },
+  "vr_test_10_q_12_tpl_f_r_i_d_y": {
+    "given_word": "genial",
+    "correct_answer": "friendly",
+    "question_type": "synonym",
+    "letter_template": "f_r_i_d_y",
+    "distractors": [
+      "frosty",
+      "funny",
+      "furry"
+    ]
+  },
+  "vr_test_10_q_13_tpl_r_i_i_t_i": {
+    "given_word": "creative",
+    "correct_answer": "artistic",
+    "question_type": "synonym",
+    "letter_template": "r_i_i_t_i",
+    "distractors": [
+      "realistic",
+      "criticize",
+      "pragmatic"
+    ]
+  },
+  "vr_test_10_q_15_tpl_c_h_l_n_n_e": {
+    "given_word": "confront",
+    "correct_answer": "challenge",
+    "question_type": "synonym",
+    "letter_template": "c_h_l_n_n_e",
+    "distractors": [
+      "champion",
+      "channel",
+      "option3"
+    ]
+  },
+  "vr_test_10_q_16_tpl_staff": {
+    "given_word": "(stick, cane)",
+    "correct_answer": "staff",
+    "question_type": "synonym",
+    "letter_template": "staff",
+    "distractors": [
+      "wand",
+      "pole",
+      "club"
+    ]
+  },
+  "vr_test_10_q_17_tpl_gross": {
+    "given_word": "(vulgar, coarse)",
+    "correct_answer": "gross",
+    "question_type": "synonym",
+    "letter_template": "gross",
+    "distractors": [
+      "crude",
+      "rude",
+      "mean"
+    ]
+  },
+  "vr_test_10_q_18_tpl_target": {
+    "given_word": "(prey, victim)",
+    "correct_answer": "quarry",
+    "question_type": "synonym",
+    "letter_template": "target",
+    "distractors": [
+      "target",
+      "object",
+      "pursuit"
+    ]
+  },
+  "vr_test_10_q_19_tpl_mass": {
+    "given_word": "(universal, widespread)",
+    "correct_answer": "mass",
+    "question_type": "synonym",
+    "letter_template": "mass",
+    "distractors": [
+      "vast",
+      "main",
+      "bulk"
+    ]
+  },
+  "vr_test_10_q_20_tpl_page": {
+    "given_word": "(folio, sheet)",
+    "correct_answer": "page",
+    "question_type": "synonym",
+    "letter_template": "page",
+    "distractors": [
+      "leaf",
+      "card",
+      "slab"
+    ]
+  }
+}

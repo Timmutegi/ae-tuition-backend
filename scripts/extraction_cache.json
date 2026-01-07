@@ -1,0 +1,490 @@
+{
+  "tests": {
+    "1": {
+      "passage": {
+        "title": "Five Children and It",
+        "content": "Five siblings moved to the country from London. While playing in a gravel pit they discovered a grumpy sand-fairy, who had the ability to grant one shared wish each day, which would expire at sunset. Their first wish was to be beautiful. The next day:\n\nAnthea woke in the morning from a very real sort of dream, in which she was walking in the Zoological Gardens on a pouring wet day without an umbrella. The animals seemed desperately unhappy because of the rain, and were all growling gloomily. When she awoke, both the growling and the rain went on just the same. The growling was the heavy regular breathing of her sister Jane, who had a slight cold and was still asleep. The rain fell in slow drops on to Anthea\u2019s face from the wet corner of a bath-towel out of which her brother Robert was gently squeezing the water, to wake her up, as he now explained.\n\n\u201cOh, drop it!\u201d she said rather crossly; so he did, for he was not a brutal brother, though very ingenious in apple-pie beds, booby-traps, original methods of waking sleeping relatives, and the other little accomplishments which make home happy.\n\n\u201cI had such a funny dream,\u201d Anthea began.\n\n\u201cSo did I,\u201d said Jane, waking suddenly and without warning. \u201cI dreamed we found a Sand-fairy in the gravel-pits, and it said it was a nymph, and we might have a new wish every day, and\u201d\u2014\n\n\u201cBut that\u2019s what I dreamed,\u201d said Robert; \u201cI was just going to tell you,\u2014and we had the first wish directly it said so. And I dreamed you girls were donkeys enough to ask for us all to be beautiful as day, and we jolly well were, and it was perfectly beastly.\u201d",
+        "source": "An adapted extract from Five Children and It by Edith Nesbit (1858-1924).",
+        "glossary": {
+          "Apple-pie beds": "the sheets in a bed have been folded in such a way that a person cannot stretch their legs out"
+        }
+      },
+      "passage_text": "Five siblings moved to the country from London. While playing in a gravel pit they discovered a grumpy sand-fairy, who had the ability to grant one shared wish each day, which would expire at sunset. Their first wish was to be beautiful. The next day:\n\nAnthea woke in the morning from a very real sort of dream, in which she was walking in the Zoological Gardens on a pouring wet day without an umbrella. The animals seemed desperately unhappy because of the rain, and were all growling gloomily. When she awoke, both the growling and the rain went on just the same. The growling was the heavy regular breathing of her sister Jane, who had a slight cold and was still asleep. The rain fell in slow drops on to Anthea\u2019s face from the wet corner of a bath-towel out of which her brother Robert was gently squeezing the water, to wake her up, as he now explained.\n\n\u201cOh, drop it!\u201d she said rather crossly; so he did, for he was not a brutal brother, though very ingenious in apple-pie beds, booby-traps, original methods of waking sleeping relatives, and the other little accomplishments which make home happy.\n\n\u201cI had such a funny dream,\u201d Anthea began.\n\n\u201cSo did I,\u201d said Jane, waking suddenly and without warning. \u201cI dreamed we found a Sand-fairy in the gravel-pits, and it said it was a nymph, and we might have a new wish every day, and\u201d\u2014\n\n\u201cBut that\u2019s what I dreamed,\u201d said Robert; \u201cI was just going to tell you,\u2014and we had the first wish directly it said so. And I dreamed you girls were donkeys enough to ask for us all to be beautiful as day, and we jolly well were, and it was perfectly beastly.\u201d",
+      "questions": {
+        "1": {
+          "question_number": 1,
+          "question_text": "How are Jane and Robert related to each other?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "letter": "a",
+              "text": "They are cousins"
+            },
+            {
+              "letter": "b",
+              "text": "They are brother and sister"
+            },
+            {
+              "letter": "c",
+              "text": "They are not related"
+            },
+            {
+              "letter": "d",
+              "text": "They are friends"
+            }
+          ],
+          "instruction_text": null,
+          "context_text": null
+        },
+        "2": {
+          "question_number": 2,
+          "question_text": "What was the growling noise that Anthea could hear?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "letter": "a",
+              "text": "Her sister breathing"
+            },
+            {
+              "letter": "b",
+              "text": "The animals making noise"
+            },
+            {
+              "letter": "c",
+              "text": "Her brother trying to wake her"
+            },
+            {
+              "letter": "d",
+              "text": "She was snoring"
+            }
+          ],
+          "instruction_text": null,
+          "context_text": null
+        },
+        "3": {
+          "question_number": 3,
+          "question_text": "What location did Jane dream about?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "letter": "a",
+              "text": "The Zoological Gardens"
+            },
+            {
+              "letter": "b",
+              "text": "Their house in the country"
+            },
+            {
+              "letter": "c",
+              "text": "London"
+            },
+            {
+              "letter": "d",
+              "text": "The gravel-pits"
+            }
+          ],
+          "instruction_text": null,
+          "context_text": null
+        },
+        "4": {
+          "question_number": 4,
+          "question_text": "What does ingenious (line 10) mean in this context?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "letter": "a",
+              "text": "Foolish"
+            },
+            {
+              "letter": "b",
+              "text": "Intrusive"
+            },
+            {
+              "letter": "c",
+              "text": "Inventive"
+            },
+            {
+              "letter": "d",
+              "text": "Silly"
+            }
+          ],
+          "instruction_text": null,
+          "context_text": null
+        },
+        "5": {
+          "question_number": 5,
+          "question_text": "Which of the siblings was unwell?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "letter": "a",
+              "text": "Anthea"
+            },
+            {
+              "letter": "b",
+              "text": "Robert"
+            },
+            {
+              "letter": "c",
+              "text": "Jane"
+            },
+            {
+              "letter": "d",
+              "text": "None of them"
+            }
+          ],
+          "instruction_text": null,
+          "context_text": null
+        },
+        "6": {
+          "question_number": 6,
+          "question_text": "What sort of character lived in the gravel-pits?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "letter": "a",
+              "text": "A donkey"
+            },
+            {
+              "letter": "b",
+              "text": "A magical creature"
+            },
+            {
+              "letter": "c",
+              "text": "A beast"
+            },
+            {
+              "letter": "d",
+              "text": "A newt"
+            }
+          ],
+          "instruction_text": null,
+          "context_text": null
+        },
+        "7": {
+          "question_number": 7,
+          "question_text": "Why had the children all had the same dream?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "letter": "a",
+              "text": "They had imagined a Sand-fairy had cast a spell on them."
+            },
+            {
+              "letter": "b",
+              "text": "They were all told the same bedtime story."
+            },
+            {
+              "letter": "c",
+              "text": "They were not fully asleep."
+            },
+            {
+              "letter": "d",
+              "text": "In their dreams they were remembering the previous day."
+            }
+          ],
+          "instruction_text": null,
+          "context_text": null
+        },
+        "8": {
+          "question_number": 8,
+          "question_text": "How do you think Anthea felt when she awoke?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "letter": "a",
+              "text": "Weary"
+            },
+            {
+              "letter": "b",
+              "text": "Collected"
+            },
+            {
+              "letter": "c",
+              "text": "Refreshed"
+            },
+            {
+              "letter": "d",
+              "text": "Irritated"
+            }
+          ],
+          "instruction_text": null,
+          "context_text": null
+        },
+        "9": {
+          "question_number": 9,
+          "question_text": "What was Robert\u2019s opinion of his sisters\u2019 choice of wish?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "letter": "a",
+              "text": "Robert was delighted with their choice."
+            },
+            {
+              "letter": "b",
+              "text": "Robert was upset and thought it was a silly idea."
+            },
+            {
+              "letter": "c",
+              "text": "Robert wanted to make everybody ugly."
+            },
+            {
+              "letter": "d",
+              "text": "Robert was pleased with the outcome of the wish."
+            }
+          ],
+          "instruction_text": null,
+          "context_text": null
+        },
+        "10": {
+          "question_number": 10,
+          "question_text": "Robert is described as \u2018not a brutal brother\u2019 (lines 9-10), what does this suggest about his character?",
+          "question_type": "multiple_choice",
+          "options": [
+            {
+              "letter": "a",
+              "text": "He liked to be mean to his sisters."
+            },
+            {
+              "letter": "b",
+              "text": "He was just a nasty prankster."
+            },
+            {
+              "letter": "c",
+              "text": "His practical jokes were not intended to be harmful."
+            },
+            {
+              "letter": "d",
+              "text": "Robert and his sister were not friendly towards each other."
+            }
+          ],
+          "instruction_text": null,
+          "context_text": null
+        },
+        "11": {
+          "question_number": 11,
+          "question_text": "Select the correct word for the blank.",
+          "question_type": "cloze_select",
+          "options": [
+            {
+              "text": "roughly"
+            },
+            {
+              "text": "roguishly"
+            },
+            {
+              "text": "roundly"
+            }
+          ],
+          "instruction_text": "Select the correct words to complete the passage.",
+          "context_text": "There are {11} 1,240 species of bat across the world."
+        },
+        "12": {
+          "question_number": 12,
+          "question_text": "Select the correct word for the blank.",
+          "question_type": "cloze_select",
+          "options": [
+            {
+              "text": "diving"
+            },
+            {
+              "text": "gliding"
+            },
+            {
+              "text": "fleeting"
+            }
+          ],
+          "instruction_text": "Select the correct words to complete the passage.",
+          "context_text": "Bats are the only mammals that can truly fly, rather than just {12}."
+        },
+        "13": {
+          "question_number": 13,
+          "question_text": "Select the correct word for the blank.",
+          "question_type": "cloze_select",
+          "options": [
+            {
+              "text": "consume"
+            },
+            {
+              "text": "ate"
+            },
+            {
+              "text": "inhale"
+            }
+          ],
+          "instruction_text": "Select the correct words to complete the passage.",
+          "context_text": "About 70% of bats {13} insects, the remainder consist of fruit-eating bats;"
+        },
+        "14": {
+          "question_number": 14,
+          "question_text": "Select the correct word for the blank.",
+          "question_type": "cloze_select",
+          "options": [
+            {
+              "text": "pry"
+            },
+            {
+              "text": "prey"
+            },
+            {
+              "text": "pray"
+            }
+          ],
+          "instruction_text": "Select the correct words to complete the passage.",
+          "context_text": "carnivorous bats that {14} on small mammals, birds, lizards and frogs;"
+        },
+        "15": {
+          "question_number": 15,
+          "question_text": "Choose the correct word to fill in the blank.",
+          "question_type": "cloze_select",
+          "options": [
+            {
+              "text": "evolve"
+            },
+            {
+              "text": "developed"
+            },
+            {
+              "text": "produced"
+            }
+          ],
+          "instruction_text": "Complete the word on the right so that it means the same as, or nearly the same as, the word on the left.",
+          "context_text": "Bats have {15} very nimble hearing."
+        },
+        "16": {
+          "question_number": 16,
+          "question_text": "Choose the correct word to fill in the blank.",
+          "question_type": "cloze_select",
+          "options": [
+            {
+              "text": "nimble"
+            },
+            {
+              "text": "precision"
+            },
+            {
+              "text": "sensitive"
+            }
+          ],
+          "instruction_text": "Complete the word on the right so that it means the same as, or nearly the same as, the word on the left.",
+          "context_text": "Bats have developed very {16} hearing."
+        },
+        "17": {
+          "question_number": 17,
+          "question_text": "Choose the correct word to fill in the blank.",
+          "question_type": "cloze_select",
+          "options": [
+            {
+              "text": "omit"
+            },
+            {
+              "text": "emit"
+            },
+            {
+              "text": "remit"
+            }
+          ],
+          "instruction_text": "Complete the word on the right so that it means the same as, or nearly the same as, the word on the left.",
+          "context_text": "They {17} rapid high-pitched squeaks."
+        },
+        "18": {
+          "question_number": 18,
+          "question_text": "Choose the correct word to fill in the blank.",
+          "question_type": "cloze_select",
+          "options": [
+            {
+              "text": "shock"
+            },
+            {
+              "text": "contact"
+            },
+            {
+              "text": "bounce"
+            }
+          ],
+          "instruction_text": "Complete the word on the right so that it means the same as, or nearly the same as, the word on the left.",
+          "context_text": "Squeaks that {18} off of objects."
+        },
+        "19": {
+          "question_number": 19,
+          "question_text": "Choose the correct word to fill in the blank.",
+          "question_type": "cloze_select",
+          "options": [
+            {
+              "text": "path"
+            },
+            {
+              "text": "track"
+            },
+            {
+              "text": "lane"
+            }
+          ],
+          "instruction_text": "Complete the word on the right so that it means the same as, or nearly the same as, the word on the left.",
+          "context_text": "Objects in their {19}, echoing back to the bats."
+        },
+        "20": {
+          "question_number": 20,
+          "question_text": "Choose the correct word to fill in the blank.",
+          "question_type": "cloze_select",
+          "options": [
+            {
+              "text": "shape"
+            },
+            {
+              "text": "determine"
+            },
+            {
+              "text": "disprove"
+            }
+          ],
+          "instruction_text": "Complete the word on the right so that it means the same as, or nearly the same as, the word on the left.",
+          "context_text": "Bats can {20} the size of objects."
+        },
+        "21": {
+          "question_number": 21,
+          "question_text": "smart",
+          "question_type": "synonym_completion",
+          "options": [],
+          "instruction_text": "Complete the word on the right so that it means the same as, or nearly the same as, the word on the left.",
+          "context_text": "n_t_l_g_t"
+        },
+        "22": {
+          "question_number": 22,
+          "question_text": "exact",
+          "question_type": "synonym_completion",
+          "options": [],
+          "instruction_text": "Complete the word on the right so that it means the same as, or nearly the same as, the word on the left.",
+          "context_text": "a_c_r_r_e"
+        },
+        "23": {
+          "question_number": 23,
+          "question_text": "sterile",
+          "question_type": "synonym_completion",
+          "options": [],
+          "instruction_text": "Complete the word on the right so that it means the same as, or nearly the same as, the word on the left.",
+          "context_text": "c_e_a"
+        },
+        "24": {
+          "question_number": 24,
+          "question_text": "wrong",
+          "question_type": "synonym_completion",
+          "options": [],
+          "instruction_text": "Complete the word on the right so that it means the same as, or nearly the same as, the word on the left.",
+          "context_text": "i_c_r_e_t"
+        },
+        "25": {
+          "question_number": 25,
+          "question_text": "level",
+          "question_type": "synonym_completion",
+          "options": [],
+          "instruction_text": "Complete the word on the right so that it means the same as, or nearly the same as, the word on the left.",
+          "context_text": "b_a_n_e"
+        }
+      },
+      "cloze_context": "There are {11} 1,240 species of bat across the world.",
+      "errors": []
+    }
+  },
+  "pages": {}
+}

@@ -1,0 +1,5402 @@
+{
+  "test_1_q_1": {
+    "correct_answer": "120",
+    "answer_type": "integer",
+    "distractors": [
+      "110",
+      "130",
+      "100"
+    ]
+  },
+  "test_1_q_2": {
+    "correct_answer": "13, 17",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "12, 18",
+      "14, 16",
+      "13, 16"
+    ]
+  },
+  "test_1_q_3": {
+    "correct_answer": "d",
+    "answer_type": "letter",
+    "distractors": [
+      "a",
+      "b",
+      "c"
+    ]
+  },
+  "test_1_q_4": {
+    "correct_answer": "6",
+    "answer_type": "integer",
+    "distractors": [
+      "5",
+      "7",
+      "8"
+    ]
+  },
+  "test_1_q_5": {
+    "correct_answer": "16",
+    "answer_type": "integer",
+    "distractors": [
+      "15",
+      "17",
+      "14"
+    ]
+  },
+  "test_1_q_6": {
+    "correct_answer": "6",
+    "answer_type": "integer",
+    "distractors": [
+      "5",
+      "7",
+      "12"
+    ]
+  },
+  "test_1_q_7": {
+    "correct_answer": "0.3",
+    "answer_type": "decimal",
+    "distractors": [
+      "0.03",
+      "3.0",
+      "0.33"
+    ]
+  },
+  "test_1_q_8": {
+    "correct_answer": "no",
+    "answer_type": "yes_no",
+    "distractors": [
+      "yes",
+      "maybe",
+      "cannot determine"
+    ]
+  },
+  "test_1_q_9": {
+    "correct_answer": "100",
+    "answer_type": "integer",
+    "distractors": [
+      "90",
+      "110",
+      "101"
+    ]
+  },
+  "test_1_q_10": {
+    "correct_answer": "1/100",
+    "answer_type": "fraction",
+    "distractors": [
+      "1/10",
+      "100",
+      "1/101"
+    ]
+  },
+  "test_1_q_11": {
+    "correct_answer": "140",
+    "answer_type": "integer",
+    "distractors": [
+      "130",
+      "150",
+      "135"
+    ]
+  },
+  "test_1_q_12": {
+    "correct_answer": "180",
+    "answer_type": "integer",
+    "distractors": [
+      "170",
+      "190",
+      "160"
+    ]
+  },
+  "test_1_q_13": {
+    "correct_answer": "6",
+    "answer_type": "integer",
+    "distractors": [
+      "5",
+      "7",
+      "8"
+    ]
+  },
+  "test_1_q_14": {
+    "correct_answer": "c",
+    "answer_type": "letter",
+    "distractors": [
+      "a",
+      "b",
+      "d"
+    ]
+  },
+  "test_1_q_15": {
+    "correct_answer": "168",
+    "answer_type": "integer",
+    "distractors": [
+      "158",
+      "178",
+      "167"
+    ]
+  },
+  "test_2_q_1": {
+    "correct_answer": "5",
+    "answer_type": "integer",
+    "distractors": [
+      "4",
+      "6",
+      "10"
+    ]
+  },
+  "test_2_q_2": {
+    "correct_answer": "1.76",
+    "answer_type": "time",
+    "distractors": [
+      "1.67",
+      "1.86",
+      "2.76"
+    ]
+  },
+  "test_2_q_3": {
+    "correct_answer": "920",
+    "answer_type": "integer",
+    "distractors": [
+      "910",
+      "930",
+      "921"
+    ]
+  },
+  "test_2_q_4": {
+    "correct_answer": "37",
+    "answer_type": "integer",
+    "distractors": [
+      "36",
+      "38",
+      "47"
+    ]
+  },
+  "test_2_q_5": {
+    "correct_answer": "10",
+    "answer_type": "integer",
+    "distractors": [
+      "9",
+      "12",
+      "11"
+    ]
+  },
+  "test_2_q_6": {
+    "correct_answer": "vertical",
+    "answer_type": "text_word",
+    "distractors": [
+      "horizontal",
+      "diagonal",
+      "perpendicular"
+    ]
+  },
+  "test_2_q_7": {
+    "correct_answer": "12",
+    "answer_type": "integer",
+    "distractors": [
+      "11",
+      "13",
+      "10"
+    ]
+  },
+  "test_2_q_8": {
+    "correct_answer": "55",
+    "answer_type": "integer",
+    "distractors": [
+      "50",
+      "60",
+      "65"
+    ]
+  },
+  "test_2_q_9": {
+    "correct_answer": "8",
+    "answer_type": "integer",
+    "distractors": [
+      "7",
+      "9",
+      "10"
+    ]
+  },
+  "test_2_q_10": {
+    "correct_answer": "4",
+    "answer_type": "integer",
+    "distractors": [
+      "5",
+      "3",
+      "2"
+    ]
+  },
+  "test_2_q_11": {
+    "correct_answer": "a",
+    "answer_type": "letter",
+    "distractors": [
+      "b",
+      "c",
+      "d"
+    ]
+  },
+  "test_2_q_12": {
+    "correct_answer": "c",
+    "answer_type": "letter",
+    "distractors": [
+      "a",
+      "b",
+      "d"
+    ]
+  },
+  "test_2_q_13": {
+    "correct_answer": "20 days and 6 hours",
+    "answer_type": "compound",
+    "distractors": [
+      "19 days and 6 hours",
+      "20 days and 7 hours",
+      "21 days and 6 hours"
+    ]
+  },
+  "test_2_q_14": {
+    "correct_answer": "1.75 or 1 3/4",
+    "answer_type": "unknown",
+    "distractors": [
+      "1.85 or 1 17/20",
+      "1.65 or 1 13/20",
+      "2.75 or 2 3/4"
+    ]
+  },
+  "test_2_q_15": {
+    "correct_answer": "60",
+    "answer_type": "integer",
+    "distractors": [
+      "50",
+      "70",
+      "61"
+    ]
+  },
+  "test_3_q_1": {
+    "correct_answer": "81",
+    "answer_type": "integer",
+    "distractors": [
+      "80",
+      "90",
+      "82"
+    ]
+  },
+  "test_3_q_2": {
+    "correct_answer": "1.5",
+    "answer_type": "decimal",
+    "distractors": [
+      "1.6",
+      "1.4",
+      "1.50"
+    ]
+  },
+  "test_3_q_3": {
+    "correct_answer": "705",
+    "answer_type": "integer",
+    "distractors": [
+      "706",
+      "695",
+      "715"
+    ]
+  },
+  "test_3_q_4": {
+    "correct_answer": "1923",
+    "answer_type": "integer",
+    "distractors": [
+      "1823",
+      "1922",
+      "1933"
+    ]
+  },
+  "test_3_q_5": {
+    "correct_answer": "22",
+    "answer_type": "integer",
+    "distractors": [
+      "20",
+      "23",
+      "21"
+    ]
+  },
+  "test_3_q_6": {
+    "correct_answer": "1/4",
+    "answer_type": "fraction",
+    "distractors": [
+      "1/2",
+      "3/4",
+      "2/4"
+    ]
+  },
+  "test_3_q_7": {
+    "correct_answer": "1, 2, 3, 4, 6, 8, 12, 24",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "1, 2, 3, 4, 6, 8, 12, 23",
+      "1, 2, 3, 4, 7, 8, 12, 24",
+      "1, 2, 3, 4, 6, 9, 12, 24"
+    ]
+  },
+  "test_3_q_8": {
+    "correct_answer": "28",
+    "answer_type": "integer",
+    "distractors": [
+      "29",
+      "27",
+      "38"
+    ]
+  },
+  "test_3_q_9": {
+    "correct_answer": "3,600",
+    "answer_type": "unknown",
+    "distractors": [
+      "3,500",
+      "3,700",
+      "3,610"
+    ]
+  },
+  "test_3_q_10": {
+    "correct_answer": "0.15 or 3/20",
+    "answer_type": "unknown",
+    "distractors": [
+      "0.05 or 1/20",
+      "0.3 or 3/10",
+      "0.2 or 2/20"
+    ]
+  },
+  "test_3_q_11": {
+    "correct_answer": "15",
+    "answer_type": "integer",
+    "distractors": [
+      "14",
+      "16",
+      "10"
+    ]
+  },
+  "test_3_q_12": {
+    "correct_answer": "24",
+    "answer_type": "integer",
+    "distractors": [
+      "23",
+      "25",
+      "22"
+    ]
+  },
+  "test_3_q_13": {
+    "correct_answer": "7.5",
+    "answer_type": "decimal",
+    "distractors": [
+      "8.5",
+      "6.5",
+      "7.0"
+    ]
+  },
+  "test_3_q_14": {
+    "correct_answer": "8",
+    "answer_type": "integer",
+    "distractors": [
+      "7",
+      "9",
+      "10"
+    ]
+  },
+  "test_3_q_15": {
+    "correct_answer": "Thursday",
+    "answer_type": "text_word",
+    "distractors": [
+      "Wednesday",
+      "Friday",
+      "Tuesday"
+    ]
+  },
+  "test_4_q_1": {
+    "correct_answer": "37",
+    "answer_type": "integer",
+    "distractors": [
+      "36",
+      "38",
+      "47"
+    ]
+  },
+  "test_4_q_2": {
+    "correct_answer": "0.35 or 7/20 or 35-hundredths",
+    "answer_type": "unknown",
+    "distractors": [
+      "0.53 or 53/100 or 53-hundredths",
+      "0.30 or 3/10 or 30-hundredths",
+      "0.75 or 15/20 or 75-hundredths"
+    ]
+  },
+  "test_4_q_3": {
+    "correct_answer": "31/12/2007",
+    "answer_type": "unknown",
+    "distractors": [
+      "30/12/2007",
+      "31/11/2007",
+      "01/01/2008"
+    ]
+  },
+  "test_4_q_4": {
+    "correct_answer": "5",
+    "answer_type": "integer",
+    "distractors": [
+      "4",
+      "6",
+      "10"
+    ]
+  },
+  "test_4_q_5": {
+    "correct_answer": "672",
+    "answer_type": "integer",
+    "distractors": [
+      "6720",
+      "667",
+      "677"
+    ]
+  },
+  "test_4_q_6": {
+    "correct_answer": "10",
+    "answer_type": "integer",
+    "distractors": [
+      "9",
+      "11",
+      "12"
+    ]
+  },
+  "test_4_q_7": {
+    "correct_answer": "1, 2, 4, 7, 14, 28",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "1, 2, 5, 10, 20, 40",
+      "1, 3, 6, 12, 24, 48",
+      "1, 2, 4, 8, 16, 32"
+    ]
+  },
+  "test_4_q_8": {
+    "correct_answer": "27",
+    "answer_type": "integer",
+    "distractors": [
+      "26",
+      "37",
+      "24"
+    ]
+  },
+  "test_4_q_9": {
+    "correct_answer": "1, 2, 3, 6",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "2, 3, 4, 7",
+      "1, 3, 4, 6",
+      "1, 2, 5, 6"
+    ]
+  },
+  "test_4_q_10": {
+    "correct_answer": "21",
+    "answer_type": "integer",
+    "distractors": [
+      "20",
+      "22",
+      "19"
+    ]
+  },
+  "test_4_q_11": {
+    "correct_answer": "reflex",
+    "answer_type": "text_word",
+    "distractors": [
+      "acute",
+      "obtuse",
+      "right"
+    ]
+  },
+  "test_4_q_12": {
+    "correct_answer": "24",
+    "answer_type": "integer",
+    "distractors": [
+      "23",
+      "25",
+      "30"
+    ]
+  },
+  "test_4_q_13": {
+    "correct_answer": "99,995",
+    "answer_type": "unknown",
+    "distractors": [
+      "99,9955",
+      "100,005",
+      "99,985"
+    ]
+  },
+  "test_4_q_14": {
+    "correct_answer": "c",
+    "answer_type": "letter",
+    "distractors": [
+      "a",
+      "b",
+      "d"
+    ]
+  },
+  "test_4_q_15": {
+    "correct_answer": "d",
+    "answer_type": "letter",
+    "distractors": [
+      "a",
+      "b",
+      "c"
+    ]
+  },
+  "test_5_q_1": {
+    "correct_answer": "4",
+    "answer_type": "integer",
+    "distractors": [
+      "5",
+      "3",
+      "6"
+    ]
+  },
+  "test_5_q_2": {
+    "correct_answer": "yes",
+    "answer_type": "yes_no",
+    "distractors": [
+      "no",
+      "maybe",
+      "cannot determine"
+    ]
+  },
+  "test_5_q_3": {
+    "correct_answer": "1/24",
+    "answer_type": "fraction",
+    "distractors": [
+      "1/23",
+      "24/1",
+      "2/48"
+    ]
+  },
+  "test_5_q_4": {
+    "correct_answer": "1, 2, 3, 4, 6, 9, 12, 18, 36",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "1, 2, 3, 4, 5, 6, 7, 8, 9",
+      "1, 2, 3, 4, 7, 10, 13, 16, 19",
+      "1, 3, 5, 7, 9, 11, 13, 15, 17"
+    ]
+  },
+  "test_5_q_5": {
+    "correct_answer": "20",
+    "answer_type": "integer",
+    "distractors": [
+      "19",
+      "21",
+      "30"
+    ]
+  },
+  "test_5_q_6": {
+    "correct_answer": "360",
+    "answer_type": "integer",
+    "distractors": [
+      "350",
+      "370",
+      "300"
+    ]
+  },
+  "test_5_q_7": {
+    "correct_answer": "24",
+    "answer_type": "integer",
+    "distractors": [
+      "23",
+      "25",
+      "22"
+    ]
+  },
+  "test_5_q_8": {
+    "correct_answer": "20",
+    "answer_type": "integer",
+    "distractors": [
+      "19",
+      "21",
+      "30"
+    ]
+  },
+  "test_5_q_9": {
+    "correct_answer": "105",
+    "answer_type": "integer",
+    "distractors": [
+      "104",
+      "115",
+      "95"
+    ]
+  },
+  "test_5_q_10": {
+    "correct_answer": "0.95",
+    "answer_type": "time",
+    "distractors": [
+      "0.85",
+      "1.05",
+      "0.90"
+    ]
+  },
+  "test_5_q_11": {
+    "correct_answer": "135",
+    "answer_type": "integer",
+    "distractors": [
+      "125",
+      "145",
+      "134"
+    ]
+  },
+  "test_5_q_12": {
+    "correct_answer": "Elaine",
+    "answer_type": "text_word",
+    "distractors": [
+      "Eleanor",
+      "Elise",
+      "Ellen"
+    ]
+  },
+  "test_5_q_13": {
+    "correct_answer": "3",
+    "answer_type": "integer",
+    "distractors": [
+      "2",
+      "4",
+      "1"
+    ]
+  },
+  "test_5_q_14": {
+    "correct_answer": "100",
+    "answer_type": "integer",
+    "distractors": [
+      "110",
+      "90",
+      "101"
+    ]
+  },
+  "test_5_q_15": {
+    "correct_answer": "1/2",
+    "answer_type": "fraction",
+    "distractors": [
+      "1/4",
+      "2/3",
+      "2/1"
+    ]
+  },
+  "test_6_q_1": {
+    "correct_answer": "164",
+    "answer_type": "integer",
+    "distractors": [
+      "165",
+      "154",
+      "174"
+    ]
+  },
+  "test_6_q_2": {
+    "correct_answer": "19",
+    "answer_type": "integer",
+    "distractors": [
+      "20",
+      "18",
+      "21"
+    ]
+  },
+  "test_6_q_3": {
+    "correct_answer": "Mandip",
+    "answer_type": "text_word",
+    "distractors": [
+      "Manish",
+      "Mandeep",
+      "Mukesh"
+    ]
+  },
+  "test_6_q_4": {
+    "correct_answer": "0.9 or 9/10 or 9-tenths",
+    "answer_type": "unknown",
+    "distractors": [
+      "0.8 or 8/10 or 8-tenths",
+      "1.0 or 10/10 or 10-tenths",
+      "0.7 or 7/10 or 7-tenths"
+    ]
+  },
+  "test_6_q_5": {
+    "correct_answer": "-6",
+    "answer_type": "integer",
+    "distractors": [
+      "-5",
+      "-7",
+      "-16"
+    ]
+  },
+  "test_6_q_6": {
+    "correct_answer": "17",
+    "answer_type": "integer",
+    "distractors": [
+      "16",
+      "18",
+      "20"
+    ]
+  },
+  "test_6_q_7": {
+    "correct_answer": "36",
+    "answer_type": "integer",
+    "distractors": [
+      "35",
+      "37",
+      "30"
+    ]
+  },
+  "test_6_q_8": {
+    "correct_answer": "1,323",
+    "answer_type": "unknown",
+    "distractors": [
+      "1,233",
+      "1,332",
+      "1,312"
+    ]
+  },
+  "test_6_q_9": {
+    "correct_answer": "10.73",
+    "answer_type": "time",
+    "distractors": [
+      "10.37",
+      "11.73",
+      "9.73"
+    ]
+  },
+  "test_6_q_10": {
+    "correct_answer": "15",
+    "answer_type": "integer",
+    "distractors": [
+      "14",
+      "16",
+      "20"
+    ]
+  },
+  "test_6_q_11": {
+    "correct_answer": "4:3",
+    "answer_type": "ratio",
+    "distractors": [
+      "3:4",
+      "5:3",
+      "4:2"
+    ]
+  },
+  "test_6_q_12": {
+    "correct_answer": "3:4",
+    "answer_type": "ratio",
+    "distractors": [
+      "4:3",
+      "2:3",
+      "3:5"
+    ]
+  },
+  "test_6_q_13": {
+    "correct_answer": "3:7",
+    "answer_type": "ratio",
+    "distractors": [
+      "7:3",
+      "4:7",
+      "3:6"
+    ]
+  },
+  "test_6_q_14": {
+    "correct_answer": "8.29am",
+    "answer_type": "time",
+    "distractors": [
+      "8.19am",
+      "8.39am",
+      "7.29am"
+    ]
+  },
+  "test_6_q_15": {
+    "correct_answer": "F, H, T",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "F, T, H",
+      "H, F, T",
+      "T, H, F"
+    ]
+  },
+  "test_7_q_1": {
+    "correct_answer": "0.45",
+    "answer_type": "time",
+    "distractors": [
+      "0.54",
+      "0.5",
+      "0.35"
+    ]
+  },
+  "test_7_q_2": {
+    "correct_answer": "24",
+    "answer_type": "integer",
+    "distractors": [
+      "23",
+      "25",
+      "22"
+    ]
+  },
+  "test_7_q_3": {
+    "correct_answer": "1941",
+    "answer_type": "integer",
+    "distractors": [
+      "1940",
+      "1942",
+      "1931"
+    ]
+  },
+  "test_7_q_4": {
+    "correct_answer": "6",
+    "answer_type": "integer",
+    "distractors": [
+      "7",
+      "5",
+      "8"
+    ]
+  },
+  "test_7_q_5": {
+    "correct_answer": "120",
+    "answer_type": "integer",
+    "distractors": [
+      "110",
+      "130",
+      "100"
+    ]
+  },
+  "test_7_q_6": {
+    "correct_answer": "8",
+    "answer_type": "integer",
+    "distractors": [
+      "7",
+      "9",
+      "10"
+    ]
+  },
+  "test_7_q_7": {
+    "correct_answer": "d",
+    "answer_type": "letter",
+    "distractors": [
+      "a",
+      "b",
+      "c"
+    ]
+  },
+  "test_7_q_8": {
+    "correct_answer": "a",
+    "answer_type": "letter",
+    "distractors": [
+      "b",
+      "c",
+      "d"
+    ]
+  },
+  "test_7_q_9": {
+    "correct_answer": "net pattern",
+    "answer_type": "unknown",
+    "distractors": [
+      "cube diagram",
+      "flat pattern",
+      "3D model"
+    ]
+  },
+  "test_7_q_10": {
+    "correct_answer": "5",
+    "answer_type": "integer",
+    "distractors": [
+      "4",
+      "6",
+      "10"
+    ]
+  },
+  "test_7_q_11": {
+    "correct_answer": "9.98",
+    "answer_type": "time",
+    "distractors": [
+      "9.99",
+      "10.00",
+      "9.88"
+    ]
+  },
+  "test_7_q_12": {
+    "correct_answer": "3",
+    "answer_type": "integer",
+    "distractors": [
+      "2",
+      "4",
+      "5"
+    ]
+  },
+  "test_7_q_13": {
+    "correct_answer": "27p",
+    "answer_type": "unknown",
+    "distractors": [
+      "37p",
+      "27",
+      "17p"
+    ]
+  },
+  "test_7_q_14": {
+    "correct_answer": "2:1",
+    "answer_type": "ratio",
+    "distractors": [
+      "1:2",
+      "3:1",
+      "2:2"
+    ]
+  },
+  "test_7_q_15": {
+    "correct_answer": "44",
+    "answer_type": "integer",
+    "distractors": [
+      "43",
+      "54",
+      "34"
+    ]
+  },
+  "test_8_q_1": {
+    "correct_answer": "89.243",
+    "answer_type": "decimal",
+    "distractors": [
+      "98.243",
+      "89.234",
+      "89.24"
+    ]
+  },
+  "test_8_q_2": {
+    "correct_answer": "28",
+    "answer_type": "integer",
+    "distractors": [
+      "27",
+      "30",
+      "29"
+    ]
+  },
+  "test_8_q_3": {
+    "correct_answer": "42",
+    "answer_type": "integer",
+    "distractors": [
+      "41",
+      "43",
+      "52"
+    ]
+  },
+  "test_8_q_4": {
+    "correct_answer": "6.6, 6 1/2, 6.45",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "6.5, 6 2/3, 6.55",
+      "7.6, 7 1/2, 7.45",
+      "6.7, 6 1/2, 6.35"
+    ]
+  },
+  "test_8_q_5": {
+    "correct_answer": "0.09 or 9/100 or 9-hundredths",
+    "answer_type": "unknown",
+    "distractors": [
+      "0.9 or 9/10 or 9-tenths",
+      "0.009 or 9/1000 or 9-thousandths",
+      "0.19 or 19/100 or 19-hundredths"
+    ]
+  },
+  "test_8_q_6": {
+    "correct_answer": "341.6",
+    "answer_type": "decimal",
+    "distractors": [
+      "341.5",
+      "342.6",
+      "340.6"
+    ]
+  },
+  "test_8_q_7": {
+    "correct_answer": "315",
+    "answer_type": "integer",
+    "distractors": [
+      "305",
+      "325",
+      "316"
+    ]
+  },
+  "test_8_q_8": {
+    "correct_answer": "87",
+    "answer_type": "integer",
+    "distractors": [
+      "77",
+      "97",
+      "86"
+    ]
+  },
+  "test_8_q_9": {
+    "correct_answer": "3:1",
+    "answer_type": "ratio",
+    "distractors": [
+      "1:3",
+      "2:1",
+      "4:1"
+    ]
+  },
+  "test_8_q_10": {
+    "correct_answer": "3.16pm",
+    "answer_type": "time",
+    "distractors": [
+      "2.16pm",
+      "3.16am",
+      "4.16pm"
+    ]
+  },
+  "test_8_q_11": {
+    "correct_answer": "4:5",
+    "answer_type": "ratio",
+    "distractors": [
+      "5:4",
+      "3:4",
+      "4:6"
+    ]
+  },
+  "test_8_q_12": {
+    "correct_answer": "92",
+    "answer_type": "integer",
+    "distractors": [
+      "91",
+      "82",
+      "102"
+    ]
+  },
+  "test_8_q_13": {
+    "correct_answer": "11.40pm",
+    "answer_type": "time",
+    "distractors": [
+      "11.30pm",
+      "10.40pm",
+      "11.40am"
+    ]
+  },
+  "test_8_q_14": {
+    "correct_answer": "4,170",
+    "answer_type": "unknown",
+    "distractors": [
+      "4,160",
+      "4,180",
+      "4,071"
+    ]
+  },
+  "test_8_q_15": {
+    "correct_answer": "35",
+    "answer_type": "integer",
+    "distractors": [
+      "34",
+      "30",
+      "40"
+    ]
+  },
+  "test_9_q_1": {
+    "correct_answer": "25 and 49",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "24 and 48",
+      "26 and 50",
+      "36 and 64"
+    ]
+  },
+  "test_9_q_2": {
+    "correct_answer": "3",
+    "answer_type": "integer",
+    "distractors": [
+      "2",
+      "4",
+      "1"
+    ]
+  },
+  "test_9_q_3": {
+    "correct_answer": "62",
+    "answer_type": "integer",
+    "distractors": [
+      "72",
+      "52",
+      "63"
+    ]
+  },
+  "test_9_q_4": {
+    "correct_answer": "34",
+    "answer_type": "integer",
+    "distractors": [
+      "33",
+      "44",
+      "24"
+    ]
+  },
+  "test_9_q_5": {
+    "correct_answer": "2/3",
+    "answer_type": "fraction",
+    "distractors": [
+      "1/3",
+      "3/2",
+      "2/4"
+    ]
+  },
+  "test_9_q_6": {
+    "correct_answer": "2",
+    "answer_type": "integer",
+    "distractors": [
+      "1",
+      "3",
+      "4"
+    ]
+  },
+  "test_9_q_7": {
+    "correct_answer": "13.775",
+    "answer_type": "decimal",
+    "distractors": [
+      "13.757",
+      "14.775",
+      "13.725"
+    ]
+  },
+  "test_9_q_8": {
+    "correct_answer": "9",
+    "answer_type": "integer",
+    "distractors": [
+      "10",
+      "8",
+      "11"
+    ]
+  },
+  "test_9_q_9": {
+    "correct_answer": "52/100, 1.52, 52/10",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "51/100, 1.51, 51/10",
+      "53/100, 1.53, 53/10",
+      "52/100, 1.52, 51/10"
+    ]
+  },
+  "test_9_q_10": {
+    "correct_answer": "325",
+    "answer_type": "integer",
+    "distractors": [
+      "315",
+      "335",
+      "320"
+    ]
+  },
+  "test_9_q_11": {
+    "correct_answer": "4 1/2, 4.1, 4.02",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "4 2/3, 4.2, 4.12",
+      "5 1/2, 5.1, 5.02",
+      "4 1/3, 3.1, 3.02"
+    ]
+  },
+  "test_9_q_12": {
+    "correct_answer": "perpendicular",
+    "answer_type": "text_word",
+    "distractors": [
+      "parallel",
+      "oblique",
+      "intersecting"
+    ]
+  },
+  "test_9_q_13": {
+    "correct_answer": "9.06am",
+    "answer_type": "time",
+    "distractors": [
+      "9.16am",
+      "8.56am",
+      "9.60am"
+    ]
+  },
+  "test_9_q_14": {
+    "correct_answer": "7",
+    "answer_type": "integer",
+    "distractors": [
+      "6",
+      "8",
+      "9"
+    ]
+  },
+  "test_9_q_15": {
+    "correct_answer": "809",
+    "answer_type": "integer",
+    "distractors": [
+      "819",
+      "800",
+      "810"
+    ]
+  },
+  "test_10_q_1": {
+    "correct_answer": "5.32",
+    "answer_type": "time",
+    "distractors": [
+      "5.23",
+      "4.32",
+      "6.32"
+    ]
+  },
+  "test_10_q_2": {
+    "correct_answer": "48",
+    "answer_type": "integer",
+    "distractors": [
+      "38",
+      "58",
+      "47"
+    ]
+  },
+  "test_10_q_3": {
+    "correct_answer": "36",
+    "answer_type": "integer",
+    "distractors": [
+      "35",
+      "37",
+      "46"
+    ]
+  },
+  "test_10_q_4": {
+    "correct_answer": "4",
+    "answer_type": "integer",
+    "distractors": [
+      "3",
+      "5",
+      "6"
+    ]
+  },
+  "test_10_q_5": {
+    "correct_answer": "9",
+    "answer_type": "integer",
+    "distractors": [
+      "10",
+      "8",
+      "7"
+    ]
+  },
+  "test_10_q_6": {
+    "correct_answer": "12.5 or 12 1/2",
+    "answer_type": "unknown",
+    "distractors": [
+      "11.5 or 11 1/2",
+      "13.5 or 13 1/2",
+      "12.3 or 12 3/10"
+    ]
+  },
+  "test_10_q_7": {
+    "correct_answer": "17.21",
+    "answer_type": "time",
+    "distractors": [
+      "17.20",
+      "18.21",
+      "16.21"
+    ]
+  },
+  "test_10_q_8": {
+    "correct_answer": "672",
+    "answer_type": "integer",
+    "distractors": [
+      "6720",
+      "662",
+      "667"
+    ]
+  },
+  "test_10_q_9": {
+    "correct_answer": "4:1",
+    "answer_type": "ratio",
+    "distractors": [
+      "1:4",
+      "5:1",
+      "3:1"
+    ]
+  },
+  "test_10_q_10": {
+    "correct_answer": "396,000",
+    "answer_type": "unknown",
+    "distractors": [
+      "396,100",
+      "395,900",
+      "396,500"
+    ]
+  },
+  "test_10_q_11": {
+    "correct_answer": "163",
+    "answer_type": "integer",
+    "distractors": [
+      "162",
+      "173",
+      "153"
+    ]
+  },
+  "test_10_q_12": {
+    "correct_answer": "21.5 or 21 1/2",
+    "answer_type": "unknown",
+    "distractors": [
+      "20.5 or 20 1/2",
+      "22.5 or 22 1/2",
+      "21 or 21 1/1"
+    ]
+  },
+  "test_10_q_13": {
+    "correct_answer": "24",
+    "answer_type": "integer",
+    "distractors": [
+      "23",
+      "25",
+      "22"
+    ]
+  },
+  "test_10_q_14": {
+    "correct_answer": "4.5 hours or 4hrs 30mins or 4 1/2 hours",
+    "answer_type": "measurement",
+    "distractors": [
+      "5 hours or 5hrs 0mins or 5 hours",
+      "4 hours or 4hrs 0mins or 4 hours",
+      "3.5 hours or 3hrs 30mins or 3 1/2 hours"
+    ]
+  },
+  "test_10_q_15": {
+    "correct_answer": "8",
+    "answer_type": "integer",
+    "distractors": [
+      "7",
+      "9",
+      "6"
+    ]
+  },
+  "test_11_q_1": {
+    "correct_answer": "2.9",
+    "answer_type": "decimal",
+    "distractors": [
+      "3.9",
+      "2.8",
+      "2.99"
+    ]
+  },
+  "test_11_q_2": {
+    "correct_answer": "203",
+    "answer_type": "integer",
+    "distractors": [
+      "202",
+      "213",
+      "193"
+    ]
+  },
+  "test_11_q_3": {
+    "correct_answer": "1/3",
+    "answer_type": "fraction",
+    "distractors": [
+      "2/3",
+      "1/2",
+      "3/4"
+    ]
+  },
+  "test_11_q_4": {
+    "correct_answer": "185",
+    "answer_type": "integer",
+    "distractors": [
+      "186",
+      "175",
+      "195"
+    ]
+  },
+  "test_11_q_5": {
+    "correct_answer": "1, 17",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "2, 16",
+      "1, 18",
+      "0, 17"
+    ]
+  },
+  "test_11_q_6": {
+    "correct_answer": "1/6",
+    "answer_type": "fraction",
+    "distractors": [
+      "1/5",
+      "1/4",
+      "2/6"
+    ]
+  },
+  "test_11_q_7": {
+    "correct_answer": "32",
+    "answer_type": "integer",
+    "distractors": [
+      "31",
+      "33",
+      "22"
+    ]
+  },
+  "test_11_q_8": {
+    "correct_answer": "28",
+    "answer_type": "integer",
+    "distractors": [
+      "27",
+      "30",
+      "29"
+    ]
+  },
+  "test_11_q_9": {
+    "correct_answer": "10 and 15",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "9 and 16",
+      "11 and 14",
+      "12 and 13"
+    ]
+  },
+  "test_11_q_10": {
+    "correct_answer": "13",
+    "answer_type": "integer",
+    "distractors": [
+      "12",
+      "14",
+      "23"
+    ]
+  },
+  "test_11_q_11": {
+    "correct_answer": "9",
+    "answer_type": "integer",
+    "distractors": [
+      "10",
+      "8",
+      "11"
+    ]
+  },
+  "test_11_q_12": {
+    "correct_answer": "4",
+    "answer_type": "integer",
+    "distractors": [
+      "3",
+      "5",
+      "2"
+    ]
+  },
+  "test_11_q_13": {
+    "correct_answer": "4",
+    "answer_type": "integer",
+    "distractors": [
+      "3",
+      "5",
+      "2"
+    ]
+  },
+  "test_11_q_14": {
+    "correct_answer": "0.04 or 4/100 or 4-hundredths",
+    "answer_type": "unknown",
+    "distractors": [
+      "0.4 or 4/10 or 4-tenths",
+      "0.004 or 4/1000 or 4-thousandths",
+      "0.04 or 40/100 or 40-hundredths"
+    ]
+  },
+  "test_11_q_15": {
+    "correct_answer": "1",
+    "answer_type": "integer",
+    "distractors": [
+      "2",
+      "0",
+      "10"
+    ]
+  },
+  "test_12_q_1": {
+    "correct_answer": "102",
+    "answer_type": "integer",
+    "distractors": [
+      "112",
+      "100",
+      "92"
+    ]
+  },
+  "test_12_q_2": {
+    "correct_answer": "0.494",
+    "answer_type": "decimal",
+    "distractors": [
+      "0.449",
+      "0.594",
+      "0.49"
+    ]
+  },
+  "test_12_q_3": {
+    "correct_answer": "67",
+    "answer_type": "integer",
+    "distractors": [
+      "77",
+      "57",
+      "68"
+    ]
+  },
+  "test_12_q_4": {
+    "correct_answer": "1.7",
+    "answer_type": "decimal",
+    "distractors": [
+      "1.8",
+      "1.6",
+      "1.70"
+    ]
+  },
+  "test_12_q_5": {
+    "correct_answer": "270",
+    "answer_type": "integer",
+    "distractors": [
+      "260",
+      "280",
+      "271"
+    ]
+  },
+  "test_12_q_6": {
+    "correct_answer": "13",
+    "answer_type": "integer",
+    "distractors": [
+      "12",
+      "14",
+      "15"
+    ]
+  },
+  "test_12_q_7": {
+    "correct_answer": "85",
+    "answer_type": "integer",
+    "distractors": [
+      "84",
+      "95",
+      "75"
+    ]
+  },
+  "test_12_q_8": {
+    "correct_answer": "32",
+    "answer_type": "integer",
+    "distractors": [
+      "31",
+      "33",
+      "22"
+    ]
+  },
+  "test_12_q_9": {
+    "correct_answer": "485",
+    "answer_type": "integer",
+    "distractors": [
+      "475",
+      "495",
+      "486"
+    ]
+  },
+  "test_12_q_10": {
+    "correct_answer": "yes",
+    "answer_type": "yes_no",
+    "distractors": [
+      "no",
+      "maybe",
+      "cannot determine"
+    ]
+  },
+  "test_12_q_11": {
+    "correct_answer": "40",
+    "answer_type": "integer",
+    "distractors": [
+      "30",
+      "50",
+      "39"
+    ]
+  },
+  "test_12_q_12": {
+    "correct_answer": "false",
+    "answer_type": "yes_no",
+    "distractors": [
+      "true",
+      "cannot determine",
+      "sometimes"
+    ]
+  },
+  "test_12_q_13": {
+    "correct_answer": "64",
+    "answer_type": "integer",
+    "distractors": [
+      "63",
+      "66",
+      "60"
+    ]
+  },
+  "test_12_q_14": {
+    "correct_answer": "odd",
+    "answer_type": "text_word",
+    "distractors": [
+      "even",
+      "prime",
+      "composite"
+    ]
+  },
+  "test_12_q_15": {
+    "correct_answer": "60",
+    "answer_type": "integer",
+    "distractors": [
+      "50",
+      "70",
+      "61"
+    ]
+  },
+  "test_13_q_1": {
+    "correct_answer": "ten thousand or 10,000",
+    "answer_type": "unknown",
+    "distractors": [
+      "ten thousand and one or 10,001",
+      "one thousand or 1,000",
+      "one hundred thousand or 100,000"
+    ]
+  },
+  "test_13_q_2": {
+    "correct_answer": "1/24",
+    "answer_type": "fraction",
+    "distractors": [
+      "1/23",
+      "1/25",
+      "24/1"
+    ]
+  },
+  "test_13_q_3": {
+    "correct_answer": "18",
+    "answer_type": "integer",
+    "distractors": [
+      "17",
+      "19",
+      "20"
+    ]
+  },
+  "test_13_q_4": {
+    "correct_answer": "5/12",
+    "answer_type": "fraction",
+    "distractors": [
+      "7/12",
+      "5/10",
+      "12/5"
+    ]
+  },
+  "test_13_q_5": {
+    "correct_answer": "45",
+    "answer_type": "integer",
+    "distractors": [
+      "44",
+      "55",
+      "50"
+    ]
+  },
+  "test_13_q_6": {
+    "correct_answer": "8.25am",
+    "answer_type": "time",
+    "distractors": [
+      "8.35am",
+      "7.25am",
+      "8.15am"
+    ]
+  },
+  "test_13_q_7": {
+    "correct_answer": "A",
+    "answer_type": "letter",
+    "distractors": [
+      "B",
+      "C",
+      "D"
+    ]
+  },
+  "test_13_q_8": {
+    "correct_answer": "2",
+    "answer_type": "integer",
+    "distractors": [
+      "3",
+      "1",
+      "4"
+    ]
+  },
+  "test_13_q_9": {
+    "correct_answer": "27",
+    "answer_type": "integer",
+    "distractors": [
+      "26",
+      "28",
+      "37"
+    ]
+  },
+  "test_13_q_10": {
+    "correct_answer": "448",
+    "answer_type": "integer",
+    "distractors": [
+      "458",
+      "438",
+      "488"
+    ]
+  },
+  "test_13_q_11": {
+    "correct_answer": "16",
+    "answer_type": "integer",
+    "distractors": [
+      "15",
+      "17",
+      "18"
+    ]
+  },
+  "test_13_q_12": {
+    "correct_answer": "52/9",
+    "answer_type": "fraction",
+    "distractors": [
+      "52/8",
+      "59/9",
+      "52/10"
+    ]
+  },
+  "test_13_q_13": {
+    "correct_answer": "2028",
+    "answer_type": "integer",
+    "distractors": [
+      "2027",
+      "2038",
+      "2128"
+    ]
+  },
+  "test_13_q_14": {
+    "correct_answer": "0.3 or 3/10 or 3-tenths",
+    "answer_type": "unknown",
+    "distractors": [
+      "0.03 or 3/100 or 3-hundredths",
+      "0.33 or 33/100 or 33-hundredths",
+      "0.2 or 2/10 or 2-tenths"
+    ]
+  },
+  "test_13_q_15": {
+    "correct_answer": "3123",
+    "answer_type": "integer",
+    "distractors": [
+      "3122",
+      "3124",
+      "3223"
+    ]
+  },
+  "test_14_q_1": {
+    "correct_answer": "84.1",
+    "answer_type": "decimal",
+    "distractors": [
+      "81.4",
+      "84.10",
+      "41.8"
+    ]
+  },
+  "test_14_q_2": {
+    "correct_answer": "2 1/2",
+    "answer_type": "mixed_fraction",
+    "distractors": [
+      "2 2/3",
+      "1 1/2",
+      "3 1/2"
+    ]
+  },
+  "test_14_q_3": {
+    "correct_answer": "28",
+    "answer_type": "integer",
+    "distractors": [
+      "27",
+      "30",
+      "29"
+    ]
+  },
+  "test_14_q_4": {
+    "correct_answer": "1.3",
+    "answer_type": "decimal",
+    "distractors": [
+      "1.03",
+      "1.30",
+      "0.13"
+    ]
+  },
+  "test_14_q_5": {
+    "correct_answer": "288",
+    "answer_type": "integer",
+    "distractors": [
+      "278",
+      "298",
+      "289"
+    ]
+  },
+  "test_14_q_6": {
+    "correct_answer": "48",
+    "answer_type": "integer",
+    "distractors": [
+      "38",
+      "58",
+      "47"
+    ]
+  },
+  "test_14_q_7": {
+    "correct_answer": "7",
+    "answer_type": "integer",
+    "distractors": [
+      "6",
+      "8",
+      "5"
+    ]
+  },
+  "test_14_q_8": {
+    "correct_answer": "24",
+    "answer_type": "integer",
+    "distractors": [
+      "23",
+      "25",
+      "20"
+    ]
+  },
+  "test_14_q_9": {
+    "correct_answer": "Saturday",
+    "answer_type": "text_word",
+    "distractors": [
+      "Sunday",
+      "Friday",
+      "Wednesday"
+    ]
+  },
+  "test_14_q_10": {
+    "correct_answer": "-",
+    "answer_type": "unknown",
+    "distractors": [
+      "Since the correct answer is not provided in this prompt, it is impossible to generate distractors. Please provide the correct answer so that the appropriate distractors can be created.",
+      "-?",
+      "-?"
+    ]
+  },
+  "test_14_q_11": {
+    "correct_answer": "29",
+    "answer_type": "integer",
+    "distractors": [
+      "28",
+      "30",
+      "39"
+    ]
+  },
+  "test_14_q_12": {
+    "correct_answer": "1/8",
+    "answer_type": "fraction",
+    "distractors": [
+      "1/4",
+      "1/6",
+      "2/8"
+    ]
+  },
+  "test_14_q_13": {
+    "correct_answer": "no",
+    "answer_type": "yes_no",
+    "distractors": [
+      "yes",
+      "maybe",
+      "cannot determine"
+    ]
+  },
+  "test_14_q_14": {
+    "correct_answer": "4",
+    "answer_type": "integer",
+    "distractors": [
+      "5",
+      "3",
+      "6"
+    ]
+  },
+  "test_14_q_15": {
+    "correct_answer": "47 hours and 30 minutes",
+    "answer_type": "measurement",
+    "distractors": [
+      "57 hours and 30 minutes",
+      "47 hours and 40 minutes",
+      "48 hours and 30 minutes"
+    ]
+  },
+  "test_15_q_1": {
+    "correct_answer": "\u00a39.50",
+    "answer_type": "money",
+    "distractors": [
+      "\u00a38.50",
+      "\u00a310.50",
+      "\u00a39.05"
+    ]
+  },
+  "test_15_q_2": {
+    "correct_answer": "48",
+    "answer_type": "integer",
+    "distractors": [
+      "58",
+      "38",
+      "47"
+    ]
+  },
+  "test_15_q_3": {
+    "correct_answer": "east",
+    "answer_type": "compass",
+    "distractors": [
+      "south-west",
+      "north-east",
+      "north-west"
+    ]
+  },
+  "test_15_q_4": {
+    "correct_answer": "10",
+    "answer_type": "integer",
+    "distractors": [
+      "9",
+      "11",
+      "20"
+    ]
+  },
+  "test_15_q_5": {
+    "correct_answer": "1 1/3",
+    "answer_type": "mixed_fraction",
+    "distractors": [
+      "1 1/2",
+      "1 2/3",
+      "1 1/4"
+    ]
+  },
+  "test_15_q_6": {
+    "correct_answer": "479.07",
+    "answer_type": "decimal",
+    "distractors": [
+      "478.07",
+      "479.70",
+      "489.07"
+    ]
+  },
+  "test_15_q_7": {
+    "correct_answer": "8.10am",
+    "answer_type": "time",
+    "distractors": [
+      "8.15am",
+      "7.10am",
+      "8.05am"
+    ]
+  },
+  "test_15_q_8": {
+    "correct_answer": "400",
+    "answer_type": "integer",
+    "distractors": [
+      "300",
+      "500",
+      "410"
+    ]
+  },
+  "test_15_q_9": {
+    "correct_answer": "5/6",
+    "answer_type": "fraction",
+    "distractors": [
+      "6/5",
+      "5/7",
+      "4/6"
+    ]
+  },
+  "test_15_q_10": {
+    "correct_answer": "15 and 21",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "14 and 20",
+      "16 and 22",
+      "15 and 20"
+    ]
+  },
+  "test_15_q_11": {
+    "correct_answer": "11.1",
+    "answer_type": "decimal",
+    "distractors": [
+      "10.1",
+      "11.0",
+      "12.1"
+    ]
+  },
+  "test_15_q_12": {
+    "correct_answer": "4",
+    "answer_type": "integer",
+    "distractors": [
+      "5",
+      "3",
+      "6"
+    ]
+  },
+  "test_15_q_13": {
+    "correct_answer": "20",
+    "answer_type": "integer",
+    "distractors": [
+      "19",
+      "21",
+      "30"
+    ]
+  },
+  "test_15_q_14": {
+    "correct_answer": "1/6",
+    "answer_type": "fraction",
+    "distractors": [
+      "1/5",
+      "2/6",
+      "1/7"
+    ]
+  },
+  "test_15_q_15": {
+    "correct_answer": "0.42",
+    "answer_type": "time",
+    "distractors": [
+      "0.24",
+      "0.40",
+      "0.52"
+    ]
+  },
+  "test_16_q_1": {
+    "correct_answer": "1/625",
+    "answer_type": "fraction",
+    "distractors": [
+      "1/620",
+      "625/1",
+      "1/615"
+    ]
+  },
+  "test_16_q_2": {
+    "correct_answer": "7",
+    "answer_type": "integer",
+    "distractors": [
+      "6",
+      "8",
+      "9"
+    ]
+  },
+  "test_16_q_3": {
+    "correct_answer": "60",
+    "answer_type": "integer",
+    "distractors": [
+      "50",
+      "70",
+      "61"
+    ]
+  },
+  "test_16_q_4": {
+    "correct_answer": "6 and 8",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "5 and 7",
+      "6 and 9",
+      "7 and 8"
+    ]
+  },
+  "test_16_q_5": {
+    "correct_answer": "7.8",
+    "answer_type": "decimal",
+    "distractors": [
+      "6.8",
+      "8.8",
+      "7.9"
+    ]
+  },
+  "test_16_q_6": {
+    "correct_answer": "23",
+    "answer_type": "integer",
+    "distractors": [
+      "22",
+      "24",
+      "20"
+    ]
+  },
+  "test_16_q_7": {
+    "correct_answer": "7.8km",
+    "answer_type": "measurement",
+    "distractors": [
+      "7.9km",
+      "6.8km",
+      "7.80km"
+    ]
+  },
+  "test_16_q_8": {
+    "correct_answer": "1 1/2",
+    "answer_type": "mixed_fraction",
+    "distractors": [
+      "1 1/3",
+      "1 2/3",
+      "2 1/2"
+    ]
+  },
+  "test_16_q_9": {
+    "correct_answer": "5",
+    "answer_type": "integer",
+    "distractors": [
+      "6",
+      "4",
+      "10"
+    ]
+  },
+  "test_16_q_10": {
+    "correct_answer": "south-east",
+    "answer_type": "compass",
+    "distractors": [
+      "north-west",
+      "north",
+      "south-west"
+    ]
+  },
+  "test_16_q_11": {
+    "correct_answer": "99",
+    "answer_type": "integer",
+    "distractors": [
+      "89",
+      "109",
+      "100"
+    ]
+  },
+  "test_16_q_12": {
+    "correct_answer": "19th",
+    "answer_type": "unknown",
+    "distractors": [
+      "20th",
+      "18th",
+      "21st"
+    ]
+  },
+  "test_16_q_13": {
+    "correct_answer": "\u00a37.00",
+    "answer_type": "money",
+    "distractors": [
+      "\u00a36.00",
+      "\u00a38.00",
+      "\u00a37.50"
+    ]
+  },
+  "test_16_q_14": {
+    "correct_answer": "25",
+    "answer_type": "integer",
+    "distractors": [
+      "24",
+      "26",
+      "30"
+    ]
+  },
+  "test_16_q_15": {
+    "correct_answer": "August 1999",
+    "answer_type": "unknown",
+    "distractors": [
+      "August 2000",
+      "July 1999",
+      "September 1999"
+    ]
+  },
+  "test_17_q_1": {
+    "correct_answer": "0.02",
+    "answer_type": "time",
+    "distractors": [
+      "0.2",
+      "0.002",
+      "0.20"
+    ]
+  },
+  "test_17_q_2": {
+    "correct_answer": "16.2",
+    "answer_type": "decimal",
+    "distractors": [
+      "16.3",
+      "15.2",
+      "17.2"
+    ]
+  },
+  "test_17_q_3": {
+    "correct_answer": "33",
+    "answer_type": "integer",
+    "distractors": [
+      "32",
+      "34",
+      "23"
+    ]
+  },
+  "test_17_q_4": {
+    "correct_answer": "2 5/16",
+    "answer_type": "mixed_fraction",
+    "distractors": [
+      "2 6/16",
+      "3 1/16",
+      "2 4/16"
+    ]
+  },
+  "test_17_q_5": {
+    "correct_answer": "5.33pm",
+    "answer_type": "time",
+    "distractors": [
+      "5.30pm",
+      "6.33pm",
+      "5.23pm"
+    ]
+  },
+  "test_17_q_6": {
+    "correct_answer": "\u00a315.00",
+    "answer_type": "money",
+    "distractors": [
+      "\u00a314.00",
+      "\u00a315.50",
+      "\u00a316.00"
+    ]
+  },
+  "test_17_q_7": {
+    "correct_answer": "2,955",
+    "answer_type": "unknown",
+    "distractors": [
+      "2,954",
+      "3,055",
+      "2,965"
+    ]
+  },
+  "test_17_q_8": {
+    "correct_answer": "115",
+    "answer_type": "integer",
+    "distractors": [
+      "105",
+      "125",
+      "116"
+    ]
+  },
+  "test_17_q_9": {
+    "correct_answer": "14/25",
+    "answer_type": "fraction",
+    "distractors": [
+      "25/14",
+      "15/25",
+      "13/25"
+    ]
+  },
+  "test_17_q_10": {
+    "correct_answer": "A = 22, B = 14, C = 16",
+    "answer_type": "equation",
+    "distractors": [
+      "A = 21, B = 14, C = 16",
+      "A = 22, B = 15, C = 16",
+      "A = 22, B = 14, C = 17"
+    ]
+  },
+  "test_17_q_11": {
+    "correct_answer": "72",
+    "answer_type": "integer",
+    "distractors": [
+      "70",
+      "80",
+      "73"
+    ]
+  },
+  "test_17_q_12": {
+    "correct_answer": "16/4",
+    "answer_type": "fraction",
+    "distractors": [
+      "20/4",
+      "16/2",
+      "16/5"
+    ]
+  },
+  "test_17_q_13": {
+    "correct_answer": "36 and 44",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "35 and 45",
+      "36 and 43",
+      "37 and 44"
+    ]
+  },
+  "test_17_q_14": {
+    "correct_answer": "640",
+    "answer_type": "integer",
+    "distractors": [
+      "620",
+      "650",
+      "641"
+    ]
+  },
+  "test_17_q_15": {
+    "correct_answer": "circumference",
+    "answer_type": "text_word",
+    "distractors": [
+      "radius",
+      "diameter",
+      "perimeter"
+    ]
+  },
+  "test_18_q_1": {
+    "correct_answer": "13",
+    "answer_type": "integer",
+    "distractors": [
+      "12",
+      "14",
+      "23"
+    ]
+  },
+  "test_18_q_2": {
+    "correct_answer": "5/18",
+    "answer_type": "fraction",
+    "distractors": [
+      "4/18",
+      "5/17",
+      "6/18"
+    ]
+  },
+  "test_18_q_3": {
+    "correct_answer": "5/8",
+    "answer_type": "fraction",
+    "distractors": [
+      "4/8",
+      "8/5",
+      "7/8"
+    ]
+  },
+  "test_18_q_4": {
+    "correct_answer": "north-east",
+    "answer_type": "compass",
+    "distractors": [
+      "south-east",
+      "south",
+      "south-west"
+    ]
+  },
+  "test_18_q_5": {
+    "correct_answer": "3/8",
+    "answer_type": "fraction",
+    "distractors": [
+      "2/8",
+      "3/7",
+      "5/8"
+    ]
+  },
+  "test_18_q_6": {
+    "correct_answer": "4",
+    "answer_type": "integer",
+    "distractors": [
+      "3",
+      "5",
+      "6"
+    ]
+  },
+  "test_18_q_7": {
+    "correct_answer": "10,000",
+    "answer_type": "unknown",
+    "distractors": [
+      "1,000",
+      "100,000",
+      "10,010"
+    ]
+  },
+  "test_18_q_8": {
+    "correct_answer": "563.64",
+    "answer_type": "decimal",
+    "distractors": [
+      "563.46",
+      "564.64",
+      "563.06"
+    ]
+  },
+  "test_18_q_9": {
+    "correct_answer": "65%",
+    "answer_type": "percentage",
+    "distractors": [
+      "75%",
+      "55%",
+      "60%"
+    ]
+  },
+  "test_18_q_10": {
+    "correct_answer": "diameter",
+    "answer_type": "text_word",
+    "distractors": [
+      "radius",
+      "circumference",
+      "arc"
+    ]
+  },
+  "test_18_q_11": {
+    "correct_answer": "3 and 9",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "2 and 8",
+      "4 and 10",
+      "5 and 7"
+    ]
+  },
+  "test_18_q_12": {
+    "correct_answer": "2",
+    "answer_type": "integer",
+    "distractors": [
+      "1",
+      "3",
+      "4"
+    ]
+  },
+  "test_18_q_13": {
+    "correct_answer": "82",
+    "answer_type": "integer",
+    "distractors": [
+      "81",
+      "92",
+      "72"
+    ]
+  },
+  "test_18_q_14": {
+    "correct_answer": "3/8",
+    "answer_type": "fraction",
+    "distractors": [
+      "2/8",
+      "5/8",
+      "3/7"
+    ]
+  },
+  "test_18_q_15": {
+    "correct_answer": "9.47am",
+    "answer_type": "time",
+    "distractors": [
+      "9.57am",
+      "8.47am",
+      "9.37am"
+    ]
+  },
+  "test_19_q_1": {
+    "correct_answer": "233",
+    "answer_type": "integer",
+    "distractors": [
+      "232",
+      "243",
+      "220"
+    ]
+  },
+  "test_19_q_2": {
+    "correct_answer": "45%",
+    "answer_type": "percentage",
+    "distractors": [
+      "35%",
+      "55%",
+      "50%"
+    ]
+  },
+  "test_19_q_3": {
+    "correct_answer": "1",
+    "answer_type": "integer",
+    "distractors": [
+      "0",
+      "2",
+      "10"
+    ]
+  },
+  "test_19_q_4": {
+    "correct_answer": "30",
+    "answer_type": "integer",
+    "distractors": [
+      "29",
+      "31",
+      "40"
+    ]
+  },
+  "test_19_q_5": {
+    "correct_answer": "81, 144",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "80, 143",
+      "82, 145",
+      "81, 145"
+    ]
+  },
+  "test_19_q_6": {
+    "correct_answer": "195.5",
+    "answer_type": "decimal",
+    "distractors": [
+      "196.5",
+      "195.05",
+      "190.5"
+    ]
+  },
+  "test_19_q_7": {
+    "correct_answer": "4.03, 4.043, 4.3",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "4.3, 4.04, 4.43",
+      "4.3, 4.3, 4.03",
+      "4.03, 4.4, 4.3"
+    ]
+  },
+  "test_19_q_8": {
+    "correct_answer": "12",
+    "answer_type": "integer",
+    "distractors": [
+      "11",
+      "13",
+      "10"
+    ]
+  },
+  "test_19_q_9": {
+    "correct_answer": "53.174",
+    "answer_type": "decimal",
+    "distractors": [
+      "52.174",
+      "53.1740",
+      "53.714"
+    ]
+  },
+  "test_19_q_10": {
+    "correct_answer": "B",
+    "answer_type": "letter",
+    "distractors": [
+      "A",
+      "C",
+      "D"
+    ]
+  },
+  "test_19_q_11": {
+    "correct_answer": "4.50pm",
+    "answer_type": "time",
+    "distractors": [
+      "3.50pm",
+      "5.50pm",
+      "4.30pm"
+    ]
+  },
+  "test_19_q_12": {
+    "correct_answer": "54 and 108",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "52 and 106",
+      "55 and 109",
+      "53 and 107"
+    ]
+  },
+  "test_19_q_13": {
+    "correct_answer": "0.009",
+    "answer_type": "decimal",
+    "distractors": [
+      "0.090",
+      "0.0090",
+      "0.0009"
+    ]
+  },
+  "test_19_q_14": {
+    "correct_answer": "360",
+    "answer_type": "integer",
+    "distractors": [
+      "350",
+      "370",
+      "300"
+    ]
+  },
+  "test_19_q_15": {
+    "correct_answer": "Y = 21, Z = 18",
+    "answer_type": "equation",
+    "distractors": [
+      "Y = 22, Z = 17",
+      "Y = 20, Z = 19",
+      "Y = 21, Z = 17"
+    ]
+  },
+  "test_20_q_1": {
+    "correct_answer": "919",
+    "answer_type": "integer",
+    "distractors": [
+      "929",
+      "909",
+      "9190"
+    ]
+  },
+  "test_20_q_2": {
+    "correct_answer": "18/25",
+    "answer_type": "fraction",
+    "distractors": [
+      "25/18",
+      "20/25",
+      "16/25"
+    ]
+  },
+  "test_20_q_3": {
+    "correct_answer": "3.299, 3.3, 3.33",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "3.299, 3.30, 3.33",
+      "3.199, 3.2, 3.23",
+      "3.399, 3.4, 3.43"
+    ]
+  },
+  "test_20_q_4": {
+    "correct_answer": "42",
+    "answer_type": "integer",
+    "distractors": [
+      "41",
+      "43",
+      "52"
+    ]
+  },
+  "test_20_q_5": {
+    "correct_answer": "41%",
+    "answer_type": "percentage",
+    "distractors": [
+      "31%",
+      "51%",
+      "0.41%"
+    ]
+  },
+  "test_20_q_6": {
+    "correct_answer": "A",
+    "answer_type": "letter",
+    "distractors": [
+      "B",
+      "C",
+      "D"
+    ]
+  },
+  "test_20_q_7": {
+    "correct_answer": "297",
+    "answer_type": "integer",
+    "distractors": [
+      "2970",
+      "279",
+      "29.7"
+    ]
+  },
+  "test_20_q_8": {
+    "correct_answer": "180g",
+    "answer_type": "unknown",
+    "distractors": [
+      "190g",
+      "170g",
+      "181g"
+    ]
+  },
+  "test_20_q_9": {
+    "correct_answer": "196",
+    "answer_type": "integer",
+    "distractors": [
+      "195",
+      "197",
+      "186"
+    ]
+  },
+  "test_20_q_10": {
+    "correct_answer": "129.2",
+    "answer_type": "decimal",
+    "distractors": [
+      "139.2",
+      "129.20",
+      "120.9"
+    ]
+  },
+  "test_20_q_11": {
+    "correct_answer": "32 and 40",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "30 and 38",
+      "33 and 41",
+      "31 and 39"
+    ]
+  },
+  "test_20_q_12": {
+    "correct_answer": "33",
+    "answer_type": "integer",
+    "distractors": [
+      "32",
+      "34",
+      "30"
+    ]
+  },
+  "test_20_q_13": {
+    "correct_answer": "even",
+    "answer_type": "text_word",
+    "distractors": [
+      "odd",
+      "prime",
+      "square"
+    ]
+  },
+  "test_20_q_14": {
+    "correct_answer": "no",
+    "answer_type": "yes_no",
+    "distractors": [
+      "yes",
+      "maybe",
+      "cannot determine"
+    ]
+  },
+  "test_20_q_15": {
+    "correct_answer": "365",
+    "answer_type": "integer",
+    "distractors": [
+      "364",
+      "366",
+      "355"
+    ]
+  },
+  "test_21_q_1": {
+    "correct_answer": "18",
+    "answer_type": "integer",
+    "distractors": [
+      "17",
+      "20",
+      "16"
+    ]
+  },
+  "test_21_q_2": {
+    "correct_answer": "283",
+    "answer_type": "integer",
+    "distractors": [
+      "282",
+      "273",
+      "293"
+    ]
+  },
+  "test_21_q_3": {
+    "correct_answer": "17",
+    "answer_type": "integer",
+    "distractors": [
+      "16",
+      "18",
+      "20"
+    ]
+  },
+  "test_21_q_4": {
+    "correct_answer": "1",
+    "answer_type": "integer",
+    "distractors": [
+      "0",
+      "2",
+      "-1"
+    ]
+  },
+  "test_21_q_5": {
+    "correct_answer": "2%",
+    "answer_type": "percentage",
+    "distractors": [
+      "1%",
+      "0.2%",
+      "20%"
+    ]
+  },
+  "test_21_q_6": {
+    "correct_answer": "16",
+    "answer_type": "integer",
+    "distractors": [
+      "15",
+      "17",
+      "18"
+    ]
+  },
+  "test_21_q_7": {
+    "correct_answer": "16, 32 and 48",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "15, 30, 45",
+      "17, 33, 49",
+      "14, 28, 42"
+    ]
+  },
+  "test_21_q_8": {
+    "correct_answer": "square",
+    "answer_type": "shape",
+    "distractors": [
+      "rectangle",
+      "circle",
+      "triangle"
+    ]
+  },
+  "test_21_q_9": {
+    "correct_answer": "125",
+    "answer_type": "integer",
+    "distractors": [
+      "115",
+      "135",
+      "100"
+    ]
+  },
+  "test_21_q_10": {
+    "correct_answer": "1 1/4",
+    "answer_type": "mixed_fraction",
+    "distractors": [
+      "1 1/2",
+      "1 3/4",
+      "1 1/3"
+    ]
+  },
+  "test_21_q_11": {
+    "correct_answer": "29",
+    "answer_type": "integer",
+    "distractors": [
+      "28",
+      "30",
+      "19"
+    ]
+  },
+  "test_21_q_12": {
+    "correct_answer": "9",
+    "answer_type": "integer",
+    "distractors": [
+      "8",
+      "10",
+      "7"
+    ]
+  },
+  "test_21_q_13": {
+    "correct_answer": "9%, 1/12, 0.08",
+    "answer_type": "percentage",
+    "distractors": [
+      "10%, 1/10, 0.09",
+      "7%, 1/14, 0.07",
+      "12%, 1/8, 0.1"
+    ]
+  },
+  "test_21_q_14": {
+    "correct_answer": "159",
+    "answer_type": "integer",
+    "distractors": [
+      "169",
+      "149",
+      "1590"
+    ]
+  },
+  "test_21_q_15": {
+    "correct_answer": "Tuesday",
+    "answer_type": "text_word",
+    "distractors": [
+      "Monday",
+      "Wednesday",
+      "Sunday"
+    ]
+  },
+  "test_22_q_1": {
+    "correct_answer": "7",
+    "answer_type": "integer",
+    "distractors": [
+      "6",
+      "8",
+      "9"
+    ]
+  },
+  "test_22_q_2": {
+    "correct_answer": "2",
+    "answer_type": "integer",
+    "distractors": [
+      "1",
+      "3",
+      "4"
+    ]
+  },
+  "test_22_q_3": {
+    "correct_answer": "27",
+    "answer_type": "integer",
+    "distractors": [
+      "26",
+      "28",
+      "30"
+    ]
+  },
+  "test_22_q_4": {
+    "correct_answer": "512",
+    "answer_type": "integer",
+    "distractors": [
+      "511",
+      "520",
+      "500"
+    ]
+  },
+  "test_22_q_5": {
+    "correct_answer": "207",
+    "answer_type": "integer",
+    "distractors": [
+      "217",
+      "2070",
+      "200"
+    ]
+  },
+  "test_22_q_6": {
+    "correct_answer": "\u00a33",
+    "answer_type": "money",
+    "distractors": [
+      "\u00a32",
+      "\u00a34",
+      "\u00a33.50"
+    ]
+  },
+  "test_22_q_7": {
+    "correct_answer": "82",
+    "answer_type": "integer",
+    "distractors": [
+      "81",
+      "92",
+      "72"
+    ]
+  },
+  "test_22_q_8": {
+    "correct_answer": "30\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "20\u00b0",
+      "40\u00b0",
+      "60\u00b0"
+    ]
+  },
+  "test_22_q_9": {
+    "correct_answer": "Monday",
+    "answer_type": "text_word",
+    "distractors": [
+      "Tuesday",
+      "Sunday",
+      "Friday"
+    ]
+  },
+  "test_22_q_10": {
+    "correct_answer": "56",
+    "answer_type": "integer",
+    "distractors": [
+      "57",
+      "66",
+      "46"
+    ]
+  },
+  "test_22_q_11": {
+    "correct_answer": "130\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "120\u00b0",
+      "140\u00b0",
+      "135\u00b0"
+    ]
+  },
+  "test_22_q_12": {
+    "correct_answer": "400",
+    "answer_type": "integer",
+    "distractors": [
+      "300",
+      "500",
+      "410"
+    ]
+  },
+  "test_22_q_13": {
+    "correct_answer": "15",
+    "answer_type": "integer",
+    "distractors": [
+      "14",
+      "16",
+      "25"
+    ]
+  },
+  "test_22_q_14": {
+    "correct_answer": "A = 10, B = 12, C = 2",
+    "answer_type": "equation",
+    "distractors": [
+      "A = 11, B = 12, C = 2",
+      "A = 10, B = 13, C = 2",
+      "A = 10, B = 12, C = 3"
+    ]
+  },
+  "test_22_q_15": {
+    "correct_answer": "5:7",
+    "answer_type": "ratio",
+    "distractors": [
+      "7:5",
+      "6:7",
+      "5:6"
+    ]
+  },
+  "test_23_q_1": {
+    "correct_answer": "386",
+    "answer_type": "integer",
+    "distractors": [
+      "396",
+      "376",
+      "387"
+    ]
+  },
+  "test_23_q_2": {
+    "correct_answer": "980,000",
+    "answer_type": "unknown",
+    "distractors": [
+      "990,000",
+      "970,000",
+      "980,100"
+    ]
+  },
+  "test_23_q_3": {
+    "correct_answer": "5",
+    "answer_type": "integer",
+    "distractors": [
+      "4",
+      "6",
+      "10"
+    ]
+  },
+  "test_23_q_4": {
+    "correct_answer": "0.5",
+    "answer_type": "decimal",
+    "distractors": [
+      "0.4",
+      "0.6",
+      "0.05"
+    ]
+  },
+  "test_23_q_5": {
+    "correct_answer": "20",
+    "answer_type": "integer",
+    "distractors": [
+      "19",
+      "21",
+      "30"
+    ]
+  },
+  "test_23_q_6": {
+    "correct_answer": "A = 14, B = 10",
+    "answer_type": "equation",
+    "distractors": [
+      "A = 13, B = 11",
+      "A = 15, B = 9",
+      "A = 14, B = 11"
+    ]
+  },
+  "test_23_q_7": {
+    "correct_answer": "3,996",
+    "answer_type": "unknown",
+    "distractors": [
+      "3,995",
+      "4,006",
+      "3,986"
+    ]
+  },
+  "test_23_q_8": {
+    "correct_answer": "42",
+    "answer_type": "integer",
+    "distractors": [
+      "41",
+      "43",
+      "52"
+    ]
+  },
+  "test_23_q_9": {
+    "correct_answer": "25",
+    "answer_type": "integer",
+    "distractors": [
+      "24",
+      "26",
+      "20"
+    ]
+  },
+  "test_23_q_10": {
+    "correct_answer": "60%",
+    "answer_type": "percentage",
+    "distractors": [
+      "70%",
+      "50%",
+      "0.6%"
+    ]
+  },
+  "test_23_q_11": {
+    "correct_answer": "10\u00b0C",
+    "answer_type": "degree",
+    "distractors": [
+      "9\u00b0C",
+      "11\u00b0C",
+      "20\u00b0C"
+    ]
+  },
+  "test_23_q_12": {
+    "correct_answer": "90",
+    "answer_type": "integer",
+    "distractors": [
+      "100",
+      "80",
+      "95"
+    ]
+  },
+  "test_23_q_13": {
+    "correct_answer": "40%",
+    "answer_type": "percentage",
+    "distractors": [
+      "30%",
+      "50%",
+      "60%"
+    ]
+  },
+  "test_23_q_14": {
+    "correct_answer": "8",
+    "answer_type": "integer",
+    "distractors": [
+      "7",
+      "9",
+      "10"
+    ]
+  },
+  "test_23_q_15": {
+    "correct_answer": "65\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "75\u00b0",
+      "55\u00b0",
+      "80\u00b0"
+    ]
+  },
+  "test_24_q_1": {
+    "correct_answer": "112%",
+    "answer_type": "percentage",
+    "distractors": [
+      "120%",
+      "100%",
+      "102%"
+    ]
+  },
+  "test_24_q_2": {
+    "correct_answer": "9%",
+    "answer_type": "percentage",
+    "distractors": [
+      "10%",
+      "8%",
+      "0.09%"
+    ]
+  },
+  "test_24_q_3": {
+    "correct_answer": "44",
+    "answer_type": "integer",
+    "distractors": [
+      "45",
+      "54",
+      "34"
+    ]
+  },
+  "test_24_q_4": {
+    "correct_answer": "3",
+    "answer_type": "integer",
+    "distractors": [
+      "2",
+      "4",
+      "1"
+    ]
+  },
+  "test_24_q_5": {
+    "correct_answer": "3,591",
+    "answer_type": "unknown",
+    "distractors": [
+      "3,592",
+      "3,581",
+      "3,691"
+    ]
+  },
+  "test_24_q_6": {
+    "correct_answer": "3/4",
+    "answer_type": "fraction",
+    "distractors": [
+      "4/3",
+      "2/3",
+      "3/5"
+    ]
+  },
+  "test_24_q_7": {
+    "correct_answer": "80\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "70\u00b0",
+      "90\u00b0",
+      "100\u00b0"
+    ]
+  },
+  "test_24_q_8": {
+    "correct_answer": "250",
+    "answer_type": "integer",
+    "distractors": [
+      "260",
+      "240",
+      "251"
+    ]
+  },
+  "test_24_q_9": {
+    "correct_answer": "50\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "60\u00b0",
+      "40\u00b0",
+      "45\u00b0"
+    ]
+  },
+  "test_24_q_10": {
+    "correct_answer": "160\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "150\u00b0",
+      "170\u00b0",
+      "180\u00b0"
+    ]
+  },
+  "test_24_q_11": {
+    "correct_answer": "18 and 36",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "19 and 37",
+      "17 and 35",
+      "20 and 40"
+    ]
+  },
+  "test_24_q_12": {
+    "correct_answer": "70\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "60\u00b0",
+      "80\u00b0",
+      "90\u00b0"
+    ]
+  },
+  "test_24_q_13": {
+    "correct_answer": "0.36, 7/20, 34.5%",
+    "answer_type": "percentage",
+    "distractors": [
+      "0.63, 8/20, 40.5%",
+      "0.26, 6/20, 24.5%",
+      "0.46, 9/20, 44.5%"
+    ]
+  },
+  "test_24_q_14": {
+    "correct_answer": "28",
+    "answer_type": "integer",
+    "distractors": [
+      "27",
+      "29",
+      "38"
+    ]
+  },
+  "test_24_q_15": {
+    "correct_answer": "5/8",
+    "answer_type": "fraction",
+    "distractors": [
+      "4/8",
+      "6/8",
+      "8/5"
+    ]
+  },
+  "test_25_q_1": {
+    "correct_answer": "14",
+    "answer_type": "integer",
+    "distractors": [
+      "13",
+      "15",
+      "12"
+    ]
+  },
+  "test_25_q_2": {
+    "correct_answer": "15 days",
+    "answer_type": "unknown",
+    "distractors": [
+      "14 days",
+      "16 days",
+      "20 days"
+    ]
+  },
+  "test_25_q_3": {
+    "correct_answer": "28 and 56",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "29 and 58",
+      "27 and 54",
+      "30 and 60"
+    ]
+  },
+  "test_25_q_4": {
+    "correct_answer": "233.18",
+    "answer_type": "decimal",
+    "distractors": [
+      "233.81",
+      "223.18",
+      "233.1"
+    ]
+  },
+  "test_25_q_5": {
+    "correct_answer": "324",
+    "answer_type": "integer",
+    "distractors": [
+      "314",
+      "334",
+      "323"
+    ]
+  },
+  "test_25_q_6": {
+    "correct_answer": "0.06",
+    "answer_type": "time",
+    "distractors": [
+      "0.60",
+      "0.006",
+      "0.16"
+    ]
+  },
+  "test_25_q_7": {
+    "correct_answer": "120",
+    "answer_type": "integer",
+    "distractors": [
+      "110",
+      "130",
+      "100"
+    ]
+  },
+  "test_25_q_8": {
+    "correct_answer": "12\u00b0C",
+    "answer_type": "degree",
+    "distractors": [
+      "11\u00b0C",
+      "13\u00b0C",
+      "10\u00b0C"
+    ]
+  },
+  "test_25_q_9": {
+    "correct_answer": "100\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "90\u00b0",
+      "110\u00b0",
+      "80\u00b0"
+    ]
+  },
+  "test_25_q_10": {
+    "correct_answer": "100",
+    "answer_type": "integer",
+    "distractors": [
+      "90",
+      "110",
+      "101"
+    ]
+  },
+  "test_25_q_11": {
+    "correct_answer": "255",
+    "answer_type": "integer",
+    "distractors": [
+      "254",
+      "265",
+      "245"
+    ]
+  },
+  "test_25_q_12": {
+    "correct_answer": "5",
+    "answer_type": "integer",
+    "distractors": [
+      "4",
+      "6",
+      "10"
+    ]
+  },
+  "test_25_q_13": {
+    "correct_answer": "3 in 13 or 3/13",
+    "answer_type": "unknown",
+    "distractors": [
+      "2/13",
+      "3/12",
+      "13/3"
+    ]
+  },
+  "test_25_q_14": {
+    "correct_answer": "83",
+    "answer_type": "integer",
+    "distractors": [
+      "84",
+      "80",
+      "93"
+    ]
+  },
+  "test_25_q_15": {
+    "correct_answer": "Ranjeev",
+    "answer_type": "text_word",
+    "distractors": [
+      "Ranjeet",
+      "Rajeev",
+      "Ranbir"
+    ]
+  },
+  "test_26_q_1": {
+    "correct_answer": "1,800,000",
+    "answer_type": "unknown",
+    "distractors": [
+      "1,800,001",
+      "1,800,100",
+      "1,810,000"
+    ]
+  },
+  "test_26_q_2": {
+    "correct_answer": "144\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "134\u00b0",
+      "154\u00b0",
+      "144.5\u00b0"
+    ]
+  },
+  "test_26_q_3": {
+    "correct_answer": "33",
+    "answer_type": "integer",
+    "distractors": [
+      "32",
+      "34",
+      "31"
+    ]
+  },
+  "test_26_q_4": {
+    "correct_answer": "1,000",
+    "answer_type": "unknown",
+    "distractors": [
+      "1,001",
+      "999",
+      "100"
+    ]
+  },
+  "test_26_q_5": {
+    "correct_answer": "166.89",
+    "answer_type": "decimal",
+    "distractors": [
+      "156.89",
+      "176.89",
+      "166.98"
+    ]
+  },
+  "test_26_q_6": {
+    "correct_answer": "18",
+    "answer_type": "integer",
+    "distractors": [
+      "19",
+      "17",
+      "20"
+    ]
+  },
+  "test_26_q_7": {
+    "correct_answer": "96",
+    "answer_type": "integer",
+    "distractors": [
+      "86",
+      "106",
+      "95"
+    ]
+  },
+  "test_26_q_8": {
+    "correct_answer": "24",
+    "answer_type": "integer",
+    "distractors": [
+      "23",
+      "25",
+      "22"
+    ]
+  },
+  "test_26_q_9": {
+    "correct_answer": "\u00a34.14",
+    "answer_type": "money",
+    "distractors": [
+      "\u00a33.14",
+      "\u00a34.04",
+      "\u00a34.41"
+    ]
+  },
+  "test_26_q_10": {
+    "correct_answer": "140",
+    "answer_type": "integer",
+    "distractors": [
+      "130",
+      "150",
+      "135"
+    ]
+  },
+  "test_26_q_11": {
+    "correct_answer": "F, M, Z",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "G, N, Y",
+      "E, L, W",
+      "H, O, Z"
+    ]
+  },
+  "test_26_q_12": {
+    "correct_answer": "92",
+    "answer_type": "integer",
+    "distractors": [
+      "82",
+      "102",
+      "91"
+    ]
+  },
+  "test_26_q_13": {
+    "correct_answer": "3\u00b0C",
+    "answer_type": "degree",
+    "distractors": [
+      "2\u00b0C",
+      "4\u00b0C",
+      "0\u00b0C"
+    ]
+  },
+  "test_26_q_14": {
+    "correct_answer": "1,080",
+    "answer_type": "unknown",
+    "distractors": [
+      "1,180",
+      "1,0800",
+      "1,081"
+    ]
+  },
+  "test_26_q_15": {
+    "correct_answer": "5/12",
+    "answer_type": "fraction",
+    "distractors": [
+      "7/12",
+      "5/10",
+      "12/5"
+    ]
+  },
+  "test_27_q_1": {
+    "correct_answer": "3.584",
+    "answer_type": "decimal",
+    "distractors": [
+      "3.485",
+      "3.854",
+      "4.583"
+    ]
+  },
+  "test_27_q_2": {
+    "correct_answer": "227.5 or 227 1/2",
+    "answer_type": "unknown",
+    "distractors": [
+      "217.5 or 217 1/2",
+      "227.05 or 227 1/20",
+      "237.5 or 237 1/2"
+    ]
+  },
+  "test_27_q_3": {
+    "correct_answer": "72",
+    "answer_type": "integer",
+    "distractors": [
+      "70",
+      "75",
+      "77"
+    ]
+  },
+  "test_27_q_4": {
+    "correct_answer": "615.4",
+    "answer_type": "decimal",
+    "distractors": [
+      "615.40",
+      "615.04",
+      "651.4"
+    ]
+  },
+  "test_27_q_5": {
+    "correct_answer": "20",
+    "answer_type": "integer",
+    "distractors": [
+      "19",
+      "21",
+      "30"
+    ]
+  },
+  "test_27_q_6": {
+    "correct_answer": "35 minutes",
+    "answer_type": "measurement",
+    "distractors": [
+      "30 minutes",
+      "40 minutes",
+      "25 minutes"
+    ]
+  },
+  "test_27_q_7": {
+    "correct_answer": "49",
+    "answer_type": "integer",
+    "distractors": [
+      "50",
+      "45",
+      "39"
+    ]
+  },
+  "test_27_q_8": {
+    "correct_answer": "36",
+    "answer_type": "integer",
+    "distractors": [
+      "35",
+      "37",
+      "46"
+    ]
+  },
+  "test_27_q_9": {
+    "correct_answer": "12",
+    "answer_type": "integer",
+    "distractors": [
+      "11",
+      "13",
+      "10"
+    ]
+  },
+  "test_27_q_10": {
+    "correct_answer": "40",
+    "answer_type": "integer",
+    "distractors": [
+      "30",
+      "50",
+      "41"
+    ]
+  },
+  "test_27_q_11": {
+    "correct_answer": "0",
+    "answer_type": "integer",
+    "distractors": [
+      "1",
+      "-1",
+      "2"
+    ]
+  },
+  "test_27_q_12": {
+    "correct_answer": "33",
+    "answer_type": "integer",
+    "distractors": [
+      "32",
+      "34",
+      "43"
+    ]
+  },
+  "test_27_q_13": {
+    "correct_answer": "9",
+    "answer_type": "integer",
+    "distractors": [
+      "8",
+      "10",
+      "11"
+    ]
+  },
+  "test_27_q_14": {
+    "correct_answer": "23\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "22\u00b0",
+      "20\u00b0",
+      "25\u00b0"
+    ]
+  },
+  "test_27_q_15": {
+    "correct_answer": "7.5cm",
+    "answer_type": "measurement",
+    "distractors": [
+      "7.6cm",
+      "8.5cm",
+      "7.0cm"
+    ]
+  },
+  "test_28_q_1": {
+    "correct_answer": "regular heptagon",
+    "answer_type": "shape",
+    "distractors": [
+      "regular hexagon",
+      "regular octagon",
+      "regular pentagon"
+    ]
+  },
+  "test_28_q_2": {
+    "correct_answer": "60%",
+    "answer_type": "percentage",
+    "distractors": [
+      "50%",
+      "70%",
+      "0.6%"
+    ]
+  },
+  "test_28_q_3": {
+    "correct_answer": "256",
+    "answer_type": "integer",
+    "distractors": [
+      "265",
+      "246",
+      "260"
+    ]
+  },
+  "test_28_q_4": {
+    "correct_answer": "10,000",
+    "answer_type": "unknown",
+    "distractors": [
+      "1,000",
+      "10,010",
+      "100,000"
+    ]
+  },
+  "test_28_q_5": {
+    "correct_answer": "11",
+    "answer_type": "integer",
+    "distractors": [
+      "10",
+      "12",
+      "9"
+    ]
+  },
+  "test_28_q_6": {
+    "correct_answer": "30",
+    "answer_type": "integer",
+    "distractors": [
+      "20",
+      "40",
+      "29"
+    ]
+  },
+  "test_28_q_7": {
+    "correct_answer": "43\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "47\u00b0",
+      "40\u00b0",
+      "50\u00b0"
+    ]
+  },
+  "test_28_q_8": {
+    "correct_answer": "3.7",
+    "answer_type": "decimal",
+    "distractors": [
+      "3.6",
+      "4.7",
+      "2.7"
+    ]
+  },
+  "test_28_q_9": {
+    "correct_answer": "28",
+    "answer_type": "integer",
+    "distractors": [
+      "27",
+      "30",
+      "29"
+    ]
+  },
+  "test_28_q_10": {
+    "correct_answer": "10",
+    "answer_type": "integer",
+    "distractors": [
+      "9",
+      "11",
+      "20"
+    ]
+  },
+  "test_28_q_11": {
+    "correct_answer": "D",
+    "answer_type": "letter",
+    "distractors": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  "test_28_q_12": {
+    "correct_answer": "7\u00b0C",
+    "answer_type": "degree",
+    "distractors": [
+      "8\u00b0C",
+      "6\u00b0C",
+      "5\u00b0C"
+    ]
+  },
+  "test_28_q_13": {
+    "correct_answer": "382",
+    "answer_type": "integer",
+    "distractors": [
+      "381",
+      "392",
+      "372"
+    ]
+  },
+  "test_28_q_14": {
+    "correct_answer": "1/5",
+    "answer_type": "fraction",
+    "distractors": [
+      "1/4",
+      "2/5",
+      "5/1"
+    ]
+  },
+  "test_28_q_15": {
+    "correct_answer": "3/25",
+    "answer_type": "fraction",
+    "distractors": [
+      "5/3",
+      "2/25",
+      "3/20"
+    ]
+  },
+  "test_29_q_1": {
+    "correct_answer": "55\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "45\u00b0",
+      "65\u00b0",
+      "50\u00b0"
+    ]
+  },
+  "test_29_q_2": {
+    "correct_answer": "361",
+    "answer_type": "integer",
+    "distractors": [
+      "360",
+      "362",
+      "350"
+    ]
+  },
+  "test_29_q_3": {
+    "correct_answer": "1/45",
+    "answer_type": "fraction",
+    "distractors": [
+      "1/44",
+      "1/46",
+      "45/1"
+    ]
+  },
+  "test_29_q_4": {
+    "correct_answer": "680",
+    "answer_type": "integer",
+    "distractors": [
+      "670",
+      "690",
+      "720"
+    ]
+  },
+  "test_29_q_5": {
+    "correct_answer": "regular octagon",
+    "answer_type": "shape",
+    "distractors": [
+      "Irregular octagon",
+      "Regular hexagon",
+      "Irregular hexagon"
+    ]
+  },
+  "test_29_q_6": {
+    "correct_answer": "61\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "59\u00b0",
+      "71\u00b0",
+      "64\u00b0"
+    ]
+  },
+  "test_29_q_7": {
+    "correct_answer": "12",
+    "answer_type": "integer",
+    "distractors": [
+      "11",
+      "13",
+      "10"
+    ]
+  },
+  "test_29_q_8": {
+    "correct_answer": "23",
+    "answer_type": "integer",
+    "distractors": [
+      "22",
+      "24",
+      "33"
+    ]
+  },
+  "test_29_q_9": {
+    "correct_answer": "13",
+    "answer_type": "integer",
+    "distractors": [
+      "12",
+      "14",
+      "16"
+    ]
+  },
+  "test_29_q_10": {
+    "correct_answer": "40%",
+    "answer_type": "percentage",
+    "distractors": [
+      "30%",
+      "50%",
+      "60%"
+    ]
+  },
+  "test_29_q_11": {
+    "correct_answer": "169.22",
+    "answer_type": "decimal",
+    "distractors": [
+      "169.32",
+      "176.22",
+      "169.20"
+    ]
+  },
+  "test_29_q_12": {
+    "correct_answer": "117\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "107\u00b0",
+      "127\u00b0",
+      "120\u00b0"
+    ]
+  },
+  "test_29_q_13": {
+    "correct_answer": "2,197",
+    "answer_type": "unknown",
+    "distractors": [
+      "2,196",
+      "2,187",
+      "2,297"
+    ]
+  },
+  "test_29_q_14": {
+    "correct_answer": "125",
+    "answer_type": "integer",
+    "distractors": [
+      "124",
+      "135",
+      "115"
+    ]
+  },
+  "test_29_q_15": {
+    "correct_answer": "80%",
+    "answer_type": "percentage",
+    "distractors": [
+      "70%",
+      "90%",
+      "0.8%"
+    ]
+  },
+  "test_30_q_1": {
+    "correct_answer": "25",
+    "answer_type": "integer",
+    "distractors": [
+      "24",
+      "26",
+      "20"
+    ]
+  },
+  "test_30_q_2": {
+    "correct_answer": "6",
+    "answer_type": "integer",
+    "distractors": [
+      "5",
+      "7",
+      "8"
+    ]
+  },
+  "test_30_q_3": {
+    "correct_answer": "60",
+    "answer_type": "integer",
+    "distractors": [
+      "50",
+      "70",
+      "61"
+    ]
+  },
+  "test_30_q_4": {
+    "correct_answer": "4 minutes",
+    "answer_type": "measurement",
+    "distractors": [
+      "5 minutes",
+      "3 minutes",
+      "2 minutes"
+    ]
+  },
+  "test_30_q_5": {
+    "correct_answer": "15",
+    "answer_type": "integer",
+    "distractors": [
+      "14",
+      "16",
+      "10"
+    ]
+  },
+  "test_30_q_6": {
+    "correct_answer": "-6, -5, -4",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "-7, -6, -5",
+      "-5, -4, -3",
+      "-6, -5, -3"
+    ]
+  },
+  "test_30_q_7": {
+    "correct_answer": "22",
+    "answer_type": "integer",
+    "distractors": [
+      "20",
+      "24",
+      "23"
+    ]
+  },
+  "test_30_q_8": {
+    "correct_answer": "16",
+    "answer_type": "integer",
+    "distractors": [
+      "17",
+      "15",
+      "18"
+    ]
+  },
+  "test_30_q_9": {
+    "correct_answer": "120",
+    "answer_type": "integer",
+    "distractors": [
+      "110",
+      "130",
+      "100"
+    ]
+  },
+  "test_30_q_10": {
+    "correct_answer": "D",
+    "answer_type": "letter",
+    "distractors": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  "test_30_q_11": {
+    "correct_answer": "16 and 25",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "15 and 24",
+      "17 and 26",
+      "16 and 24"
+    ]
+  },
+  "test_30_q_12": {
+    "correct_answer": "162.1",
+    "answer_type": "decimal",
+    "distractors": [
+      "152.1",
+      "162.0",
+      "172.1"
+    ]
+  },
+  "test_30_q_13": {
+    "correct_answer": "3/32",
+    "answer_type": "fraction",
+    "distractors": [
+      "2/32",
+      "3/31",
+      "3/33"
+    ]
+  },
+  "test_30_q_14": {
+    "correct_answer": "\u00a37.20",
+    "answer_type": "money",
+    "distractors": [
+      "\u00a37.02",
+      "\u00a36.20",
+      "\u00a38.20"
+    ]
+  },
+  "test_30_q_15": {
+    "correct_answer": "55\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "65\u00b0",
+      "45\u00b0",
+      "50\u00b0"
+    ]
+  },
+  "test_31_q_1": {
+    "correct_answer": "3.5",
+    "answer_type": "decimal",
+    "distractors": [
+      "3.6",
+      "3.4",
+      "4.5"
+    ]
+  },
+  "test_31_q_2": {
+    "correct_answer": "3/4",
+    "answer_type": "fraction",
+    "distractors": [
+      "4/3",
+      "2/3",
+      "1/2"
+    ]
+  },
+  "test_31_q_3": {
+    "correct_answer": "63",
+    "answer_type": "integer",
+    "distractors": [
+      "64",
+      "61",
+      "73"
+    ]
+  },
+  "test_31_q_4": {
+    "correct_answer": "282.22",
+    "answer_type": "decimal",
+    "distractors": [
+      "282.32",
+      "281.22",
+      "292.22"
+    ]
+  },
+  "test_31_q_5": {
+    "correct_answer": "A = 29, B = 28",
+    "answer_type": "equation",
+    "distractors": [
+      "A = 28, B = 29",
+      "A = 30, B = 27",
+      "A = 29, B = 27"
+    ]
+  },
+  "test_31_q_6": {
+    "correct_answer": "71\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "61\u00b0",
+      "81\u00b0",
+      "70\u00b0"
+    ]
+  },
+  "test_31_q_7": {
+    "correct_answer": "1/13, 13%, 31/100",
+    "answer_type": "percentage",
+    "distractors": [
+      "1/12, 12%, 30/100",
+      "1/14, 14%, 32/100",
+      "1/15, 15%, 33/100"
+    ]
+  },
+  "test_31_q_8": {
+    "correct_answer": "16",
+    "answer_type": "integer",
+    "distractors": [
+      "15",
+      "17",
+      "18"
+    ]
+  },
+  "test_31_q_9": {
+    "correct_answer": "56",
+    "answer_type": "integer",
+    "distractors": [
+      "57",
+      "66",
+      "46"
+    ]
+  },
+  "test_31_q_10": {
+    "correct_answer": "7,110",
+    "answer_type": "unknown",
+    "distractors": [
+      "7,100",
+      "7,120",
+      "7,111"
+    ]
+  },
+  "test_31_q_11": {
+    "correct_answer": "14",
+    "answer_type": "integer",
+    "distractors": [
+      "13",
+      "15",
+      "16"
+    ]
+  },
+  "test_31_q_12": {
+    "correct_answer": "-12, -2, -1, 0, 1, 2, 5",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "-13, -3, -2, 0, 1, 3, 5",
+      "-12, -1, 0, 1, 2, 4, 6",
+      "-11, -2, -1, 1, 2, 3, 5"
+    ]
+  },
+  "test_31_q_13": {
+    "correct_answer": "108\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "98\u00b0",
+      "90\u00b0",
+      "120\u00b0"
+    ]
+  },
+  "test_31_q_14": {
+    "correct_answer": "3.05am",
+    "answer_type": "time",
+    "distractors": [
+      "2.05am",
+      "3.50am",
+      "4.05am"
+    ]
+  },
+  "test_31_q_15": {
+    "correct_answer": "1/5",
+    "answer_type": "fraction",
+    "distractors": [
+      "1/4",
+      "2/5",
+      "5/1"
+    ]
+  },
+  "test_32_q_1": {
+    "correct_answer": "6",
+    "answer_type": "integer",
+    "distractors": [
+      "7",
+      "5",
+      "8"
+    ]
+  },
+  "test_32_q_2": {
+    "correct_answer": "35",
+    "answer_type": "integer",
+    "distractors": [
+      "34",
+      "36",
+      "45"
+    ]
+  },
+  "test_32_q_3": {
+    "correct_answer": "18.25",
+    "answer_type": "time",
+    "distractors": [
+      "18.75",
+      "17.25",
+      "18.50"
+    ]
+  },
+  "test_32_q_4": {
+    "correct_answer": "no",
+    "answer_type": "yes_no",
+    "distractors": [
+      "yes",
+      "maybe",
+      "cannot determine"
+    ]
+  },
+  "test_32_q_5": {
+    "correct_answer": "16",
+    "answer_type": "integer",
+    "distractors": [
+      "15",
+      "17",
+      "18"
+    ]
+  },
+  "test_32_q_6": {
+    "correct_answer": "7 years",
+    "answer_type": "unknown",
+    "distractors": [
+      "6 years",
+      "8 years",
+      "5 years"
+    ]
+  },
+  "test_32_q_7": {
+    "correct_answer": "12",
+    "answer_type": "integer",
+    "distractors": [
+      "11",
+      "13",
+      "10"
+    ]
+  },
+  "test_32_q_8": {
+    "correct_answer": "1/5 or 0.2",
+    "answer_type": "unknown",
+    "distractors": [
+      "0.5",
+      "1/4",
+      "0.25"
+    ]
+  },
+  "test_32_q_9": {
+    "correct_answer": "6",
+    "answer_type": "integer",
+    "distractors": [
+      "5",
+      "7",
+      "12"
+    ]
+  },
+  "test_32_q_10": {
+    "correct_answer": "1/12",
+    "answer_type": "fraction",
+    "distractors": [
+      "1/10",
+      "1/14",
+      "12/1"
+    ]
+  },
+  "test_32_q_11": {
+    "correct_answer": "0.04",
+    "answer_type": "time",
+    "distractors": [
+      "0.40",
+      "0.14",
+      "0.004"
+    ]
+  },
+  "test_32_q_12": {
+    "correct_answer": "84",
+    "answer_type": "integer",
+    "distractors": [
+      "82",
+      "94",
+      "80"
+    ]
+  },
+  "test_32_q_13": {
+    "correct_answer": "19:20",
+    "answer_type": "time",
+    "distractors": [
+      "18:20",
+      "20:20",
+      "19:30"
+    ]
+  },
+  "test_32_q_14": {
+    "correct_answer": "559.3",
+    "answer_type": "decimal",
+    "distractors": [
+      "559.03",
+      "553.9",
+      "560.3"
+    ]
+  },
+  "test_32_q_15": {
+    "correct_answer": "70\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "60\u00b0",
+      "80\u00b0",
+      "90\u00b0"
+    ]
+  },
+  "test_33_q_1": {
+    "correct_answer": "3,600",
+    "answer_type": "unknown",
+    "distractors": [
+      "3,500",
+      "3,700",
+      "3,610"
+    ]
+  },
+  "test_33_q_2": {
+    "correct_answer": "42",
+    "answer_type": "integer",
+    "distractors": [
+      "41",
+      "43",
+      "52"
+    ]
+  },
+  "test_33_q_3": {
+    "correct_answer": "13",
+    "answer_type": "integer",
+    "distractors": [
+      "14",
+      "12",
+      "23"
+    ]
+  },
+  "test_33_q_4": {
+    "correct_answer": "11",
+    "answer_type": "integer",
+    "distractors": [
+      "10",
+      "12",
+      "9"
+    ]
+  },
+  "test_33_q_5": {
+    "correct_answer": "1 or +1",
+    "answer_type": "unknown",
+    "distractors": [
+      "0",
+      "-1",
+      "2"
+    ]
+  },
+  "test_33_q_6": {
+    "correct_answer": "00:39",
+    "answer_type": "time",
+    "distractors": [
+      "00:40",
+      "00:38",
+      "01:39"
+    ]
+  },
+  "test_33_q_7": {
+    "correct_answer": "3/5",
+    "answer_type": "fraction",
+    "distractors": [
+      "2/5",
+      "5/3",
+      "4/5"
+    ]
+  },
+  "test_33_q_8": {
+    "correct_answer": "2.25",
+    "answer_type": "time",
+    "distractors": [
+      "2.35",
+      "1.25",
+      "2.20"
+    ]
+  },
+  "test_33_q_9": {
+    "correct_answer": "26",
+    "answer_type": "integer",
+    "distractors": [
+      "25",
+      "27",
+      "36"
+    ]
+  },
+  "test_33_q_10": {
+    "correct_answer": "64%",
+    "answer_type": "percentage",
+    "distractors": [
+      "60%",
+      "70%",
+      "65%"
+    ]
+  },
+  "test_33_q_11": {
+    "correct_answer": "106",
+    "answer_type": "integer",
+    "distractors": [
+      "116",
+      "96",
+      "107"
+    ]
+  },
+  "test_33_q_12": {
+    "correct_answer": "37",
+    "answer_type": "integer",
+    "distractors": [
+      "36",
+      "38",
+      "27"
+    ]
+  },
+  "test_33_q_13": {
+    "correct_answer": "118.14",
+    "answer_type": "decimal",
+    "distractors": [
+      "128.14",
+      "118.04",
+      "108.14"
+    ]
+  },
+  "test_33_q_14": {
+    "correct_answer": "10.08pm",
+    "answer_type": "time",
+    "distractors": [
+      "10.18pm",
+      "9.58pm",
+      "11.08pm"
+    ]
+  },
+  "test_33_q_15": {
+    "correct_answer": "29\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "28\u00b0",
+      "30\u00b0",
+      "31\u00b0"
+    ]
+  },
+  "test_34_q_1": {
+    "correct_answer": "6,372",
+    "answer_type": "unknown",
+    "distractors": [
+      "6,273",
+      "6,720",
+      "Option 4"
+    ]
+  },
+  "test_34_q_2": {
+    "correct_answer": "9.282",
+    "answer_type": "decimal",
+    "distractors": [
+      "9.182",
+      "9.292",
+      "10.282"
+    ]
+  },
+  "test_34_q_3": {
+    "correct_answer": "0.24 seconds",
+    "answer_type": "unknown",
+    "distractors": [
+      "0.42 seconds",
+      "0.14 seconds",
+      "0.25 seconds"
+    ]
+  },
+  "test_34_q_4": {
+    "correct_answer": "4",
+    "answer_type": "integer",
+    "distractors": [
+      "3",
+      "5",
+      "2"
+    ]
+  },
+  "test_34_q_5": {
+    "correct_answer": "8",
+    "answer_type": "integer",
+    "distractors": [
+      "9",
+      "7",
+      "10"
+    ]
+  },
+  "test_34_q_6": {
+    "correct_answer": "21",
+    "answer_type": "integer",
+    "distractors": [
+      "20",
+      "22",
+      "19"
+    ]
+  },
+  "test_34_q_7": {
+    "correct_answer": "1.7",
+    "answer_type": "decimal",
+    "distractors": [
+      "1.6",
+      "1.8",
+      "1.71"
+    ]
+  },
+  "test_34_q_8": {
+    "correct_answer": "104\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "94\u00b0",
+      "114\u00b0",
+      "100\u00b0"
+    ]
+  },
+  "test_34_q_9": {
+    "correct_answer": "4,096",
+    "answer_type": "unknown",
+    "distractors": [
+      "4,095",
+      "4,086",
+      "4,196"
+    ]
+  },
+  "test_34_q_10": {
+    "correct_answer": "37",
+    "answer_type": "integer",
+    "distractors": [
+      "36",
+      "38",
+      "27"
+    ]
+  },
+  "test_34_q_11": {
+    "correct_answer": "a) 28 b) 44",
+    "answer_type": "unknown",
+    "distractors": [
+      "a) 27 b) 45",
+      "a) 29 b) 43",
+      "a) 28 b) 45"
+    ]
+  },
+  "test_34_q_12": {
+    "correct_answer": "220",
+    "answer_type": "integer",
+    "distractors": [
+      "210",
+      "230",
+      "200"
+    ]
+  },
+  "test_34_q_13": {
+    "correct_answer": "6,561",
+    "answer_type": "unknown",
+    "distractors": [
+      "6,560",
+      "6,551",
+      "6,600"
+    ]
+  },
+  "test_34_q_14": {
+    "correct_answer": "741",
+    "answer_type": "integer",
+    "distractors": [
+      "740",
+      "751",
+      "731"
+    ]
+  },
+  "test_34_q_15": {
+    "correct_answer": "trapezium",
+    "answer_type": "shape",
+    "distractors": [
+      "Rectangle",
+      "Parallelogram",
+      "Rhombus"
+    ]
+  },
+  "test_35_q_1": {
+    "correct_answer": "9.57",
+    "answer_type": "time",
+    "distractors": [
+      "8.57",
+      "10.57",
+      "9.47"
+    ]
+  },
+  "test_35_q_2": {
+    "correct_answer": "14",
+    "answer_type": "integer",
+    "distractors": [
+      "13",
+      "15",
+      "12"
+    ]
+  },
+  "test_35_q_3": {
+    "correct_answer": "126",
+    "answer_type": "integer",
+    "distractors": [
+      "125",
+      "136",
+      "116"
+    ]
+  },
+  "test_35_q_4": {
+    "correct_answer": "-3",
+    "answer_type": "integer",
+    "distractors": [
+      "-2",
+      "-4",
+      "3"
+    ]
+  },
+  "test_35_q_5": {
+    "correct_answer": "180\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "190\u00b0",
+      "170\u00b0",
+      "360\u00b0"
+    ]
+  },
+  "test_35_q_6": {
+    "correct_answer": "18",
+    "answer_type": "integer",
+    "distractors": [
+      "20",
+      "17",
+      "16"
+    ]
+  },
+  "test_35_q_7": {
+    "correct_answer": "1 1/9",
+    "answer_type": "mixed_fraction",
+    "distractors": [
+      "1 2/9",
+      "2 1/9",
+      "1 1/8"
+    ]
+  },
+  "test_35_q_8": {
+    "correct_answer": "288",
+    "answer_type": "integer",
+    "distractors": [
+      "278",
+      "298",
+      "289"
+    ]
+  },
+  "test_35_q_9": {
+    "correct_answer": "00:07",
+    "answer_type": "time",
+    "distractors": [
+      "00:06",
+      "00:08",
+      "00:05"
+    ]
+  },
+  "test_35_q_10": {
+    "correct_answer": "52",
+    "answer_type": "integer",
+    "distractors": [
+      "50",
+      "55",
+      "53"
+    ]
+  },
+  "test_35_q_11": {
+    "correct_answer": "7,920",
+    "answer_type": "unknown",
+    "distractors": [
+      "7,910",
+      "8,020",
+      "7,930"
+    ]
+  },
+  "test_35_q_12": {
+    "correct_answer": "-4",
+    "answer_type": "integer",
+    "distractors": [
+      "-3",
+      "-5",
+      "-14"
+    ]
+  },
+  "test_35_q_13": {
+    "correct_answer": "1.331",
+    "answer_type": "decimal",
+    "distractors": [
+      "1.133",
+      "1.33",
+      "1.3310"
+    ]
+  },
+  "test_35_q_14": {
+    "correct_answer": "\u00a346",
+    "answer_type": "money",
+    "distractors": [
+      "\u00a356",
+      "\u00a336",
+      "\u00a345.60"
+    ]
+  },
+  "test_35_q_15": {
+    "correct_answer": "70\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "60\u00b0",
+      "80\u00b0",
+      "110\u00b0"
+    ]
+  },
+  "test_36_q_1": {
+    "correct_answer": "1/64",
+    "answer_type": "fraction",
+    "distractors": [
+      "1/32",
+      "64/1",
+      "1/63"
+    ]
+  },
+  "test_36_q_2": {
+    "correct_answer": "32",
+    "answer_type": "integer",
+    "distractors": [
+      "31",
+      "33",
+      "22"
+    ]
+  },
+  "test_36_q_3": {
+    "correct_answer": "13.5m",
+    "answer_type": "measurement",
+    "distractors": [
+      "12.5m",
+      "14.5m",
+      "13.0m"
+    ]
+  },
+  "test_36_q_4": {
+    "correct_answer": "3",
+    "answer_type": "integer",
+    "distractors": [
+      "2",
+      "4",
+      "5"
+    ]
+  },
+  "test_36_q_5": {
+    "correct_answer": "13.95",
+    "answer_type": "time",
+    "distractors": [
+      "14.95",
+      "13.85",
+      "12.95"
+    ]
+  },
+  "test_36_q_6": {
+    "correct_answer": "14",
+    "answer_type": "integer",
+    "distractors": [
+      "15",
+      "13",
+      "16"
+    ]
+  },
+  "test_36_q_7": {
+    "correct_answer": "60, 97",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "50, 87",
+      "70, 107",
+      "59, 98"
+    ]
+  },
+  "test_36_q_8": {
+    "correct_answer": "522",
+    "answer_type": "integer",
+    "distractors": [
+      "5220",
+      "532",
+      "520"
+    ]
+  },
+  "test_36_q_9": {
+    "correct_answer": "384.17",
+    "answer_type": "decimal",
+    "distractors": [
+      "384.71",
+      "374.17",
+      "384.16"
+    ]
+  },
+  "test_36_q_10": {
+    "correct_answer": "23:51",
+    "answer_type": "time",
+    "distractors": [
+      "23:50",
+      "23:52",
+      "00:51"
+    ]
+  },
+  "test_36_q_11": {
+    "correct_answer": "133\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "123\u00b0",
+      "143\u00b0",
+      "132\u00b0"
+    ]
+  },
+  "test_36_q_12": {
+    "correct_answer": "6",
+    "answer_type": "integer",
+    "distractors": [
+      "5",
+      "7",
+      "8"
+    ]
+  },
+  "test_36_q_13": {
+    "correct_answer": "C",
+    "answer_type": "letter",
+    "distractors": [
+      "A",
+      "B",
+      "D"
+    ]
+  },
+  "test_36_q_14": {
+    "correct_answer": "45\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "30\u00b0",
+      "60\u00b0",
+      "90\u00b0"
+    ]
+  },
+  "test_36_q_15": {
+    "correct_answer": "A = 17, B = 30",
+    "answer_type": "equation",
+    "distractors": [
+      "A = 18, B = 30",
+      "A = 17, B = 31",
+      "A = 20, B = 28"
+    ]
+  },
+  "test_37_q_1": {
+    "correct_answer": "trapezium",
+    "answer_type": "shape",
+    "distractors": [
+      "Rectangle",
+      "Parallelogram",
+      "Rhombus"
+    ]
+  },
+  "test_37_q_2": {
+    "correct_answer": "22:41",
+    "answer_type": "time",
+    "distractors": [
+      "22:42",
+      "23:41",
+      "21:41"
+    ]
+  },
+  "test_37_q_3": {
+    "correct_answer": "2,187",
+    "answer_type": "unknown",
+    "distractors": [
+      "2,278",
+      "2,177",
+      "2,197"
+    ]
+  },
+  "test_37_q_4": {
+    "correct_answer": "780",
+    "answer_type": "integer",
+    "distractors": [
+      "770",
+      "790",
+      "781"
+    ]
+  },
+  "test_37_q_5": {
+    "correct_answer": "78ft",
+    "answer_type": "measurement",
+    "distractors": [
+      "77ft",
+      "80ft",
+      "72ft"
+    ]
+  },
+  "test_37_q_6": {
+    "correct_answer": "24",
+    "answer_type": "integer",
+    "distractors": [
+      "23",
+      "25",
+      "22"
+    ]
+  },
+  "test_37_q_7": {
+    "correct_answer": "a) 40km b) 125 miles",
+    "answer_type": "measurement",
+    "distractors": [
+      "a) 50km b) 135 miles",
+      "a) 30km b) 115 miles",
+      "a) 45km b) 130 miles"
+    ]
+  },
+  "test_37_q_8": {
+    "correct_answer": "90",
+    "answer_type": "integer",
+    "distractors": [
+      "80",
+      "100",
+      "91"
+    ]
+  },
+  "test_37_q_9": {
+    "correct_answer": "324",
+    "answer_type": "integer",
+    "distractors": [
+      "314",
+      "334",
+      "323"
+    ]
+  },
+  "test_37_q_10": {
+    "correct_answer": "3/5",
+    "answer_type": "fraction",
+    "distractors": [
+      "2/5",
+      "5/3",
+      "4/5"
+    ]
+  },
+  "test_37_q_11": {
+    "correct_answer": "-3, -11",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "-4, -12",
+      "-2, -10",
+      "-3, -10"
+    ]
+  },
+  "test_37_q_12": {
+    "correct_answer": "882cm\u00b3",
+    "answer_type": "measurement",
+    "distractors": [
+      "8820cm\u00b3",
+      "882.0cm\u00b3",
+      "892cm\u00b3"
+    ]
+  },
+  "test_37_q_13": {
+    "correct_answer": "540\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "530\u00b0",
+      "550\u00b0",
+      "520\u00b0"
+    ]
+  },
+  "test_37_q_14": {
+    "correct_answer": "21 and 29",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "20 and 30",
+      "21 and 28",
+      "22 and 29"
+    ]
+  },
+  "test_37_q_15": {
+    "correct_answer": "105",
+    "answer_type": "integer",
+    "distractors": [
+      "95",
+      "115",
+      "106"
+    ]
+  },
+  "test_38_q_1": {
+    "correct_answer": "4,700",
+    "answer_type": "unknown",
+    "distractors": [
+      "4,600",
+      "4,800",
+      "4,710"
+    ]
+  },
+  "test_38_q_2": {
+    "correct_answer": "18cm\u00b2",
+    "answer_type": "measurement",
+    "distractors": [
+      "16cm\u00b2",
+      "20cm\u00b2",
+      "18cm"
+    ]
+  },
+  "test_38_q_3": {
+    "correct_answer": "9 years and 4 months",
+    "answer_type": "measurement",
+    "distractors": [
+      "8 years and 4 months",
+      "10 years and 4 months",
+      "9 years and 3 months"
+    ]
+  },
+  "test_38_q_4": {
+    "correct_answer": "8 3/4",
+    "answer_type": "mixed_fraction",
+    "distractors": [
+      "7 3/4",
+      "8 2/4",
+      "9 3/4"
+    ]
+  },
+  "test_38_q_5": {
+    "correct_answer": "360, 2,160",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "350, 2,150",
+      "370, 2,170",
+      "360, 2,060"
+    ]
+  },
+  "test_38_q_6": {
+    "correct_answer": "28",
+    "answer_type": "integer",
+    "distractors": [
+      "27",
+      "29",
+      "38"
+    ]
+  },
+  "test_38_q_7": {
+    "correct_answer": "A = 44, B = 28",
+    "answer_type": "equation",
+    "distractors": [
+      "A = 45, B = 28",
+      "A = 44, B = 27",
+      "A = 43, B = 29"
+    ]
+  },
+  "test_38_q_8": {
+    "correct_answer": "240\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "220\u00b0",
+      "260\u00b0",
+      "200\u00b0"
+    ]
+  },
+  "test_38_q_9": {
+    "correct_answer": "18",
+    "answer_type": "integer",
+    "distractors": [
+      "19",
+      "17",
+      "20"
+    ]
+  },
+  "test_38_q_10": {
+    "correct_answer": "3",
+    "answer_type": "integer",
+    "distractors": [
+      "2",
+      "4",
+      "5"
+    ]
+  },
+  "test_38_q_11": {
+    "correct_answer": "91",
+    "answer_type": "integer",
+    "distractors": [
+      "81",
+      "101",
+      "92"
+    ]
+  },
+  "test_38_q_12": {
+    "correct_answer": "4",
+    "answer_type": "integer",
+    "distractors": [
+      "5",
+      "3",
+      "6"
+    ]
+  },
+  "test_38_q_13": {
+    "correct_answer": "34/35",
+    "answer_type": "fraction",
+    "distractors": [
+      "33/35",
+      "35/34",
+      "34/33"
+    ]
+  },
+  "test_38_q_14": {
+    "correct_answer": "10",
+    "answer_type": "integer",
+    "distractors": [
+      "9",
+      "11",
+      "20"
+    ]
+  },
+  "test_38_q_15": {
+    "correct_answer": "9",
+    "answer_type": "integer",
+    "distractors": [
+      "8",
+      "10",
+      "7"
+    ]
+  },
+  "test_39_q_1": {
+    "correct_answer": "2 1/2",
+    "answer_type": "mixed_fraction",
+    "distractors": [
+      "3 1/2",
+      "2 2/2",
+      "1 1/2"
+    ]
+  },
+  "test_39_q_2": {
+    "correct_answer": "4 10/21",
+    "answer_type": "mixed_fraction",
+    "distractors": [
+      "5 10/21",
+      "4 9/21",
+      "3 10/21"
+    ]
+  },
+  "test_39_q_3": {
+    "correct_answer": "236,000",
+    "answer_type": "unknown",
+    "distractors": [
+      "236,100",
+      "235,900",
+      "236,010"
+    ]
+  },
+  "test_39_q_4": {
+    "correct_answer": "21",
+    "answer_type": "integer",
+    "distractors": [
+      "20",
+      "22",
+      "19"
+    ]
+  },
+  "test_39_q_5": {
+    "correct_answer": "64%",
+    "answer_type": "percentage",
+    "distractors": [
+      "66%",
+      "62%",
+      "70%"
+    ]
+  },
+  "test_39_q_6": {
+    "correct_answer": "3",
+    "answer_type": "integer",
+    "distractors": [
+      "2",
+      "4",
+      "1"
+    ]
+  },
+  "test_39_q_7": {
+    "correct_answer": "1.0 or 1",
+    "answer_type": "unknown",
+    "distractors": [
+      "0.1",
+      "10",
+      "2.0"
+    ]
+  },
+  "test_39_q_8": {
+    "correct_answer": "3:2",
+    "answer_type": "ratio",
+    "distractors": [
+      "2:3",
+      "4:3",
+      "3:1"
+    ]
+  },
+  "test_39_q_9": {
+    "correct_answer": "36cm",
+    "answer_type": "measurement",
+    "distractors": [
+      "35cm",
+      "38cm",
+      "40cm"
+    ]
+  },
+  "test_39_q_10": {
+    "correct_answer": "156",
+    "answer_type": "integer",
+    "distractors": [
+      "166",
+      "146",
+      "150"
+    ]
+  },
+  "test_39_q_11": {
+    "correct_answer": "84",
+    "answer_type": "integer",
+    "distractors": [
+      "82",
+      "94",
+      "80"
+    ]
+  },
+  "test_39_q_12": {
+    "correct_answer": "23",
+    "answer_type": "integer",
+    "distractors": [
+      "22",
+      "24",
+      "33"
+    ]
+  },
+  "test_39_q_13": {
+    "correct_answer": "225\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "215\u00b0",
+      "235\u00b0",
+      "245\u00b0"
+    ]
+  },
+  "test_39_q_14": {
+    "correct_answer": "180\u00b0F",
+    "answer_type": "degree",
+    "distractors": [
+      "170\u00b0F",
+      "190\u00b0F",
+      "160\u00b0F"
+    ]
+  },
+  "test_39_q_15": {
+    "correct_answer": "a) 20 b) 19",
+    "answer_type": "unknown",
+    "distractors": [
+      "a) 21 b) 18",
+      "a) 19 b) 20",
+      "a) 20 b) 20"
+    ]
+  },
+  "test_40_q_1": {
+    "correct_answer": "87",
+    "answer_type": "integer",
+    "distractors": [
+      "86",
+      "97",
+      "77"
+    ]
+  },
+  "test_40_q_2": {
+    "correct_answer": "7",
+    "answer_type": "integer",
+    "distractors": [
+      "6",
+      "8",
+      "5"
+    ]
+  },
+  "test_40_q_3": {
+    "correct_answer": "15 and 27",
+    "answer_type": "multiple_values",
+    "distractors": [
+      "16 and 28",
+      "14 and 26",
+      "15 and 28"
+    ]
+  },
+  "test_40_q_4": {
+    "correct_answer": "2",
+    "answer_type": "integer",
+    "distractors": [
+      "1",
+      "3",
+      "0"
+    ]
+  },
+  "test_40_q_5": {
+    "correct_answer": "3",
+    "answer_type": "integer",
+    "distractors": [
+      "2",
+      "4",
+      "1"
+    ]
+  },
+  "test_40_q_6": {
+    "correct_answer": "22.2cm\u00b2",
+    "answer_type": "measurement",
+    "distractors": [
+      "22.02cm\u00b2",
+      "32.2cm\u00b2",
+      "21.2cm\u00b2"
+    ]
+  },
+  "test_40_q_7": {
+    "correct_answer": "17cm",
+    "answer_type": "measurement",
+    "distractors": [
+      "16cm",
+      "18cm",
+      "20cm"
+    ]
+  },
+  "test_40_q_8": {
+    "correct_answer": "5.75",
+    "answer_type": "time",
+    "distractors": [
+      "5.5",
+      "6.75",
+      "5.25"
+    ]
+  },
+  "test_40_q_9": {
+    "correct_answer": "10",
+    "answer_type": "integer",
+    "distractors": [
+      "9",
+      "11",
+      "12"
+    ]
+  },
+  "test_40_q_10": {
+    "correct_answer": "5.12pm",
+    "answer_type": "time",
+    "distractors": [
+      "5.02pm",
+      "4.12pm",
+      "6.12pm"
+    ]
+  },
+  "test_40_q_11": {
+    "correct_answer": "a) 8 b) 5 c) 6",
+    "answer_type": "unknown",
+    "distractors": [
+      "a) 7 b) 4 c) 5",
+      "a) 9 b) 6 c) 7",
+      "a) 6 b) 4 c) 7"
+    ]
+  },
+  "test_40_q_12": {
+    "correct_answer": "13.5 or 13 1/2",
+    "answer_type": "unknown",
+    "distractors": [
+      "14.5 or 14 1/2",
+      "12.5 or 12 1/2",
+      "13.3 or 13 1/3"
+    ]
+  },
+  "test_40_q_13": {
+    "correct_answer": "kite",
+    "answer_type": "shape",
+    "distractors": [
+      "square",
+      "rectangle",
+      "rhombus"
+    ]
+  },
+  "test_40_q_14": {
+    "correct_answer": "13.5cm\u00b2",
+    "answer_type": "measurement",
+    "distractors": [
+      "12.5cm\u00b2",
+      "14.5cm\u00b2",
+      "13cm\u00b2"
+    ]
+  },
+  "test_40_q_15": {
+    "correct_answer": "83\u00b0",
+    "answer_type": "degree",
+    "distractors": [
+      "93\u00b0",
+      "73\u00b0",
+      "80\u00b0"
+    ]
+  }
+}
