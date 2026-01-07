@@ -392,3 +392,45 @@ class TestResultDetail(BaseModel):
     created_at: datetime
     test_title: Optional[str] = None
     test_type: Optional[str] = None
+
+
+# ==================== Teacher Test Results Schemas ====================
+
+class TeacherTestResultSummary(BaseModel):
+    """Summary of a student's test result for teacher viewing"""
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    student_id: UUID
+    student_name: str
+    student_code: Optional[str] = None
+    class_name: Optional[str] = None
+    test_id: UUID
+    total_score: int
+    max_score: int
+    percentage: float
+    grade: Optional[str] = None
+    time_taken: Optional[int] = None
+    submitted_at: Optional[datetime] = None
+    status: ResultStatus
+
+
+class TeacherTestResultsResponse(BaseModel):
+    """Response containing all student results for a test"""
+    test_id: UUID
+    test_title: str
+    test_type: Optional[str] = None
+    total_students: int
+    completed_count: int
+    pass_count: int
+    fail_count: int
+    average_score: float
+    results: List[TeacherTestResultSummary]
+
+
+class TeacherResultDetailResponse(TestResultDetail):
+    """Extended result detail including student info for teacher view"""
+    student_name: Optional[str] = None
+    student_code: Optional[str] = None
+    student_email: Optional[str] = None
+    class_name: Optional[str] = None

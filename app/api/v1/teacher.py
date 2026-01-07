@@ -210,6 +210,73 @@ async def get_my_tests(
 
 
 # ============================================================
+# Teacher Test Results Endpoints
+# ============================================================
+
+@router.get("/me/tests/{test_id}/results")
+async def get_test_results(
+    test_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_teacher)
+):
+    """
+    Get all student results for a specific test.
+    Only returns results for students in the teacher's assigned classes.
+    """
+    teacher = await TeacherService.get_teacher_by_user_id(db, current_user.id)
+    if not teacher:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Teacher profile not found"
+        )
+
+    try:
+        results = await TeacherService.get_test_results_for_teacher(
+            db=db,
+            teacher_id=teacher.id,
+            test_id=test_id
+        )
+        return results
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e)
+        )
+
+
+@router.get("/me/results/{result_id}")
+async def get_result_detail(
+    result_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_teacher)
+):
+    """
+    Get detailed result for a specific student's test attempt.
+    Only accessible if the student is in one of the teacher's assigned classes.
+    """
+    teacher = await TeacherService.get_teacher_by_user_id(db, current_user.id)
+    if not teacher:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Teacher profile not found"
+        )
+
+    result = await TeacherService.get_result_detail_for_teacher(
+        db=db,
+        teacher_id=teacher.id,
+        result_id=result_id
+    )
+
+    if not result:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Result not found or access denied"
+        )
+
+    return result
+
+
+# ============================================================
 # Teacher Intervention Endpoints
 # ============================================================
 

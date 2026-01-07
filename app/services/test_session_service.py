@@ -896,65 +896,50 @@ class TestSessionService:
         if not result:
             return None
 
-        # Get all questions for this test (from both direct test_questions and question_sets)
-        test_id = result.test_id
-        all_questions = []
-
-        # Fetch test questions
-        test_questions_result = await db.execute(
-            select(TestQuestion)
-            .options(
-                selectinload(TestQuestion.question).selectinload(Question.answer_options)
-            )
-            .where(TestQuestion.test_id == test_id)
-            .order_by(TestQuestion.order_number)
-        )
-        test_questions = test_questions_result.scalars().all()
-
-        if test_questions:
-            # Add direct test questions with their order and points
-            for tq in test_questions:
-                all_questions.append({
-                    "question": tq.question,
-                    "order_number": tq.order_number,
-                    "points": tq.points
-                })
-        else:
-            # Try question sets if no direct questions
-            test_question_sets_result = await db.execute(
-                select(TestQuestionSet)
-                .options(
-                    selectinload(TestQuestionSet.question_set)
-                    .selectinload(QuestionSet.question_set_items)
-                    .selectinload(QuestionSetItem.question)
-                    .selectinload(Question.answer_options)
-                )
-                .where(TestQuestionSet.test_id == test_id)
-                .order_by(TestQuestionSet.order_number)
-            )
-            test_question_sets = test_question_sets_result.scalars().all()
-
-            overall_order = 1
-            for tqs in test_question_sets:
-                if tqs.question_set and tqs.question_set.question_set_items:
-                    for qsi in sorted(tqs.question_set.question_set_items, key=lambda x: x.order_number):
-                        points = qsi.points_override if qsi.points_override is not None else qsi.question.points
-                        all_questions.append({
-                            "question": qsi.question,
-                            "order_number": overall_order,
-                            "points": points
-                        })
-                        overall_order += 1
+        # Get question_scores which contains the authoritative list of question IDs
+        # that were actually used in this test attempt
+        question_scores = result.question_scores or {}
+        question_ids_from_scores = [UUID(qid) for qid in question_scores.keys()]
 
         # Get question responses for this attempt
         responses_result = await db.execute(
             select(QuestionResponse)
+            .options(selectinload(QuestionResponse.question).selectinload(Question.answer_options))
             .where(QuestionResponse.attempt_id == result.attempt_id)
         )
         responses = responses_result.scalars().all()
 
         # Create a lookup dictionary for responses by question_id
         response_lookup = {r.question_id: r for r in responses}
+
+        # Collect all question IDs we need to load (from both sources)
+        all_question_ids = set(question_ids_from_scores)
+        all_question_ids.update(r.question_id for r in responses)
+
+        # Load all questions by ID directly (this handles cases where question IDs
+        # in responses/scores differ from what's in TestQuestion/TestQuestionSet)
+        questions_result = await db.execute(
+            select(Question)
+            .options(selectinload(Question.answer_options))
+            .where(Question.id.in_(all_question_ids))
+        )
+        questions_by_id = {q.id: q for q in questions_result.scalars().all()}
+
+        # Build all_questions list from question_scores (authoritative order)
+        all_questions = []
+        for idx, (qid_str, score_data) in enumerate(question_scores.items(), start=1):
+            qid = UUID(qid_str)
+            question = questions_by_id.get(qid)
+            if question:
+                all_questions.append({
+                    "question": question,
+                    "order_number": idx,
+                    "points": score_data.get("max_points", question.points or 1)
+                })
+
+        # Create a fallback lookup from question_scores stored in TestResult
+        # This ensures we have scoring data even if QuestionResponse records aren't found
+        question_scores_lookup = result.question_scores or {}
 
         # Build question analysis list for ALL questions
         question_analysis = []
@@ -969,6 +954,9 @@ class TestSessionService:
 
             # Check if student answered this question
             response = response_lookup.get(question.id)
+
+            # Also check question_scores for fallback data (uses string key)
+            score_data = question_scores_lookup.get(str(question.id), {})
 
             # Determine student's answer
             student_answer = None
@@ -996,6 +984,15 @@ class TestSessionService:
                 is_correct = response.is_correct or False
                 points_earned = response.points_earned or 0
                 time_spent = response.time_spent
+            elif score_data:
+                # Fallback to question_scores data when QuestionResponse not found
+                # This happens when responses were processed during submission but
+                # the QuestionResponse query returned empty results
+                is_correct = score_data.get("is_correct", False)
+                points_earned = score_data.get("points_earned", 0)
+                # We can infer if student answered based on points_earned or is_correct
+                if is_correct or points_earned > 0:
+                    student_answer = "(Answer recorded)"  # Placeholder when actual answer not available
 
             # Determine correct answer - for multiple choice, use the option text not the letter
             correct_answer = None
