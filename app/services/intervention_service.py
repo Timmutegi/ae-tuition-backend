@@ -36,8 +36,83 @@ logger = logging.getLogger(__name__)
 class InterventionService:
     """Service for managing interventions and performance analytics."""
 
+    # Default threshold configuration
+    DEFAULT_THRESHOLD_NAME = "Default Performance Alert"
+
     def __init__(self, db: AsyncSession):
         self.db = db
+
+    # ============== Default Threshold Setup ==============
+
+    @staticmethod
+    async def create_default_threshold(db: AsyncSession, admin_email: str = "support@ae-tuition.com") -> InterventionThreshold:
+        """
+        Create default intervention threshold if not exists.
+        Called during application startup to ensure the system has at least
+        one active threshold for monitoring student performance.
+
+        Default configuration:
+        - Monitors all subjects (subject=None)
+        - Triggers when score falls below 50%
+        - Reviews 5-week window
+        - Requires 3 failing weeks to trigger alert
+        - Medium priority with teacher and parent notifications enabled
+
+        Notification workflow:
+        1. When threshold is triggered, an alert is created with PENDING status
+        2. Teacher is notified and must review the alert
+        3. When teacher approves, parent (student's email) is notified
+        4. If teacher dismisses, no parent notification is sent
+        """
+        # Check if default threshold already exists
+        result = await db.execute(
+            select(InterventionThreshold).where(
+                InterventionThreshold.name == InterventionService.DEFAULT_THRESHOLD_NAME
+            )
+        )
+        existing_threshold = result.scalar_one_or_none()
+
+        if existing_threshold:
+            logger.info(f"Default intervention threshold already exists: {existing_threshold.name}")
+            return existing_threshold
+
+        # Get the super admin user to set as creator
+        from app.models.user import User
+        admin_result = await db.execute(
+            select(User).where(User.email == admin_email)
+        )
+        admin_user = admin_result.scalar_one_or_none()
+        admin_id = admin_user.id if admin_user else None
+
+        # Create the default threshold
+        threshold = InterventionThreshold(
+            name=InterventionService.DEFAULT_THRESHOLD_NAME,
+            description=(
+                "Default performance monitoring threshold. Triggers an alert when a student's "
+                "score falls below 50% for 3 or more weeks within a 5-week review period. "
+                "Applies to all subjects. When triggered, the assigned teacher is notified first "
+                "and must review the alert. Upon teacher approval, the parent (student's registered "
+                "email) receives a notification about the performance concern."
+            ),
+            subject=None,  # Applies to all subjects
+            min_score_percent=50.0,  # Below this triggers concern
+            max_score_percent=60.0,  # Upper bound of concern range
+            weeks_to_review=5,  # Review window of 5 weeks
+            failures_required=3,  # 3 failing weeks to trigger alert
+            alert_priority=AlertPriority.MEDIUM,
+            notify_parent=True,  # Parent notified after teacher approval
+            notify_teacher=True,  # Teacher notified first for review
+            notify_supervisor=False,  # Supervisor not notified by default
+            is_active=True,
+            created_by=admin_id  # Created by super admin
+        )
+
+        db.add(threshold)
+        await db.commit()
+        await db.refresh(threshold)
+
+        logger.info(f"Default intervention threshold created: {threshold.name} (ID: {threshold.id}, created_by: {admin_email})")
+        return threshold
 
     # ============== Threshold Management ==============
 

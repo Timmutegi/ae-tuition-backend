@@ -1,8 +1,8 @@
 # Five-Week Review Agent / Student Intervention System
 
-**Date:** 2026-01-06
+**Date:** 2026-01-06 (Updated: 2026-01-07)
 **Author:** Implementation by Claude Code
-**Version:** 1.0
+**Version:** 1.1
 
 ---
 
@@ -440,21 +440,83 @@ asyncio.run(check())
 
 ---
 
+## Default Threshold Initialization
+
+On application startup, the system automatically creates a default `InterventionThreshold` if one doesn't exist. This ensures the Five-Week Review Agent always has at least one active threshold configured.
+
+### Default Threshold Configuration
+
+| Setting | Value | Description |
+|---------|-------|-------------|
+| `name` | "Default Performance Alert" | Identifier for the default threshold |
+| `subject` | NULL | Applies to all subjects |
+| `min_score_percent` | 50.0 | Score below this triggers concern |
+| `max_score_percent` | 60.0 | Upper bound of concern range |
+| `weeks_to_review` | 5 | Review window of 5 weeks |
+| `failures_required` | 3 | 3 failing weeks to trigger alert |
+| `alert_priority` | MEDIUM | Default priority level |
+| `notify_teacher` | True | Teacher notified first for review |
+| `notify_parent` | True | Parent notified after teacher approval |
+| `notify_supervisor` | False | Supervisor not notified by default |
+| `created_by` | Super Admin UUID | Created by support@ae-tuition.com |
+
+### Notification Workflow
+
+1. When threshold is triggered, an alert is created with `PENDING` status
+2. Teacher is notified and must review the alert in their dashboard
+3. When teacher **approves**, the parent (student's registered email) receives a notification
+4. If teacher **dismisses**, no parent notification is sent
+
+---
+
+## Scheduled Daily Check
+
+The intervention check runs automatically at midnight (Europe/London timezone) using APScheduler.
+
+### Implementation
+
+```python
+# In app/services/scheduler_service.py
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
+scheduler = AsyncIOScheduler(timezone="Europe/London")
+
+def init_scheduler():
+    scheduler.add_job(
+        run_daily_intervention_check,
+        trigger='cron',
+        hour=0,
+        minute=0,
+        id='daily_intervention_check',
+        name='Daily Intervention Check'
+    )
+    scheduler.start()
+```
+
+### Startup Integration
+
+The scheduler is initialized in `app/main.py` during application startup:
+
+```python
+# Initialize scheduler for daily intervention checks
+from app.services.scheduler_service import init_scheduler
+init_scheduler()
+logger.info("Scheduler initialized for daily intervention checks")
+```
+
+---
+
 ## Future Enhancements
 
-1. **Scheduled Daily Check**
-   - APScheduler integration (module exists but not installed)
-   - Run intervention check at midnight daily
-
-2. **Email Templates**
+1. **Email Templates**
    - Custom HTML email templates for teacher and parent notifications
    - Currently uses basic email format
 
-3. **Dashboard Analytics**
+2. **Dashboard Analytics**
    - Historical trend charts
    - Class-level intervention statistics
 
-4. **Supervisor Notifications**
+3. **Supervisor Notifications**
    - Optional supervisor alerts for high-priority interventions
 
 ---
@@ -465,10 +527,12 @@ asyncio.run(check())
 
 | File | Description |
 |------|-------------|
+| `app/main.py` | Application startup (default threshold & scheduler init) |
 | `app/models/intervention.py` | Database models |
 | `app/schemas/intervention.py` | Pydantic schemas |
-| `app/services/intervention_service.py` | Core business logic |
+| `app/services/intervention_service.py` | Core business logic & default threshold creation |
 | `app/services/academic_calendar_service.py` | Academic week calculations |
+| `app/services/scheduler_service.py` | APScheduler for daily intervention checks |
 | `app/api/v1/intervention.py` | Admin endpoints |
 | `app/api/v1/teacher.py` | Teacher endpoints (includes intervention) |
 | `scripts/setup_intervention_test_data.py` | Test data generator |

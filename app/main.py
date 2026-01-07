@@ -7,6 +7,7 @@ from app.core.config import settings
 from app.core.database import create_tables, AsyncSessionLocal
 from app.api.v1.router import api_router
 from app.services.auth import AuthService
+from app.services.intervention_service import InterventionService
 from app.core.security import get_current_admin
 
 # Configure logging
@@ -41,6 +42,14 @@ async def lifespan(app: FastAPI):
             logger.info(f"Default admin created/verified: {admin_user.email}")
         except Exception as e:
             logger.error(f"Error creating default admin: {e}")
+
+    # Create default intervention threshold
+    async with AsyncSessionLocal() as db:
+        try:
+            threshold = await InterventionService.create_default_threshold(db)
+            logger.info(f"Default intervention threshold created/verified: {threshold.name}")
+        except Exception as e:
+            logger.error(f"Error creating default intervention threshold: {e}")
 
     # Initialize scheduler for daily intervention checks
     try:
