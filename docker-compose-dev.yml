@@ -47,6 +47,7 @@ services:
       - DEFAULT_ADMIN_FULL_NAME=${DEFAULT_ADMIN_FULL_NAME}
     volumes:
       - ./app:/app/app:ro
+      - ./scripts:/app/scripts:ro
       - ./requirements.txt:/app/requirements.txt:ro
     depends_on:
       postgres:

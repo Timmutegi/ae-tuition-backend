@@ -179,3 +179,5 @@ dump.rdb
 # Backup files
 *.bak
 *.backup
+# Migration dumps
+scripts/migration_dumps/
