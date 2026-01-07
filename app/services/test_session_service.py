@@ -275,7 +275,11 @@ class TestSessionService:
                     "image_url": question.image_url,
                     "pattern_sequence": question.pattern_sequence,
                     "points": tq.points,
-                    "answer_options": options
+                    "answer_options": options,
+                    # Include additional fields for verbal reasoning questions
+                    "given_word": question.given_word,
+                    "letter_template": question.letter_template,
+                    "word_bank": question.word_bank
                 })
         else:
             # Try fetching question sets if no direct questions
@@ -336,7 +340,11 @@ class TestSessionService:
                                 "image_url": question.image_url,
                                 "pattern_sequence": question.pattern_sequence,
                                 "points": qsi.points_override if qsi.points_override else question.points,
-                                "answer_options": options
+                                "answer_options": options,
+                                # Include additional fields for verbal reasoning questions
+                                "given_word": question.given_word,
+                                "letter_template": question.letter_template,
+                                "word_bank": question.word_bank
                             })
                             overall_order += 1
 
@@ -868,7 +876,8 @@ class TestSessionService:
         result_id: UUID,
         student_id: UUID
     ) -> Optional[TestResultDetail]:
-        """Get test result details"""
+        """Get test result details with question analysis"""
+        from app.schemas.test import QuestionAnalysisItem
 
         result = await db.execute(
             select(TestResult)
@@ -884,10 +893,162 @@ class TestSessionService:
         )
         result = result.unique().scalar_one_or_none()
 
-        if result:
-            return TestResultDetail.model_validate(result)
+        if not result:
+            return None
 
-        return None
+        # Get all questions for this test (from both direct test_questions and question_sets)
+        test_id = result.test_id
+        all_questions = []
+
+        # Fetch test questions
+        test_questions_result = await db.execute(
+            select(TestQuestion)
+            .options(
+                selectinload(TestQuestion.question).selectinload(Question.answer_options)
+            )
+            .where(TestQuestion.test_id == test_id)
+            .order_by(TestQuestion.order_number)
+        )
+        test_questions = test_questions_result.scalars().all()
+
+        if test_questions:
+            # Add direct test questions with their order and points
+            for tq in test_questions:
+                all_questions.append({
+                    "question": tq.question,
+                    "order_number": tq.order_number,
+                    "points": tq.points
+                })
+        else:
+            # Try question sets if no direct questions
+            test_question_sets_result = await db.execute(
+                select(TestQuestionSet)
+                .options(
+                    selectinload(TestQuestionSet.question_set)
+                    .selectinload(QuestionSet.question_set_items)
+                    .selectinload(QuestionSetItem.question)
+                    .selectinload(Question.answer_options)
+                )
+                .where(TestQuestionSet.test_id == test_id)
+                .order_by(TestQuestionSet.order_number)
+            )
+            test_question_sets = test_question_sets_result.scalars().all()
+
+            overall_order = 1
+            for tqs in test_question_sets:
+                if tqs.question_set and tqs.question_set.question_set_items:
+                    for qsi in sorted(tqs.question_set.question_set_items, key=lambda x: x.order_number):
+                        points = qsi.points_override if qsi.points_override is not None else qsi.question.points
+                        all_questions.append({
+                            "question": qsi.question,
+                            "order_number": overall_order,
+                            "points": points
+                        })
+                        overall_order += 1
+
+        # Get question responses for this attempt
+        responses_result = await db.execute(
+            select(QuestionResponse)
+            .where(QuestionResponse.attempt_id == result.attempt_id)
+        )
+        responses = responses_result.scalars().all()
+
+        # Create a lookup dictionary for responses by question_id
+        response_lookup = {r.question_id: r for r in responses}
+
+        # Build question analysis list for ALL questions
+        question_analysis = []
+
+        for q_data in sorted(all_questions, key=lambda x: x["order_number"]):
+            question = q_data["question"]
+            order_number = q_data["order_number"]
+            max_points = q_data["points"] or question.points or 1
+
+            if not question:
+                continue
+
+            # Check if student answered this question
+            response = response_lookup.get(question.id)
+
+            # Determine student's answer
+            student_answer = None
+            is_correct = False
+            points_earned = 0
+            time_spent = None
+
+            if response:
+                if response.answer_text:
+                    student_answer = response.answer_text
+                elif response.selected_options and question.answer_options:
+                    selected_option = next(
+                        (opt for opt in question.answer_options if opt.id in response.selected_options),
+                        None
+                    )
+                    if selected_option:
+                        student_answer = selected_option.option_text
+                elif response.dropdown_selections:
+                    # For cloze/dropdown questions, format the selections
+                    student_answer = ", ".join([str(v) for v in response.dropdown_selections.values()])
+                elif response.fill_in_answers:
+                    # For fill-in-blank questions
+                    student_answer = ", ".join([str(v) for v in response.fill_in_answers.values()])
+
+                is_correct = response.is_correct or False
+                points_earned = response.points_earned or 0
+                time_spent = response.time_spent
+
+            # Determine correct answer - for multiple choice, use the option text not the letter
+            correct_answer = None
+            if question.answer_options:
+                # For questions with answer options, get the text of the correct option
+                correct_option = next(
+                    (opt for opt in question.answer_options if opt.is_correct),
+                    None
+                )
+                if correct_option:
+                    correct_answer = correct_option.option_text
+
+            # Fall back to question.correct_answer only if no answer options
+            if not correct_answer:
+                correct_answer = question.correct_answer
+
+            analysis_item = QuestionAnalysisItem(
+                question_number=order_number,
+                question_id=question.id,
+                question_type=question.question_type.value if question.question_type else "unknown",
+                question_text=question.question_text,
+                image_url=question.image_url,
+                student_answer=student_answer,
+                correct_answer=correct_answer,
+                is_correct=is_correct,
+                points_earned=points_earned,
+                max_points=max_points,
+                time_spent=time_spent
+            )
+            question_analysis.append(analysis_item)
+
+        # Build result detail
+        result_detail = TestResultDetail(
+            id=result.id,
+            attempt_id=result.attempt_id,
+            student_id=result.student_id,
+            test_id=result.test_id,
+            total_score=result.total_score,
+            max_score=result.max_score,
+            percentage=float(result.percentage) if result.percentage else 0.0,
+            grade=result.grade,
+            time_taken=result.time_taken,
+            submitted_at=result.submitted_at,
+            status=result.status,
+            question_scores=result.question_scores,
+            analytics_data=result.analytics_data,
+            question_analysis=question_analysis if question_analysis else None,
+            created_at=result.created_at,
+            test_title=result.test.title if result.test else None,
+            test_type=result.test.type.value if result.test and result.test.type else None
+        )
+
+        return result_detail
 
     @staticmethod
     async def get_student_test_results(
@@ -910,7 +1071,30 @@ class TestSessionService:
             .offset(offset)
         )
 
-        return [TestResultDetail.model_validate(r) for r in results.unique().scalars().all()]
+        result_details = []
+        for r in results.unique().scalars().all():
+            result_detail = TestResultDetail(
+                id=r.id,
+                attempt_id=r.attempt_id,
+                student_id=r.student_id,
+                test_id=r.test_id,
+                total_score=r.total_score,
+                max_score=r.max_score,
+                percentage=float(r.percentage) if r.percentage else 0.0,
+                grade=r.grade,
+                time_taken=r.time_taken,
+                submitted_at=r.submitted_at,
+                status=r.status,
+                question_scores=r.question_scores,
+                analytics_data=r.analytics_data,
+                question_analysis=None,  # Don't include detailed analysis in list view
+                created_at=r.created_at,
+                test_title=r.test.title if r.test else None,
+                test_type=r.test.type.value if r.test and r.test.type else None
+            )
+            result_details.append(result_detail)
+
+        return result_details
 
     @staticmethod
     async def check_and_auto_submit_expired_tests(db: AsyncSession):

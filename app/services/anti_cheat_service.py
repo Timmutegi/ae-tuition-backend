@@ -2,7 +2,7 @@
 Anti-Cheating Service for AE Tuition
 
 This service handles:
-- Logging suspicious activities (tab switches, copy-paste, idle time)
+- Logging suspicious activities (tab switches, idle time, devtools access)
 - Managing active test sessions with heartbeat tracking
 - Generating alerts based on configurable thresholds
 - Providing real-time monitoring data for teachers
@@ -31,8 +31,6 @@ class AntiCheatService:
     DEFAULT_THRESHOLDS = {
         ActivityType.TAB_SWITCH: {"count": 5, "severity": AlertSeverity.MEDIUM},
         ActivityType.TAB_HIDDEN: {"count": 3, "severity": AlertSeverity.MEDIUM},
-        ActivityType.COPY_ATTEMPT: {"count": 2, "severity": AlertSeverity.HIGH},
-        ActivityType.PASTE_ATTEMPT: {"count": 2, "severity": AlertSeverity.HIGH},
         ActivityType.IDLE_TIMEOUT: {"count": 3, "severity": AlertSeverity.LOW},
         ActivityType.DEVTOOLS_OPEN: {"count": 1, "severity": AlertSeverity.CRITICAL},
         ActivityType.FULLSCREEN_EXIT: {"count": 3, "severity": AlertSeverity.MEDIUM},
@@ -151,9 +149,6 @@ class AntiCheatService:
         descriptions = {
             ActivityType.TAB_SWITCH: "Student switched browser tabs",
             ActivityType.TAB_HIDDEN: "Browser tab was hidden/minimized",
-            ActivityType.COPY_ATTEMPT: "Copy action detected",
-            ActivityType.PASTE_ATTEMPT: "Paste action detected",
-            ActivityType.CUT_ATTEMPT: "Cut action detected",
             ActivityType.RIGHT_CLICK: "Right-click context menu detected",
             ActivityType.KEYBOARD_SHORTCUT: "Suspicious keyboard shortcut used",
             ActivityType.IDLE_TIMEOUT: "Student was idle for extended period",
@@ -195,10 +190,6 @@ class AntiCheatService:
         # Update specific counters based on activity type
         if activity_type in [ActivityType.TAB_SWITCH, ActivityType.TAB_HIDDEN]:
             session.tab_switches = (session.tab_switches or 0) + 1
-        elif activity_type == ActivityType.COPY_ATTEMPT:
-            session.copy_attempts = (session.copy_attempts or 0) + 1
-        elif activity_type == ActivityType.PASTE_ATTEMPT:
-            session.paste_attempts = (session.paste_attempts or 0) + 1
         elif activity_type == ActivityType.IDLE_TIMEOUT:
             session.idle_periods = (session.idle_periods or 0) + 1
             if duration_seconds:
@@ -517,8 +508,6 @@ class AntiCheatService:
             "last_activity": session.last_activity.isoformat() if session.last_activity else None,
             "time_remaining_seconds": session.time_remaining_seconds,
             "tab_switches": session.tab_switches or 0,
-            "copy_attempts": session.copy_attempts or 0,
-            "paste_attempts": session.paste_attempts or 0,
             "idle_periods": session.idle_periods or 0,
             "total_idle_seconds": session.total_idle_seconds or 0,
             "warnings_count": session.warnings_count or 0,

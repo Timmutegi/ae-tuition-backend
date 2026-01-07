@@ -316,7 +316,7 @@ class QuestionService:
 
     @staticmethod
     async def delete_question(db: AsyncSession, question_id: UUID, user_id: UUID) -> bool:
-        """Delete question (only if user is creator and not used in tests)"""
+        """Delete question (only if user is creator and not used in active tests)"""
         result = await db.execute(
             select(Question).where(Question.id == question_id)
         )
@@ -325,7 +325,7 @@ class QuestionService:
         if not question or question.created_by != user_id:
             return False
 
-        # Check if question is used in any tests
+        # Check if question is used in any tests directly (legacy TestQuestion table)
         from app.models.test import TestQuestion
         usage_result = await db.execute(
             select(func.count(TestQuestion.id)).where(TestQuestion.question_id == question_id)
@@ -334,6 +334,28 @@ class QuestionService:
 
         if usage_count > 0:
             raise ValueError("Cannot delete question that is used in tests")
+
+        # Check if question is in question sets that are linked to tests
+        from app.models.question_set import QuestionSetItem, TestQuestionSet
+        test_linked_result = await db.execute(
+            select(func.count(QuestionSetItem.id))
+            .join(TestQuestionSet, QuestionSetItem.question_set_id == TestQuestionSet.question_set_id)
+            .where(QuestionSetItem.question_id == question_id)
+        )
+        test_linked_count = test_linked_result.scalar()
+
+        if test_linked_count > 0:
+            raise ValueError("Cannot delete question that is used in question sets linked to tests")
+
+        # Delete question set items referencing this question (for sets not linked to tests)
+        await db.execute(
+            delete(QuestionSetItem).where(QuestionSetItem.question_id == question_id)
+        )
+
+        # Delete answer options (cascade should handle this, but be explicit)
+        await db.execute(
+            delete(AnswerOption).where(AnswerOption.question_id == question_id)
+        )
 
         await db.delete(question)
         await db.commit()
@@ -354,6 +376,8 @@ class QuestionService:
             id=passage.id,
             title=passage.title,
             content=passage.content,
+            image_url=passage.image_url,
+            s3_key=passage.s3_key,
             word_count=passage.word_count,
             reading_level=passage.reading_level,
             source=passage.source,
@@ -385,6 +409,8 @@ class QuestionService:
             id=passage.id,
             title=passage.title,
             content=passage.content,
+            image_url=passage.image_url,
+            s3_key=passage.s3_key,
             word_count=passage.word_count,
             reading_level=passage.reading_level,
             source=passage.source,
@@ -437,6 +463,8 @@ class QuestionService:
                 id=passage.id,
                 title=passage.title,
                 content=passage.content,
+                image_url=passage.image_url,
+                s3_key=passage.s3_key,
                 word_count=passage.word_count,
                 reading_level=passage.reading_level,
                 source=passage.source,
@@ -479,6 +507,8 @@ class QuestionService:
             id=passage.id,
             title=passage.title,
             content=passage.content,
+            image_url=passage.image_url,
+            s3_key=passage.s3_key,
             word_count=passage.word_count,
             reading_level=passage.reading_level,
             source=passage.source,

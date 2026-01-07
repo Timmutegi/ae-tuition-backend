@@ -1,12 +1,15 @@
 """
 Intervention service for Phase 6: Advanced Analytics & Intervention System.
 Handles intervention alerts, thresholds, weekly performance tracking, and analytics.
+
+Updated for Five-Week Review Agent with teacher approval workflow.
 """
 
+import logging
 from datetime import datetime, date, timedelta
 from typing import Optional, List, Dict, Any, Tuple
 from uuid import UUID
-from sqlalchemy import select, func, and_, or_, desc, asc
+from sqlalchemy import select, func, and_, or_, desc, asc, Integer
 from sqlalchemy.orm import selectinload, joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,15 +17,20 @@ from app.models.intervention import (
     InterventionThreshold, InterventionAlert, AlertRecipient,
     WeeklyPerformance, AlertStatus, AlertPriority, RecipientType
 )
-from app.models.student import Student
+from app.models.student import Student, StudentStatus
 from app.models.class_model import Class
-from app.models.test import TestAttempt, TestResult, AttemptStatus
+from app.models.test import TestAttempt, TestResult, AttemptStatus, Test, TestType
+from app.models.teacher import TeacherProfile, TeacherClassAssignment
+from app.models.user import User
 from app.models.support import AttendanceRecord, HomeworkRecord, AttendanceStatus, HomeworkStatus
 from app.schemas.intervention import (
     InterventionThresholdCreate, InterventionThresholdUpdate,
     InterventionAlertCreate, InterventionAlertUpdate,
     StudentAnalytics, ClassAnalytics, DashboardStats
 )
+from app.services.academic_calendar_service import calendar_service
+
+logger = logging.getLogger(__name__)
 
 
 class InterventionService:
@@ -125,6 +133,20 @@ class InterventionService:
             .options(
                 selectinload(InterventionAlert.recipients),
                 joinedload(InterventionAlert.student),
+                joinedload(InterventionAlert.threshold)
+            )
+            .where(InterventionAlert.id == alert_id)
+        )
+        return result.scalar_one_or_none()
+
+    async def get_alert_by_id(self, alert_id: UUID) -> Optional[InterventionAlert]:
+        """Get an alert by ID with student and class info."""
+        result = await self.db.execute(
+            select(InterventionAlert)
+            .options(
+                selectinload(InterventionAlert.recipients),
+                joinedload(InterventionAlert.student).joinedload(Student.class_info),
+                joinedload(InterventionAlert.student).joinedload(Student.user),
                 joinedload(InterventionAlert.threshold)
             )
             .where(InterventionAlert.id == alert_id)
@@ -267,126 +289,326 @@ class InterventionService:
         """Check a single threshold against all students."""
         alerts = []
 
+        # Extract threshold attributes BEFORE any other queries to avoid lazy loading
+        threshold_data = {
+            'id': threshold.id,
+            'subject': threshold.subject,
+            'min_score_percent': threshold.min_score_percent,
+            'weeks_to_review': threshold.weeks_to_review,
+            'failures_required': threshold.failures_required,
+            'alert_priority': threshold.alert_priority,
+            'notify_teacher': threshold.notify_teacher
+        }
+
         # Get all active students
         result = await self.db.execute(
             select(Student)
-            .options(joinedload(Student.class_rel))
-            .where(Student.status == 'active')
+            .options(joinedload(Student.class_info), joinedload(Student.user))
+            .where(Student.status == StudentStatus.ACTIVE)
         )
         students = list(result.scalars().unique().all())
 
-        for student in students:
-            alert = await self._check_student_threshold(student, threshold)
+        # Extract student data before the loop
+        student_data_list = []
+        for s in students:
+            student_data_list.append({
+                'id': s.id,
+                'student_code': s.student_code,
+                'full_name': s.user.full_name if s.user else "Unknown",
+                'class_id': s.class_id
+            })
+
+        for student_data in student_data_list:
+            alert = await self._check_student_threshold_data(student_data, threshold_data)
             if alert:
                 alerts.append(alert)
 
         return alerts
 
-    async def _check_student_threshold(
+    async def _check_student_threshold_data(
         self,
-        student: Student,
-        threshold: InterventionThreshold
+        student_data: dict,
+        threshold_data: dict
     ) -> Optional[InterventionAlert]:
-        """Check if a student triggers a threshold."""
-        # Calculate date range for review period
-        end_date = date.today()
-        start_date = end_date - timedelta(weeks=threshold.weeks_to_review)
+        """
+        Check if a student triggers a threshold using academic weeks.
+        Uses pre-extracted data dictionaries to avoid lazy loading issues.
 
-        # Get weekly performances
+        Args:
+            student_data: Dict with keys: id, student_code, full_name, class_id
+            threshold_data: Dict with keys: id, subject, min_score_percent, weeks_to_review,
+                           failures_required, alert_priority, notify_teacher
+        """
+        student_id = student_data['id']
+        student_code = student_data['student_code']
+        student_full_name = student_data['full_name']
+        student_class_id = student_data['class_id']
+
+        threshold_id = threshold_data['id']
+        threshold_subject = threshold_data['subject']
+        threshold_min_score = threshold_data['min_score_percent']
+        threshold_weeks_to_review = threshold_data['weeks_to_review']
+        threshold_failures_required = threshold_data['failures_required']
+        threshold_alert_priority = threshold_data['alert_priority']
+        threshold_notify_teacher = threshold_data['notify_teacher']
+
+        # Get current academic week
+        current_week = calendar_service.get_current_week()
+        if current_week == 0:
+            return None  # Outside academic year
+
+        # Calculate review window (last N academic weeks)
+        start_week = max(1, current_week - threshold_weeks_to_review + 1)
+
+        # Get weekly performances for the review period
         result = await self.db.execute(
             select(WeeklyPerformance)
             .where(
                 and_(
-                    WeeklyPerformance.student_id == student.id,
-                    WeeklyPerformance.week_start >= start_date,
-                    WeeklyPerformance.week_end <= end_date
+                    WeeklyPerformance.student_id == student_id,
+                    WeeklyPerformance.week_number >= start_week,
+                    WeeklyPerformance.week_number <= current_week
                 )
             )
-            .order_by(WeeklyPerformance.week_start)
+            .order_by(WeeklyPerformance.week_number)
         )
         performances = list(result.scalars().all())
 
         if not performances:
             return None
 
-        # Check if subject-specific
-        weeks_failing = 0
-        weekly_scores = []
+        # Define the 4 subjects we track
+        subjects_to_check = ["Verbal Reasoning", "Non-Verbal Reasoning", "English", "Mathematics"]
 
-        for perf in performances:
-            if threshold.subject:
-                # Subject-specific check
+        # If threshold is subject-specific, only check that subject
+        if threshold_subject:
+            subjects_to_check = [threshold_subject]
+
+        # Check each subject
+        for subject in subjects_to_check:
+            weeks_failing = 0
+            weekly_scores = []
+
+            for perf in performances:
                 subject_scores = perf.subject_scores or {}
-                subject_data = subject_scores.get(threshold.subject, {})
-                avg = subject_data.get('average')
-            else:
-                # Overall average
-                avg = perf.average_score
+                subject_data_perf = subject_scores.get(subject, {})
+                avg = subject_data_perf.get('average')
 
-            if avg is not None:
-                weekly_scores.append({
-                    'week': perf.week_number,
-                    'score': avg
-                })
-                if avg < threshold.min_score_percent:
-                    weeks_failing += 1
+                if avg is not None:
+                    weekly_scores.append({
+                        'week': perf.week_number,
+                        'subject': subject,
+                        'score': avg
+                    })
+                    if avg < threshold_min_score:
+                        weeks_failing += 1
 
-        # Check if threshold is met
-        if weeks_failing >= threshold.failures_required:
-            # Check for existing pending alert
-            existing = await self.db.execute(
-                select(InterventionAlert)
-                .where(
-                    and_(
-                        InterventionAlert.student_id == student.id,
-                        InterventionAlert.threshold_id == threshold.id,
-                        InterventionAlert.status.in_([AlertStatus.PENDING, AlertStatus.IN_PROGRESS])
+            # Check if threshold is met (e.g., 3 out of 5 weeks failing)
+            if weeks_failing >= threshold_failures_required:
+                # Check for existing pending/in-progress alert for this subject
+                existing = await self.db.execute(
+                    select(InterventionAlert)
+                    .where(
+                        and_(
+                            InterventionAlert.student_id == student_id,
+                            InterventionAlert.subject == subject,
+                            InterventionAlert.status.in_([AlertStatus.PENDING, AlertStatus.IN_PROGRESS])
+                        )
                     )
                 )
-            )
-            if existing.scalar_one_or_none():
-                return None  # Already has active alert
+                if existing.scalar_one_or_none():
+                    continue  # Already has active alert for this subject
 
-            # Calculate averages
-            recent_scores = [s['score'] for s in weekly_scores[-threshold.failures_required:] if s['score']]
-            current_avg = sum(recent_scores) / len(recent_scores) if recent_scores else None
+                # Calculate current average from failing weeks
+                recent_scores = [s['score'] for s in weekly_scores if s['score'] is not None]
+                current_avg = sum(recent_scores) / len(recent_scores) if recent_scores else None
 
-            # Create alert
-            subject_text = threshold.subject or "overall performance"
-            alert_data = InterventionAlertCreate(
-                student_id=student.id,
-                threshold_id=threshold.id,
-                subject=threshold.subject,
-                alert_type="performance_decline",
-                priority=threshold.alert_priority,
-                title=f"Performance Alert: {student.student_name}",
-                description=f"Student's {subject_text} has fallen below {threshold.min_score_percent}% for {weeks_failing} out of the last {threshold.weeks_to_review} weeks.",
-                recommended_actions="Schedule a meeting with the student and guardian. Review study habits and provide additional support.",
-                current_average=current_avg,
-                weeks_failing=weeks_failing,
-                weekly_scores=weekly_scores
-            )
+                # Convert weekly_scores list to dict format for schema
+                weekly_scores_dict = {
+                    str(s['week']): {'subject': s['subject'], 'score': s['score']}
+                    for s in weekly_scores
+                }
 
-            alert = await self.create_alert(alert_data)
-
-            # Add recipients based on threshold settings
-            if threshold.notify_parent:
-                await self.add_alert_recipient(
-                    alert_id=alert.id,
-                    recipient_type=RecipientType.PARENT,
-                    recipient_name=student.parent_name,
-                    recipient_email=student.parent_email,
-                    recipient_phone=student.parent_phone
+                # Create alert
+                alert_data = InterventionAlertCreate(
+                    student_id=student_id,
+                    threshold_id=threshold_id,
+                    subject=subject,
+                    alert_type="performance_decline",
+                    priority=threshold_alert_priority,
+                    title=f"Performance Alert: {student_full_name} - {subject}",
+                    description=(
+                        f"Student's {subject} performance has fallen below "
+                        f"{threshold_min_score}% for {weeks_failing} out of the last "
+                        f"{threshold_weeks_to_review} weeks."
+                    ),
+                    recommended_actions=(
+                        f"Review {subject} study habits and provide targeted support. "
+                        "Schedule a meeting with the student and guardian to discuss "
+                        "improvement strategies."
+                    ),
+                    current_average=current_avg,
+                    weeks_failing=weeks_failing,
+                    weekly_scores=weekly_scores_dict
                 )
 
-            if threshold.notify_supervisor and student.supervisor_id:
-                await self.add_alert_recipient(
-                    alert_id=alert.id,
-                    recipient_type=RecipientType.SUPERVISOR,
-                    recipient_id=student.supervisor_id
+                alert = await self.create_alert(alert_data)
+
+                # Notify teacher (required for approval workflow)
+                if threshold_notify_teacher:
+                    await self._notify_teacher_by_class(alert, student_class_id, student_full_name)
+
+                logger.info(
+                    f"Created intervention alert for student {student_code} "
+                    f"in subject {subject} (weeks failing: {weeks_failing})"
                 )
 
-            return alert
+                return alert
+
+        return None
+
+    async def _check_student_threshold(
+        self,
+        student: Student,
+        threshold: InterventionThreshold
+    ) -> Optional[InterventionAlert]:
+        """
+        Check if a student triggers a threshold using academic weeks.
+
+        This method:
+        1. Gets the current academic week
+        2. Looks back 'weeks_to_review' academic weeks
+        3. Checks subject-specific performance against threshold
+        4. Creates alert if threshold is met
+        5. Notifies the assigned teacher
+        """
+        # Extract threshold attributes upfront to avoid lazy loading issues
+        threshold_id = threshold.id
+        threshold_subject = threshold.subject
+        threshold_min_score = threshold.min_score_percent
+        threshold_weeks_to_review = threshold.weeks_to_review
+        threshold_failures_required = threshold.failures_required
+        threshold_alert_priority = threshold.alert_priority
+        threshold_notify_teacher = threshold.notify_teacher
+
+        # Extract student attributes
+        student_id = student.id
+        student_code = student.student_code
+        student_full_name = student.user.full_name if student.user else "Unknown"
+        student_class_id = student.class_id
+
+        # Get current academic week
+        current_week = calendar_service.get_current_week()
+        if current_week == 0:
+            return None  # Outside academic year
+
+        # Calculate review window (last N academic weeks)
+        start_week = max(1, current_week - threshold_weeks_to_review + 1)
+
+        # Get weekly performances for the review period
+        result = await self.db.execute(
+            select(WeeklyPerformance)
+            .where(
+                and_(
+                    WeeklyPerformance.student_id == student_id,
+                    WeeklyPerformance.week_number >= start_week,
+                    WeeklyPerformance.week_number <= current_week
+                )
+            )
+            .order_by(WeeklyPerformance.week_number)
+        )
+        performances = list(result.scalars().all())
+
+        if not performances:
+            return None
+
+        # Define the 4 subjects we track
+        subjects_to_check = ["Verbal Reasoning", "Non-Verbal Reasoning", "English", "Mathematics"]
+
+        # If threshold is subject-specific, only check that subject
+        if threshold_subject:
+            subjects_to_check = [threshold_subject]
+
+        # Check each subject
+        for subject in subjects_to_check:
+            weeks_failing = 0
+            weekly_scores = []
+
+            for perf in performances:
+                subject_scores = perf.subject_scores or {}
+                subject_data = subject_scores.get(subject, {})
+                avg = subject_data.get('average')
+
+                if avg is not None:
+                    weekly_scores.append({
+                        'week': perf.week_number,
+                        'subject': subject,
+                        'score': avg
+                    })
+                    if avg < threshold_min_score:
+                        weeks_failing += 1
+
+            # Check if threshold is met (e.g., 3 out of 5 weeks failing)
+            if weeks_failing >= threshold_failures_required:
+                # Check for existing pending/in-progress alert for this subject
+                existing = await self.db.execute(
+                    select(InterventionAlert)
+                    .where(
+                        and_(
+                            InterventionAlert.student_id == student_id,
+                            InterventionAlert.subject == subject,
+                            InterventionAlert.status.in_([AlertStatus.PENDING, AlertStatus.IN_PROGRESS])
+                        )
+                    )
+                )
+                if existing.scalar_one_or_none():
+                    continue  # Already has active alert for this subject
+
+                # Calculate current average from failing weeks
+                recent_scores = [s['score'] for s in weekly_scores if s['score'] is not None]
+                current_avg = sum(recent_scores) / len(recent_scores) if recent_scores else None
+
+                # Convert weekly_scores list to dict format for schema
+                weekly_scores_dict = {
+                    str(s['week']): {'subject': s['subject'], 'score': s['score']}
+                    for s in weekly_scores
+                }
+
+                # Create alert
+                alert_data = InterventionAlertCreate(
+                    student_id=student_id,
+                    threshold_id=threshold_id,
+                    subject=subject,
+                    alert_type="performance_decline",
+                    priority=threshold_alert_priority,
+                    title=f"Performance Alert: {student_full_name} - {subject}",
+                    description=(
+                        f"Student's {subject} performance has fallen below "
+                        f"{threshold_min_score}% for {weeks_failing} out of the last "
+                        f"{threshold_weeks_to_review} weeks."
+                    ),
+                    recommended_actions=(
+                        f"Review {subject} study habits and provide targeted support. "
+                        "Schedule a meeting with the student and guardian to discuss "
+                        "improvement strategies."
+                    ),
+                    current_average=current_avg,
+                    weeks_failing=weeks_failing,
+                    weekly_scores=weekly_scores_dict
+                )
+
+                alert = await self.create_alert(alert_data)
+
+                # Notify teacher (required for approval workflow)
+                if threshold_notify_teacher:
+                    await self._notify_teacher_by_class(alert, student_class_id, student_full_name)
+
+                logger.info(
+                    f"Created intervention alert for student {student_code} "
+                    f"in subject {subject} (weeks failing: {weeks_failing})"
+                )
+
+                return alert
 
         return None
 
@@ -505,7 +727,7 @@ class InterventionService:
         """Get comprehensive analytics for a student."""
         result = await self.db.execute(
             select(Student)
-            .options(joinedload(Student.class_rel))
+            .options(joinedload(Student.class_info))
             .where(Student.id == student_id)
         )
         student = result.scalar_one_or_none()
@@ -585,9 +807,9 @@ class InterventionService:
 
         return StudentAnalytics(
             student_id=student.id,
-            student_name=student.student_name,
+            student_name=student.user.full_name,
             student_code=student.student_code,
-            class_name=student.class_rel.name if student.class_rel else None,
+            class_name=student.class_info.name if student.class_info else None,
             overall_average=sum(scores) / len(scores) if scores else None,
             tests_completed=len(results),
             total_time_hours=total_time / 3600,
@@ -691,7 +913,7 @@ class InterventionService:
         query = (
             select(Student)
             .join(InterventionAlert)
-            .options(joinedload(Student.class_rel))
+            .options(joinedload(Student.class_info))
             .where(
                 InterventionAlert.status.in_([AlertStatus.PENDING, AlertStatus.IN_PROGRESS])
             )
@@ -729,10 +951,614 @@ class InterventionService:
 
             flagged.append({
                 'student_id': str(student.id),
-                'student_name': student.student_name,
+                'student_name': student.user.full_name,
                 'student_code': student.student_code,
-                'class_name': student.class_rel.name if student.class_rel else None,
+                'class_name': student.class_info.name if student.class_info else None,
                 'active_alerts': alert_count.scalar() or 0
             })
 
         return flagged, total
+
+    # ============== Teacher Approval Workflow ==============
+
+    async def approve_alert(
+        self,
+        alert_id: UUID,
+        approver_id: UUID,
+        approval_notes: Optional[str] = None
+    ) -> Optional[InterventionAlert]:
+        """
+        Teacher approves an intervention alert, triggering parent notification.
+
+        Args:
+            alert_id: ID of the alert to approve
+            approver_id: ID of the teacher/user approving
+            approval_notes: Optional notes from teacher
+
+        Returns:
+            Updated alert or None if not found
+        """
+        alert = await self.get_alert(alert_id)
+        if not alert:
+            return None
+
+        # Extract alert data BEFORE commit to avoid lazy loading issues
+        alert_title = alert.title
+        alert_student_id = alert.student_id
+        alert_subject = alert.subject
+        alert_current_average = alert.current_average
+        alert_weeks_failing = alert.weeks_failing
+        alert_recommended_actions = alert.recommended_actions
+
+        # Update alert status
+        alert.status = AlertStatus.IN_PROGRESS
+        approved_time = datetime.utcnow()
+        alert.approved_at = approved_time
+        alert.approved_by = approver_id
+
+        if approval_notes:
+            existing_notes = alert.resolution_notes or ""
+            alert.resolution_notes = f"Teacher Approval Notes: {approval_notes}\n{existing_notes}".strip()
+
+        await self.db.commit()
+
+        # Send parent notification using extracted data
+        await self._notify_parent_by_data(
+            alert_id=alert_id,
+            student_id=alert_student_id,
+            alert_subject=alert_subject,
+            alert_current_average=alert_current_average,
+            alert_weeks_failing=alert_weeks_failing,
+            alert_recommended_actions=alert_recommended_actions
+        )
+
+        # Log audit event
+        try:
+            from app.services.audit_service import AuditService
+            from app.models.intervention import AuditAction
+
+            audit_service = AuditService(self.db)
+            await audit_service.create_audit_log(
+                user_id=approver_id,
+                action=AuditAction.UPDATE,
+                entity_type="intervention_alert",
+                entity_id=str(alert_id),
+                entity_name=alert_title,
+                description=f"Teacher approved intervention alert - parent notified",
+                new_values={
+                    "status": "in_progress",
+                    "approved_at": approved_time.isoformat(),
+                    "parent_notified": True
+                }
+            )
+        except Exception as e:
+            logger.warning(f"Failed to log audit for alert approval: {str(e)}")
+
+        await self.db.refresh(alert)
+        logger.info(f"Alert {alert_id} approved by user {approver_id}")
+        return alert
+
+    async def dismiss_alert(
+        self,
+        alert_id: UUID,
+        resolver_id: UUID,
+        reason: str
+    ) -> Optional[InterventionAlert]:
+        """
+        Dismiss an intervention alert without notifying parents.
+
+        Args:
+            alert_id: ID of the alert to dismiss
+            resolver_id: ID of the teacher/user dismissing
+            reason: Reason for dismissal
+
+        Returns:
+            Updated alert or None if not found
+        """
+        alert = await self.get_alert(alert_id)
+        if not alert:
+            return None
+
+        # Only allow dismissing pending alerts
+        if alert.status not in [AlertStatus.PENDING, AlertStatus.IN_PROGRESS]:
+            logger.warning(f"Attempted to dismiss non-pending alert {alert_id}")
+            return None
+
+        # Update alert status to resolved (dismissed)
+        alert.status = AlertStatus.RESOLVED
+        alert.resolved_at = datetime.utcnow()
+        alert.resolved_by = resolver_id
+        alert.resolution_notes = f"Dismissed by teacher: {reason}"
+
+        await self.db.commit()
+
+        # Log audit event
+        try:
+            from app.services.audit_service import AuditService
+            from app.models.intervention import AuditAction
+
+            audit_service = AuditService(self.db)
+            await audit_service.create_audit_log(
+                user_id=resolver_id,
+                action=AuditAction.UPDATE,
+                entity_type="intervention_alert",
+                entity_id=str(alert.id),
+                entity_name=alert.title,
+                description=f"Teacher dismissed intervention alert - {reason}",
+                new_values={
+                    "status": "resolved",
+                    "resolved_at": alert.resolved_at.isoformat() if alert.resolved_at else None,
+                    "dismissal_reason": reason
+                }
+            )
+        except Exception as e:
+            logger.warning(f"Failed to log audit for alert dismissal: {str(e)}")
+
+        await self.db.refresh(alert)
+        logger.info(f"Alert {alert_id} dismissed by user {resolver_id}")
+        return alert
+
+    async def teacher_has_access_to_alert(
+        self,
+        teacher_id: UUID,
+        alert_id: UUID
+    ) -> bool:
+        """
+        Check if a teacher has access to a specific alert.
+
+        A teacher has access if the alert's student is in one of their assigned classes.
+
+        Args:
+            teacher_id: TeacherProfile ID
+            alert_id: Alert ID to check
+
+        Returns:
+            True if teacher has access, False otherwise
+        """
+        # Get the alert with student info
+        alert = await self.get_alert(alert_id)
+        if not alert:
+            return False
+
+        # Get class IDs assigned to teacher
+        class_result = await self.db.execute(
+            select(TeacherClassAssignment.class_id)
+            .where(TeacherClassAssignment.teacher_id == teacher_id)
+        )
+        class_ids = [row[0] for row in class_result.fetchall()]
+
+        if not class_ids:
+            return False
+
+        # Get student's class
+        student_result = await self.db.execute(
+            select(Student.class_id).where(Student.id == alert.student_id)
+        )
+        student_class = student_result.scalar_one_or_none()
+
+        return student_class in class_ids
+
+    async def get_teacher_alerts(
+        self,
+        teacher_id: UUID,
+        status: Optional[AlertStatus] = None,
+        limit: int = 50,
+        offset: int = 0
+    ) -> Tuple[List[InterventionAlert], int]:
+        """
+        Get alerts for students in classes assigned to a teacher.
+
+        Args:
+            teacher_id: TeacherProfile ID
+            status: Optional status filter
+            limit: Pagination limit
+            offset: Pagination offset
+
+        Returns:
+            Tuple of (alerts list, total count)
+        """
+        # Get class IDs assigned to teacher
+        class_result = await self.db.execute(
+            select(TeacherClassAssignment.class_id)
+            .where(TeacherClassAssignment.teacher_id == teacher_id)
+        )
+        class_ids = [row[0] for row in class_result.fetchall()]
+
+        if not class_ids:
+            return [], 0
+
+        # Get student IDs in those classes
+        student_result = await self.db.execute(
+            select(Student.id).where(Student.class_id.in_(class_ids))
+        )
+        student_ids = [row[0] for row in student_result.fetchall()]
+
+        if not student_ids:
+            return [], 0
+
+        # Build query - load student with user and class_info for name display
+        query = select(InterventionAlert).options(
+            selectinload(InterventionAlert.recipients),
+            joinedload(InterventionAlert.student).joinedload(Student.user),
+            joinedload(InterventionAlert.student).joinedload(Student.class_info)
+        ).where(InterventionAlert.student_id.in_(student_ids))
+
+        conditions = [InterventionAlert.student_id.in_(student_ids)]
+        if status:
+            conditions.append(InterventionAlert.status == status)
+
+        query = query.where(and_(*conditions))
+
+        # Count total
+        count_query = select(func.count(InterventionAlert.id)).where(and_(*conditions))
+        count_result = await self.db.execute(count_query)
+        total = count_result.scalar() or 0
+
+        # Get results
+        query = query.order_by(desc(InterventionAlert.created_at)).offset(offset).limit(limit)
+        result = await self.db.execute(query)
+        alerts = list(result.scalars().unique().all())
+
+        return alerts, total
+
+    # ============== Notification Helpers ==============
+
+    async def _notify_teacher(
+        self,
+        alert: InterventionAlert,
+        student: Student
+    ) -> None:
+        """
+        Send email and in-app notification to teacher about new alert.
+
+        Args:
+            alert: The intervention alert
+            student: The student the alert is for
+        """
+        try:
+            # Find primary teacher assigned to student's class
+            teacher_assignment = await self.db.execute(
+                select(TeacherClassAssignment)
+                .options(
+                    joinedload(TeacherClassAssignment.teacher).joinedload(TeacherProfile.user)
+                )
+                .where(
+                    and_(
+                        TeacherClassAssignment.class_id == student.class_id,
+                        TeacherClassAssignment.is_primary == True
+                    )
+                )
+            )
+            assignment = teacher_assignment.scalar_one_or_none()
+
+            # Fallback: get any teacher assigned to the class
+            if not assignment:
+                teacher_assignment = await self.db.execute(
+                    select(TeacherClassAssignment)
+                    .options(
+                        joinedload(TeacherClassAssignment.teacher).joinedload(TeacherProfile.user)
+                    )
+                    .where(TeacherClassAssignment.class_id == student.class_id)
+                    .limit(1)
+                )
+                assignment = teacher_assignment.scalar_one_or_none()
+
+            if not assignment or not assignment.teacher or not assignment.teacher.user:
+                logger.warning(
+                    f"No teacher found for student {student.student_code} class {student.class_id}"
+                )
+                return
+
+            teacher_user = assignment.teacher.user
+
+            # Add recipient record
+            await self.add_alert_recipient(
+                alert_id=alert.id,
+                recipient_type=RecipientType.TEACHER,
+                recipient_id=teacher_user.id,
+                recipient_name=teacher_user.full_name,
+                recipient_email=teacher_user.email
+            )
+
+            # Send email
+            try:
+                from app.services.email_service import EmailService
+
+                email_service = EmailService()
+                await email_service.send_teacher_intervention_alert(
+                    teacher={
+                        "email": teacher_user.email,
+                        "full_name": teacher_user.full_name
+                    },
+                    student={
+                        "full_name": student.user.full_name,
+                        "student_code": student.student_code,
+                        "class_name": student.class_info.name if student.class_info else "N/A"
+                    },
+                    alert={
+                        "subject": alert.subject,
+                        "current_average": alert.current_average,
+                        "weeks_failing": alert.weeks_failing,
+                        "recommended_actions": alert.recommended_actions
+                    }
+                )
+                logger.info(f"Sent teacher notification email to {teacher_user.email}")
+            except Exception as e:
+                logger.error(f"Failed to send teacher email: {str(e)}")
+
+            # Create in-app notification
+            try:
+                from app.services.notification_service import NotificationService
+                from app.models.notification import NotificationType, NotificationPriority
+
+                notification_service = NotificationService(self.db)
+                await notification_service.create_notification(
+                    user_id=teacher_user.id,
+                    notification_type=NotificationType.ALERT,
+                    priority=NotificationPriority.HIGH,
+                    title="New Intervention Alert",
+                    message=(
+                        f"Student {student.user.full_name} ({student.student_code}) "
+                        f"requires intervention review for {alert.subject or 'performance'}."
+                    ),
+                    entity_type="intervention_alert",
+                    entity_id=str(alert.id),
+                    action_url=f"/teacher/intervention/alerts/{alert.id}"
+                )
+                logger.info(f"Created in-app notification for teacher {teacher_user.id}")
+            except Exception as e:
+                logger.error(f"Failed to create in-app notification: {str(e)}")
+
+        except Exception as e:
+            logger.error(f"Error notifying teacher for alert {alert.id}: {str(e)}")
+
+    async def _notify_teacher_by_class(
+        self,
+        alert: InterventionAlert,
+        class_id: Optional[UUID],
+        student_full_name: str
+    ) -> None:
+        """
+        Send email and in-app notification to teacher about new alert.
+        Uses class_id directly to avoid lazy loading issues.
+
+        Args:
+            alert: The intervention alert
+            class_id: The student's class ID
+            student_full_name: The student's full name
+        """
+        # Extract alert ID upfront to avoid lazy loading
+        alert_id = alert.id
+
+        if not class_id:
+            logger.warning(f"No class_id for alert {alert_id}, cannot notify teacher")
+            return
+
+        try:
+            # Find primary teacher assigned to student's class
+            teacher_assignment = await self.db.execute(
+                select(TeacherClassAssignment)
+                .options(
+                    joinedload(TeacherClassAssignment.teacher).joinedload(TeacherProfile.user)
+                )
+                .where(
+                    and_(
+                        TeacherClassAssignment.class_id == class_id,
+                        TeacherClassAssignment.is_primary == True
+                    )
+                )
+            )
+            assignment = teacher_assignment.scalar_one_or_none()
+
+            # Fallback: get any teacher assigned to the class
+            if not assignment:
+                teacher_assignment = await self.db.execute(
+                    select(TeacherClassAssignment)
+                    .options(
+                        joinedload(TeacherClassAssignment.teacher).joinedload(TeacherProfile.user)
+                    )
+                    .where(TeacherClassAssignment.class_id == class_id)
+                    .limit(1)
+                )
+                assignment = teacher_assignment.scalar_one_or_none()
+
+            if not assignment or not assignment.teacher or not assignment.teacher.user:
+                logger.warning(f"No teacher found for class {class_id}")
+                return
+
+            # Extract teacher info upfront to avoid lazy loading
+            teacher_user_id = assignment.teacher.user.id
+            teacher_full_name = assignment.teacher.user.full_name
+            teacher_email = assignment.teacher.user.email
+
+            # Add recipient record
+            await self.add_alert_recipient(
+                alert_id=alert_id,
+                recipient_type=RecipientType.TEACHER,
+                recipient_id=teacher_user_id,
+                recipient_name=teacher_full_name,
+                recipient_email=teacher_email
+            )
+
+            logger.info(f"Added teacher {teacher_email} as recipient for alert {alert_id}")
+
+        except Exception as e:
+            logger.error(f"Error notifying teacher for alert {alert_id}: {str(e)}")
+
+    async def _notify_parent(self, alert: InterventionAlert) -> None:
+        """
+        Send email notification to parent after teacher approval.
+
+        Args:
+            alert: The approved intervention alert
+        """
+        # Extract alert attributes BEFORE any database operations to avoid lazy loading
+        alert_id = alert.id
+        alert_student_id = alert.student_id
+        alert_subject = alert.subject
+        alert_current_average = alert.current_average
+        alert_weeks_failing = alert.weeks_failing
+        alert_recommended_actions = alert.recommended_actions
+
+        try:
+            # Get student with user info
+            student_result = await self.db.execute(
+                select(Student)
+                .options(joinedload(Student.user), joinedload(Student.class_info))
+                .where(Student.id == alert_student_id)
+            )
+            student = student_result.scalar_one_or_none()
+
+            if not student or not student.user:
+                logger.warning(f"No student/user found for alert {alert_id}")
+                return
+
+            # Extract student info before any more queries
+            student_full_name = student.user.full_name
+            student_email = student.user.email
+            student_code = student.student_code
+            student_class_name = student.class_info.name if student.class_info else "N/A"
+
+            # Use student's email (which is parent email per requirements)
+            parent_email = student_email
+            parent_name = student_full_name
+
+            # Add parent recipient record
+            await self.add_alert_recipient(
+                alert_id=alert_id,
+                recipient_type=RecipientType.PARENT,
+                recipient_name=parent_name,
+                recipient_email=parent_email
+            )
+
+            # Send email
+            try:
+                from app.services.email_service import EmailService
+
+                email_service = EmailService()
+                await email_service.send_parent_intervention_alert(
+                    parent_email=parent_email,
+                    student={
+                        "full_name": student_full_name,
+                        "student_code": student_code,
+                        "class_name": student_class_name
+                    },
+                    alert={
+                        "subject": alert_subject,
+                        "current_average": alert_current_average,
+                        "weeks_failing": alert_weeks_failing,
+                        "recommended_actions": alert_recommended_actions
+                    }
+                )
+                logger.info(f"Sent parent notification email to {parent_email}")
+            except Exception as e:
+                logger.error(f"Failed to send parent email: {str(e)}")
+
+            # Mark recipient as notified
+            recipient_result = await self.db.execute(
+                select(AlertRecipient)
+                .where(
+                    and_(
+                        AlertRecipient.alert_id == alert_id,
+                        AlertRecipient.recipient_type == RecipientType.PARENT
+                    )
+                )
+            )
+            recipient = recipient_result.scalar_one_or_none()
+            if recipient:
+                await self.mark_recipient_notified(recipient.id, "email")
+
+        except Exception as e:
+            logger.error(f"Error notifying parent for alert {alert_id}: {str(e)}")
+
+    async def _notify_parent_by_data(
+        self,
+        alert_id: UUID,
+        student_id: UUID,
+        alert_subject: Optional[str],
+        alert_current_average: Optional[float],
+        alert_weeks_failing: Optional[int],
+        alert_recommended_actions: Optional[str]
+    ) -> None:
+        """
+        Send email notification to parent using pre-extracted data.
+        This version avoids lazy loading issues by accepting data directly.
+
+        Args:
+            alert_id: The alert ID
+            student_id: The student ID
+            alert_subject: The subject for the alert
+            alert_current_average: Current average score
+            alert_weeks_failing: Number of weeks failing
+            alert_recommended_actions: Recommended actions text
+        """
+        try:
+            # Get student with user info
+            student_result = await self.db.execute(
+                select(Student)
+                .options(joinedload(Student.user), joinedload(Student.class_info))
+                .where(Student.id == student_id)
+            )
+            student = student_result.scalar_one_or_none()
+
+            if not student or not student.user:
+                logger.warning(f"No student/user found for alert {alert_id}")
+                return
+
+            # Extract student info before any more queries
+            student_full_name = student.user.full_name
+            student_email = student.user.email
+            student_code = student.student_code
+            student_class_name = student.class_info.name if student.class_info else "N/A"
+
+            # Use student's email (which is parent email per requirements)
+            parent_email = student_email
+            parent_name = student_full_name
+
+            # Add parent recipient record
+            await self.add_alert_recipient(
+                alert_id=alert_id,
+                recipient_type=RecipientType.PARENT,
+                recipient_name=parent_name,
+                recipient_email=parent_email
+            )
+
+            # Send email
+            try:
+                from app.services.email_service import EmailService
+
+                email_service = EmailService()
+                await email_service.send_parent_intervention_alert(
+                    parent_email=parent_email,
+                    student={
+                        "full_name": student_full_name,
+                        "student_code": student_code,
+                        "class_name": student_class_name
+                    },
+                    alert={
+                        "subject": alert_subject,
+                        "current_average": alert_current_average,
+                        "weeks_failing": alert_weeks_failing,
+                        "recommended_actions": alert_recommended_actions
+                    }
+                )
+                logger.info(f"Sent parent notification email to {parent_email}")
+            except Exception as e:
+                logger.error(f"Failed to send parent email: {str(e)}")
+
+            # Mark recipient as notified
+            recipient_result = await self.db.execute(
+                select(AlertRecipient)
+                .where(
+                    and_(
+                        AlertRecipient.alert_id == alert_id,
+                        AlertRecipient.recipient_type == RecipientType.PARENT
+                    )
+                )
+            )
+            recipient = recipient_result.scalar_one_or_none()
+            if recipient:
+                await self.mark_recipient_notified(recipient.id, "email")
+
+        except Exception as e:
+            logger.error(f"Error notifying parent for alert {alert_id}: {str(e)}")

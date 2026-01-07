@@ -134,6 +134,9 @@ class InterventionAlertResponse(InterventionAlertBase):
     resolved_at: Optional[datetime] = None
     resolved_by: Optional[UUID] = None
     resolution_notes: Optional[str] = None
+    # Teacher approval fields
+    approved_at: Optional[datetime] = None
+    approved_by: Optional[UUID] = None
     created_at: datetime
     updated_at: datetime
 

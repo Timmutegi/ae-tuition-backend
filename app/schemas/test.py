@@ -357,6 +357,21 @@ class TestSubmissionResponse(BaseModel):
     submitted_at: datetime
 
 
+class QuestionAnalysisItem(BaseModel):
+    """Individual question analysis for test results"""
+    question_number: int
+    question_id: UUID
+    question_type: str
+    question_text: Optional[str] = None
+    image_url: Optional[str] = None
+    student_answer: Optional[str] = None
+    correct_answer: Optional[str] = None
+    is_correct: bool
+    points_earned: int
+    max_points: int
+    time_spent: Optional[int] = None
+
+
 class TestResultDetail(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -373,4 +388,7 @@ class TestResultDetail(BaseModel):
     status: ResultStatus
     question_scores: Optional[Dict[str, Any]] = None
     analytics_data: Optional[Dict[str, Any]] = None
+    question_analysis: Optional[List[QuestionAnalysisItem]] = None
     created_at: datetime
+    test_title: Optional[str] = None
+    test_type: Optional[str] = None

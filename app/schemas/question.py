@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, ConfigDict, field_validator
+from pydantic import BaseModel, Field, ConfigDict, field_validator, model_validator
 from typing import Optional, List, Any, Dict
 from datetime import datetime
 from uuid import UUID
@@ -20,20 +20,19 @@ class ReadingPassageBase(BaseModel):
 
 
 class ReadingPassageCreate(ReadingPassageBase):
-    @field_validator('content')
-    @classmethod
-    def validate_passage_content(cls, v, info):
+    @model_validator(mode='after')
+    def validate_passage_content(self):
         """Validate that either content or image_url is provided"""
         # Treat empty strings as None
-        content = v.strip() if v else None
-
-        image_url = info.data.get('image_url')
+        content = self.content.strip() if self.content else None
+        image_url = self.image_url
 
         if not content and not image_url:
             raise ValueError('Either content (text) or image_url must be provided for the passage')
 
-        # Return None instead of empty string if no content provided
-        return content if content else None
+        # Update content to None if it was empty string
+        self.content = content if content else None
+        return self
 
 
 class ReadingPassageUpdate(BaseModel):

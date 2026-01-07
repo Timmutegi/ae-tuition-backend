@@ -272,3 +272,126 @@ class EmailService:
         except Exception as e:
             logger.error(f"Failed to send report email to {student['email']}: {str(e)}")
             return False
+
+    async def send_teacher_intervention_alert(
+        self,
+        teacher: dict,
+        student: dict,
+        alert: dict
+    ) -> bool:
+        """
+        Send intervention alert email to teacher for review and approval.
+
+        Args:
+            teacher: Dictionary containing teacher information (email, full_name)
+            student: Dictionary containing student information (full_name, student_code, class_name)
+            alert: Dictionary containing alert details (subject, current_average, weeks_failing, recommended_actions)
+
+        Returns:
+            Boolean indicating success/failure
+        """
+        try:
+            template = self._load_template("teacher_intervention_alert.html")
+
+            # Format current average as percentage
+            current_avg = alert.get("current_average")
+            if current_avg is not None:
+                current_avg_str = f"{current_avg:.1f}%"
+            else:
+                current_avg_str = "N/A"
+
+            variables = {
+                "teacher_name": teacher.get("full_name", "Teacher"),
+                "student_name": student.get("full_name", "Student"),
+                "student_code": student.get("student_code", "N/A"),
+                "class_name": student.get("class_name", "N/A"),
+                "subject": alert.get("subject", "All Subjects"),
+                "current_average": current_avg_str,
+                "weeks_failing": str(alert.get("weeks_failing", 0)),
+                "recommended_actions": alert.get("recommended_actions", "Please review the student's performance and consider additional support."),
+                "frontend_url": self.frontend_url,
+                "contact_email": "support@ae-tuition.com"
+            }
+
+            html_content = self._render_template(template, variables)
+
+            email_data = {
+                "from": self.from_email,
+                "to": [teacher["email"]],
+                "subject": f"Intervention Alert: {student.get('full_name', 'Student')} - {alert.get('subject', 'Performance Review')}",
+                "html": html_content
+            }
+
+            try:
+                response = resend.Emails.send(email_data)
+            except Exception as e:
+                logger.error(f"Teacher intervention alert email send failed: {str(e)}")
+                return False
+
+            logger.info(f"Teacher intervention alert email sent to {teacher['email']}: {response}")
+            return True
+
+        except Exception as e:
+            logger.error(f"Failed to send teacher intervention alert email to {teacher['email']}: {str(e)}")
+            return False
+
+    async def send_parent_intervention_alert(
+        self,
+        parent_email: str,
+        student: dict,
+        alert: dict
+    ) -> bool:
+        """
+        Send intervention alert email to parent after teacher approval.
+
+        Args:
+            parent_email: Parent's email address (typically the student's email)
+            student: Dictionary containing student information (full_name, student_code, class_name)
+            alert: Dictionary containing alert details (subject, current_average, weeks_failing, recommended_actions)
+
+        Returns:
+            Boolean indicating success/failure
+        """
+        try:
+            template = self._load_template("parent_intervention_alert.html")
+
+            # Format current average as percentage
+            current_avg = alert.get("current_average")
+            if current_avg is not None:
+                current_avg_str = f"{current_avg:.1f}%"
+            else:
+                current_avg_str = "N/A"
+
+            variables = {
+                "student_name": student.get("full_name", "Student"),
+                "student_code": student.get("student_code", "N/A"),
+                "class_name": student.get("class_name", "N/A"),
+                "subject": alert.get("subject", "All Subjects"),
+                "current_average": current_avg_str,
+                "weeks_failing": str(alert.get("weeks_failing", 0)),
+                "recommended_actions": alert.get("recommended_actions", "Consider additional practice and revision in this subject area. Regular homework completion and asking questions during class can help improve understanding."),
+                "frontend_url": self.frontend_url,
+                "contact_email": "support@ae-tuition.com"
+            }
+
+            html_content = self._render_template(template, variables)
+
+            email_data = {
+                "from": self.from_email,
+                "to": [parent_email],
+                "subject": f"AE Tuition - Performance Update for {student.get('full_name', 'Your Child')}",
+                "html": html_content
+            }
+
+            try:
+                response = resend.Emails.send(email_data)
+            except Exception as e:
+                logger.error(f"Parent intervention alert email send failed: {str(e)}")
+                return False
+
+            logger.info(f"Parent intervention alert email sent to {parent_email}: {response}")
+            return True
+
+        except Exception as e:
+            logger.error(f"Failed to send parent intervention alert email to {parent_email}: {str(e)}")
+            return False

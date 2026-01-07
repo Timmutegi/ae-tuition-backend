@@ -18,13 +18,15 @@ from sqlalchemy.orm import selectinload
 
 from app.models.marking import (
     CreativeWritingSubmission, ImageAnnotation, ManualMark,
-    TeacherComment, MarkingQueue, MarkingStatus, AnnotationType
+    TeacherComment, MarkingQueue, MarkingStatus, AnnotationType,
+    StudentCreativeWork, StudentCreativeWorkStatus
 )
 from app.models.test import TestAttempt, Test, TestAssignment, TestResult, AttemptStatus
 from app.models.question import Question, QuestionResponse, QuestionType
 from app.models.student import Student
 from app.models.user import User
 from app.models.class_model import Class
+from app.models.teacher import TeacherClassAssignment, TeacherProfile
 
 
 class MarkingService:
@@ -465,8 +467,13 @@ class MarkingService:
         """
         Get the marking queue with filters.
 
-        Returns enriched queue items with student and question details.
+        Returns enriched queue items including:
+        - Test-based manual marks from MarkingQueue
+        - Standalone creative work submissions from StudentCreativeWork
         """
+        all_items = []
+
+        # 1. Get test-based marking queue items
         query = (
             select(MarkingQueue)
             .options(
@@ -481,7 +488,7 @@ class MarkingService:
             )
         )
 
-        # Apply filters
+        # Apply filters for test-based queue
         conditions = []
         if test_id:
             conditions.append(MarkingQueue.test_id == test_id)
@@ -499,36 +506,143 @@ class MarkingService:
         if conditions:
             query = query.where(and_(*conditions))
 
-        # Order by priority and due date
         query = query.order_by(
             desc(MarkingQueue.priority),
             MarkingQueue.due_date,
             MarkingQueue.created_at
         )
 
-        query = query.limit(limit).offset(offset)
-
         result = await self.db.execute(query)
         queue_items = result.unique().scalars().all()
+        all_items.extend([self._queue_item_to_dict(item) for item in queue_items])
 
-        return [self._queue_item_to_dict(item) for item in queue_items]
+        # 2. Get standalone creative work submissions (if not filtering by test_id)
+        if not test_id:
+            creative_items = await self._get_creative_work_queue(teacher_id, class_id, status)
+            all_items.extend(creative_items)
+
+        # Sort combined results by created_at (newest first) and apply pagination
+        all_items.sort(key=lambda x: x.get('created_at') or '', reverse=True)
+
+        return all_items[offset:offset + limit]
+
+    async def _get_creative_work_queue(
+        self,
+        teacher_id: Optional[UUID] = None,
+        class_id: Optional[UUID] = None,
+        status: Optional[MarkingStatus] = None
+    ) -> List[Dict[str, Any]]:
+        """
+        Get standalone creative work submissions for the teacher's classes.
+        """
+        # Get teacher's assigned class IDs
+        teacher_class_ids = []
+        if teacher_id:
+            # First get teacher record from user_id
+            teacher_result = await self.db.execute(
+                select(TeacherProfile).where(TeacherProfile.user_id == teacher_id)
+            )
+            teacher = teacher_result.scalar_one_or_none()
+
+            if teacher:
+                class_result = await self.db.execute(
+                    select(TeacherClassAssignment.class_id)
+                    .where(TeacherClassAssignment.teacher_id == teacher.id)
+                )
+                teacher_class_ids = [row[0] for row in class_result.fetchall()]
+
+        # Build query for creative work
+        query = (
+            select(StudentCreativeWork)
+            .options(
+                selectinload(StudentCreativeWork.student).selectinload(Student.user),
+                selectinload(StudentCreativeWork.student).selectinload(Student.class_info)
+            )
+        )
+
+        conditions = []
+
+        # Filter by pending status (or match the status filter)
+        if status:
+            if status == MarkingStatus.PENDING:
+                conditions.append(StudentCreativeWork.status == StudentCreativeWorkStatus.PENDING)
+            elif status == MarkingStatus.MARKED:
+                conditions.append(StudentCreativeWork.status == StudentCreativeWorkStatus.REVIEWED)
+        else:
+            # Default: show pending items
+            conditions.append(StudentCreativeWork.status == StudentCreativeWorkStatus.PENDING)
+
+        # Filter by teacher's assigned classes
+        if teacher_class_ids:
+            # Join with Student to filter by class
+            query = query.join(Student, StudentCreativeWork.student_id == Student.id)
+            conditions.append(Student.class_id.in_(teacher_class_ids))
+        elif class_id:
+            query = query.join(Student, StudentCreativeWork.student_id == Student.id)
+            conditions.append(Student.class_id == class_id)
+
+        if conditions:
+            query = query.where(and_(*conditions))
+
+        query = query.order_by(desc(StudentCreativeWork.submitted_at))
+
+        result = await self.db.execute(query)
+        creative_works = result.unique().scalars().all()
+
+        return [self._creative_work_to_queue_dict(work) for work in creative_works]
+
+    def _creative_work_to_queue_dict(self, work: StudentCreativeWork) -> Dict[str, Any]:
+        """Convert a standalone creative work to a queue item dictionary."""
+        student_name = "Unknown"
+        student_email = ""
+        if work.student and work.student.user:
+            student_name = work.student.user.full_name or work.student.user.username
+            student_email = work.student.user.email
+
+        return {
+            "id": f"cw_{work.id}",  # Prefix to distinguish from regular queue items
+            "manual_mark_id": None,
+            "creative_work_id": str(work.id),
+            "test_id": None,
+            "test_title": "Creative Writing",
+            "student_id": str(work.student_id),
+            "student_name": student_name,
+            "student_email": student_email,
+            "question_id": None,
+            "question_text": work.title,
+            "question_type": "CREATIVE_WORK",
+            "max_points": 0,
+            "status": work.status.value if work.status else "pending",
+            "submission_url": work.image_url,
+            "submission_thumbnail": None,
+            "priority": 0,
+            "due_date": None,
+            "is_locked": False,
+            "locked_by": None,
+            "created_at": work.submitted_at.isoformat() if work.submitted_at else None
+        }
 
     async def get_queue_stats(
         self,
         teacher_id: Optional[UUID] = None,
         test_id: Optional[UUID] = None
     ) -> Dict[str, Any]:
-        """Get statistics about the marking queue."""
+        """Get statistics about the marking queue including standalone creative work."""
         base_conditions = []
         if test_id:
             base_conditions.append(MarkingQueue.test_id == test_id)
 
-        # Total pending
+        # Total pending from MarkingQueue
         pending_query = select(func.count(MarkingQueue.id))
         if base_conditions:
             pending_query = pending_query.where(and_(*base_conditions))
         pending_result = await self.db.execute(pending_query)
-        total_pending = pending_result.scalar()
+        total_pending = pending_result.scalar() or 0
+
+        # Add standalone creative work pending count (if not filtering by test_id)
+        if not test_id and teacher_id:
+            creative_pending = await self._get_creative_work_pending_count(teacher_id)
+            total_pending += creative_pending
 
         # Assigned to this teacher
         assigned_count = 0
@@ -539,7 +653,7 @@ class MarkingService:
             if base_conditions:
                 assigned_query = assigned_query.where(and_(*base_conditions))
             assigned_result = await self.db.execute(assigned_query)
-            assigned_count = assigned_result.scalar()
+            assigned_count = assigned_result.scalar() or 0
 
         # Overdue items
         overdue_query = select(func.count(MarkingQueue.id)).where(
@@ -548,13 +662,46 @@ class MarkingService:
         if base_conditions:
             overdue_query = overdue_query.where(and_(*base_conditions))
         overdue_result = await self.db.execute(overdue_query)
-        overdue_count = overdue_result.scalar()
+        overdue_count = overdue_result.scalar() or 0
 
         return {
             "total_pending": total_pending,
             "assigned_to_me": assigned_count,
             "overdue": overdue_count
         }
+
+    async def _get_creative_work_pending_count(self, teacher_id: UUID) -> int:
+        """Get count of pending creative work for teacher's assigned classes."""
+        # Get teacher record
+        teacher_result = await self.db.execute(
+            select(TeacherProfile).where(TeacherProfile.user_id == teacher_id)
+        )
+        teacher = teacher_result.scalar_one_or_none()
+
+        if not teacher:
+            return 0
+
+        # Get teacher's assigned class IDs
+        class_result = await self.db.execute(
+            select(TeacherClassAssignment.class_id)
+            .where(TeacherClassAssignment.teacher_id == teacher.id)
+        )
+        teacher_class_ids = [row[0] for row in class_result.fetchall()]
+
+        if not teacher_class_ids:
+            return 0
+
+        # Count pending creative work from students in those classes
+        count_query = (
+            select(func.count(StudentCreativeWork.id))
+            .join(Student, StudentCreativeWork.student_id == Student.id)
+            .where(and_(
+                StudentCreativeWork.status == StudentCreativeWorkStatus.PENDING,
+                Student.class_id.in_(teacher_class_ids)
+            ))
+        )
+        count_result = await self.db.execute(count_query)
+        return count_result.scalar() or 0
 
     async def lock_queue_item(
         self,
@@ -620,6 +767,7 @@ class MarkingService:
         return {
             "id": str(item.id),
             "manual_mark_id": str(item.manual_mark_id),
+            "creative_work_id": None,  # Not a standalone creative work
             "test_id": str(item.test_id) if item.test_id else None,
             "test_title": test_title,
             "student_id": str(manual_mark.student_id) if manual_mark else None,

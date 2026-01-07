@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Performance Update - AE Tuition</title>
+    <style>
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            font-family: "Segoe UI", Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+        }
+        .header {
+            background-color: #db2e1d;
+            height: 150px;
+            line-height: 150px;
+            padding-right: 50px;
+            padding-bottom: 20px;
+            color: white;
+        }
+        .header h1 {
+            text-align: center;
+        }
+        .content {
+            min-height: 100px;
+        }
+        .footer {
+            height: 100px;
+            background-color: #db2e1d;
+            padding-top: 30px;
+            padding-bottom: 30px;
+            color: white;
+            font-size: 13px;
+            line-height: 20px;
+        }
+        .footer p {
+            margin-top: 0px;
+            margin-bottom: 0px;
+            text-align: center;
+        }
+        .footer a {
+            color: white;
+        }
+        .alert-box {
+            background-color: #fef2f2;
+            border: 2px solid #dc2626;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .student-info-box {
+            background-color: #f0f9ff;
+            border: 2px solid #0369a1;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .support-box {
+            background-color: #f0fdf4;
+            border: 2px solid #16a34a;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <div class="header">
+                <h1>AE Tuition</h1>
+            </div>
+            <div class="content">
+                <div style="max-width: 560px; padding: 20px; background: #ffffff; border-radius: 5px; margin: 40px auto; font-family: Open Sans,Helvetica,Arial; font-size: 15px; color: #666;">
+                    <div style="color: #444444; font-weight: normal;">
+                        <div style="text-align: center; font-weight: 600; font-size: 24px; padding: 10px 0; border-bottom: solid 3px #eeeeee;">AE Tuition</div>
+                        <div style="clear: both;"> </div>
+                    </div>
+                    <div style="padding: 0 30px 30px 30px; border-bottom: 3px solid #eeeeee;">
+
+                        <!-- Title -->
+                        <div style="font-size: 18px; text-align: center; line-height: 25px; margin-top: 20px; margin-bottom: 20px;">
+                            <strong>Student Performance Update</strong>
+                        </div>
+
+                        <!-- Greeting -->
+                        <div style="font-size: 15px; text-align: left; line-height: 25px; margin-bottom: 20px;">
+                            Dear Parent/Guardian,
+                        </div>
+
+                        <!-- Introduction -->
+                        <div style="font-size: 15px; text-align: left; line-height: 25px; margin-bottom: 20px;">
+                            We are writing to inform you about your child's recent academic performance. Our monitoring system has identified an area that may benefit from additional attention and support.
+                        </div>
+
+                        <!-- Student Info Box -->
+                        <div class="student-info-box">
+                            <div style="text-align: center; font-size: 18px; font-weight: 600; color: #0369a1; margin-bottom: 15px;">
+                                Student Information
+                            </div>
+
+                            <div style="font-size: 14px; color: #1f2937; margin: 10px 0;">
+                                <strong>Student Name:</strong> {{student_name}}
+                            </div>
+                            <div style="font-size: 14px; color: #1f2937; margin: 10px 0;">
+                                <strong>Student Code:</strong> {{student_code}}
+                            </div>
+                            <div style="font-size: 14px; color: #1f2937; margin: 10px 0;">
+                                <strong>Class:</strong> {{class_name}}
+                            </div>
+                        </div>
+
+                        <!-- Alert Details Box -->
+                        <div class="alert-box">
+                            <div style="text-align: center; font-size: 18px; font-weight: 600; color: #dc2626; margin-bottom: 15px;">
+                                Performance Summary
+                            </div>
+
+                            <div style="font-size: 14px; color: #1f2937; margin: 10px 0;">
+                                <strong>Subject:</strong> {{subject}}
+                            </div>
+                            <div style="font-size: 14px; color: #1f2937; margin: 10px 0;">
+                                <strong>Current Average:</strong> {{current_average}}
+                            </div>
+                            <div style="font-size: 14px; color: #1f2937; margin: 10px 0;">
+                                <strong>Review Period:</strong> {{weeks_failing}} weeks below target
+                            </div>
+                        </div>
+
+                        <!-- Support Box -->
+                        <div class="support-box">
+                            <div style="text-align: center; font-size: 18px; font-weight: 600; color: #16a34a; margin-bottom: 15px;">
+                                How You Can Help
+                            </div>
+
+                            <div style="font-size: 13px; color: #166534; line-height: 20px;">
+                                {{recommended_actions}}
+                            </div>
+                        </div>
+
+                        <!-- Additional Info -->
+                        <div style="font-size: 14px; text-align: left; line-height: 20px; color: #6b7280; margin-top: 20px;">
+                            <p><strong>What this means:</strong></p>
+                            <p>Your child's performance in {{subject}} has been below our target threshold during recent weeks. This early notification allows us to work together to provide the support needed for improvement.</p>
+                        </div>
+
+                        <!-- Next Steps -->
+                        <div style="font-size: 14px; text-align: left; line-height: 20px; color: #6b7280; margin-top: 20px;">
+                            <p><strong>Next Steps:</strong></p>
+                            <ul style="margin: 5px 0; padding-left: 20px;">
+                                <li>Discuss this with your child in a supportive manner</li>
+                                <li>Encourage regular practice and revision</li>
+                                <li>Contact your child's teacher if you have questions</li>
+                                <li>Monitor upcoming test results for improvement</li>
+                            </ul>
+                        </div>
+
+                        <!-- Call to Action -->
+                        <div style="padding: 20px 0 30px 0; text-align: center;">
+                            <a style="background: #db2e1d; color: #fff; padding: 12px 30px; text-decoration: none; border-radius: 3px; letter-spacing: 0.3px;"
+                               href="{{frontend_url}}">
+                                View Student Portal
+                            </a>
+                        </div>
+
+                        <!-- Note -->
+                        <div style="font-size: 13px; text-align: center; line-height: 18px; color: #6b7280; margin-top: 15px;">
+                            We believe that with the right support, every student can succeed. Thank you for partnering with us in your child's education.
+                        </div>
+                    </div>
+
+                    <!-- Sign-off -->
+                    <div style="color: #999; padding: 20px 30px; font-size: 14px;">
+                        <div>If you have any questions or concerns, please don't hesitate to contact us.</div>
+                        <div style="margin-top: 10px;">Warm regards,</div>
+                        <div>The <a style="color: #db2e1d; text-decoration: none;" href="{{frontend_url}}">AE Tuition</a> Team</div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <p><strong><a href="mailto:{{contact_email}}">{{contact_email}}</a></strong></p>
+                <p><strong>AE Tuition Support Team</strong></p>
+                <p><strong>Empowering Quality Education</strong></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

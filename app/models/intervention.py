@@ -135,6 +135,10 @@ class InterventionAlert(Base):
     resolved_by = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     resolution_notes = Column(Text, nullable=True)
 
+    # Teacher Approval (for parent notification workflow)
+    approved_at = Column(DateTime(timezone=True), nullable=True)
+    approved_by = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+
     created_at = Column(DateTime(timezone=True), default=func.now())
     updated_at = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now())
 
@@ -142,7 +146,29 @@ class InterventionAlert(Base):
     student = relationship("Student", backref="intervention_alerts")
     threshold = relationship("InterventionThreshold", back_populates="alerts")
     resolver = relationship("User", foreign_keys=[resolved_by])
+    approver = relationship("User", foreign_keys=[approved_by])
     recipients = relationship("AlertRecipient", back_populates="alert", cascade="all, delete-orphan")
+
+    @property
+    def student_name(self) -> str:
+        """Get student's full name from the user relationship."""
+        if self.student and self.student.user:
+            return self.student.user.full_name
+        return "Unknown Student"
+
+    @property
+    def student_code(self) -> str:
+        """Get student's code."""
+        if self.student:
+            return self.student.student_code or ""
+        return ""
+
+    @property
+    def class_name(self) -> str:
+        """Get student's class name."""
+        if self.student and self.student.class_info:
+            return self.student.class_info.name
+        return ""
 
     def __repr__(self):
         return f"<InterventionAlert(student_id='{self.student_id}', type='{self.alert_type}', status='{self.status}')>"

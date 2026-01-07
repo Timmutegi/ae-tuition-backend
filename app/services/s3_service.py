@@ -5,18 +5,41 @@ from botocore.exceptions import NoCredentialsError, ClientError
 from app.core.config import settings
 import mimetypes
 import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class S3Service:
     def __init__(self):
-        self.s3_client = boto3.client(
-            's3',
-            aws_access_key_id=settings.AWS_ACCESS_KEY,
-            aws_secret_access_key=settings.AWS_SECRET_KEY,
-            region_name=settings.AWS_REGION
-        )
+        logger.info(f"Initializing S3Service with bucket: {settings.AWS_S3_BUCKET}, region: {settings.AWS_REGION}")
         self.bucket_name = settings.AWS_S3_BUCKET
         self.cloudfront_url = settings.CLOUDFRONT_URL
+        self._s3_client = None
+
+    def _get_client(self):
+        """Get or create S3 client with fresh credentials"""
+        import os
+        # Always read credentials fresh from environment
+        access_key = os.environ.get('AWS_ACCESS_KEY', settings.AWS_ACCESS_KEY)
+        secret_key = os.environ.get('AWS_SECRET_KEY', settings.AWS_SECRET_KEY)
+        region = os.environ.get('AWS_REGION', settings.AWS_REGION)
+
+        logger.info(f"Creating S3 client - Access Key: {access_key[:5]}...{access_key[-3:] if access_key else 'None'}")
+        logger.info(f"Secret Key length: {len(secret_key) if secret_key else 0}")
+
+        return boto3.client(
+            's3',
+            aws_access_key_id=access_key,
+            aws_secret_access_key=secret_key,
+            region_name=region
+        )
+
+    @property
+    def s3_client(self):
+        """Always create fresh S3 client to ensure credentials are up-to-date"""
+        # Don't cache - always get fresh client with fresh credentials
+        return self._get_client()
 
     async def upload_file(
         self,
@@ -48,10 +71,19 @@ class S3Service:
 
             # Read file content into memory to avoid file pointer issues
             file_content = file.read()
+            file_size = len(file_content)
+
+            # Debug: Log credentials being used (masked)
+            creds = self.s3_client._request_signer._credentials
+            logger.info(f"Uploading file: {file_name}, size: {file_size}, content_type: {content_type}, s3_key: {s3_key}")
+            logger.info(f"Using AWS credentials - Access Key: {creds.access_key[:5]}...{creds.access_key[-3:]}, Secret present: {bool(creds.secret_key)}, Secret length: {len(creds.secret_key) if creds.secret_key else 0}")
 
             # Create BytesIO object from content
             import io
             file_obj = io.BytesIO(file_content)
+
+            # Sanitize filename for Content-Disposition header (remove special chars)
+            safe_filename = file_name.encode('ascii', 'ignore').decode('ascii').replace('"', '')
 
             # Upload file
             self.s3_client.upload_fileobj(
@@ -60,7 +92,7 @@ class S3Service:
                 s3_key,
                 ExtraArgs={
                     'ContentType': content_type,
-                    'ContentDisposition': f'inline; filename="{file_name}"'
+                    'ContentDisposition': f'inline; filename="{safe_filename}"'
                 }
             )
 
@@ -80,13 +112,71 @@ class S3Service:
             }
 
         except NoCredentialsError:
-            print("AWS credentials not found")
+            logger.error("AWS credentials not found")
             return None
         except ClientError as e:
-            print(f"Error uploading file to S3: {e}")
+            logger.error(f"Error uploading file to S3: {e}")
+            logger.error(f"Error code: {e.response.get('Error', {}).get('Code', 'Unknown')}")
+            logger.error(f"Error message: {e.response.get('Error', {}).get('Message', 'Unknown')}")
             return None
         except Exception as e:
-            print(f"Unexpected error uploading file: {e}")
+            logger.error(f"Unexpected error uploading file: {e}", exc_info=True)
+            return None
+
+    async def upload_bytes(
+        self,
+        data: bytes,
+        s3_key: str,
+        content_type: str = "image/png"
+    ) -> Optional[dict]:
+        """
+        Upload raw bytes to S3 bucket
+
+        Args:
+            data: Raw bytes to upload
+            s3_key: S3 key (path) to upload to
+            content_type: Content type of the file
+
+        Returns:
+            Dict with s3_key and url if successful, None if failed
+        """
+        try:
+            import io
+            file_obj = io.BytesIO(data)
+
+            logger.info(f"Uploading bytes to S3: {s3_key}, size: {len(data)}, content_type: {content_type}")
+
+            # Upload file
+            self.s3_client.upload_fileobj(
+                file_obj,
+                self.bucket_name,
+                s3_key,
+                ExtraArgs={
+                    'ContentType': content_type
+                }
+            )
+
+            # Generate public URL using CloudFront
+            if self.cloudfront_url:
+                cloudfront_base = self.cloudfront_url.rstrip('/')
+                public_url = f"{cloudfront_base}/{s3_key}"
+            else:
+                public_url = f"https://{self.bucket_name}.s3.{settings.AWS_REGION}.amazonaws.com/{s3_key}"
+
+            return {
+                "s3_key": s3_key,
+                "url": public_url,
+                "content_type": content_type
+            }
+
+        except NoCredentialsError:
+            logger.error("AWS credentials not found")
+            return None
+        except ClientError as e:
+            logger.error(f"Error uploading bytes to S3: {e}")
+            return None
+        except Exception as e:
+            logger.error(f"Unexpected error uploading bytes: {e}", exc_info=True)
             return None
 
     async def delete_file(self, s3_key: str) -> bool:

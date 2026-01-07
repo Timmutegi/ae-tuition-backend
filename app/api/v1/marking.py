@@ -11,11 +11,14 @@ Provides endpoints for:
 from typing import List, Optional
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form
+from fastapi.responses import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel, Field
 from datetime import datetime
+import httpx
 
 from app.core.database import get_db
+from app.core.config import settings
 from app.core.security import get_current_user, get_current_teacher
 from app.models.user import User
 from app.models.marking import MarkingStatus, AnnotationType
@@ -102,24 +105,25 @@ class MarkResponse(BaseModel):
 class QueueItemResponse(BaseModel):
     """Response for a marking queue item."""
     id: str
-    manual_mark_id: str
-    test_id: Optional[str]
+    manual_mark_id: Optional[str] = None  # None for standalone creative work
+    creative_work_id: Optional[str] = None  # Set for standalone creative work
+    test_id: Optional[str] = None
     test_title: str
-    student_id: Optional[str]
+    student_id: Optional[str] = None
     student_name: str
     student_email: str
-    question_id: Optional[str]
+    question_id: Optional[str] = None
     question_text: str
     question_type: str
     max_points: float
     status: str
-    submission_url: Optional[str]
-    submission_thumbnail: Optional[str]
+    submission_url: Optional[str] = None
+    submission_thumbnail: Optional[str] = None
     priority: int
-    due_date: Optional[str]
+    due_date: Optional[str] = None
     is_locked: bool
-    locked_by: Optional[str]
-    created_at: Optional[str]
+    locked_by: Optional[str] = None
+    created_at: Optional[str] = None
 
 
 class QueueStatsResponse(BaseModel):
@@ -604,3 +608,233 @@ async def get_comments_for_student(
         )
         for c in comments
     ]
+
+
+# ==================== Standalone Creative Work Endpoints ====================
+
+class CreativeWorkDetailResponse(BaseModel):
+    """Response for standalone creative work."""
+    id: str
+    student_id: str
+    student_name: str
+    student_email: str
+    title: str
+    description: Optional[str] = None
+    image_url: str
+    annotated_image_url: Optional[str] = None
+    status: str
+    feedback: Optional[str] = None
+    submitted_at: str
+    reviewed_at: Optional[str] = None
+
+
+class CreativeWorkReviewRequest(BaseModel):
+    """Request to review creative work."""
+    feedback: str = Field(..., min_length=1)
+    status: str = Field(default="reviewed")  # "reviewed" or "rejected"
+    annotated_image: Optional[str] = None  # Base64 encoded annotated image
+
+
+@router.get("/creative-work/{work_id}", response_model=CreativeWorkDetailResponse)
+async def get_creative_work(
+    work_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_teacher)
+):
+    """Get a standalone creative work submission."""
+    from app.models.marking import StudentCreativeWork
+    from app.models.student import Student
+    from sqlalchemy import select
+    from sqlalchemy.orm import selectinload
+
+    result = await db.execute(
+        select(StudentCreativeWork)
+        .options(
+            selectinload(StudentCreativeWork.student).selectinload(Student.user)
+        )
+        .where(StudentCreativeWork.id == work_id)
+    )
+    work = result.scalar_one_or_none()
+
+    if not work:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Creative work not found"
+        )
+
+    student_name = "Unknown"
+    student_email = ""
+    if work.student and work.student.user:
+        student_name = work.student.user.full_name or work.student.user.username
+        student_email = work.student.user.email
+
+    return CreativeWorkDetailResponse(
+        id=str(work.id),
+        student_id=str(work.student_id),
+        student_name=student_name,
+        student_email=student_email,
+        title=work.title,
+        description=work.description,
+        image_url=work.image_url,
+        annotated_image_url=work.annotated_image_url,
+        status=work.status.value if work.status else "pending",
+        feedback=work.feedback,
+        submitted_at=work.submitted_at.isoformat() if work.submitted_at else "",
+        reviewed_at=work.reviewed_at.isoformat() if work.reviewed_at else None
+    )
+
+
+@router.post("/creative-work/{work_id}/review", response_model=CreativeWorkDetailResponse)
+async def review_creative_work(
+    work_id: UUID,
+    request: CreativeWorkReviewRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_teacher)
+):
+    """Submit a review for standalone creative work."""
+    from app.models.marking import StudentCreativeWork, StudentCreativeWorkStatus
+    from app.models.student import Student
+    from sqlalchemy import select
+    from sqlalchemy.orm import selectinload
+    from datetime import datetime, timezone
+    import base64
+    import io
+
+    result = await db.execute(
+        select(StudentCreativeWork)
+        .options(
+            selectinload(StudentCreativeWork.student).selectinload(Student.user)
+        )
+        .where(StudentCreativeWork.id == work_id)
+    )
+    work = result.scalar_one_or_none()
+
+    if not work:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Creative work not found"
+        )
+
+    # Handle annotated image upload if provided
+    if request.annotated_image:
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"Received annotated image for work {work_id}, size: {len(request.annotated_image)}")
+
+        try:
+            # Remove data URL prefix if present (e.g., "data:image/png;base64,")
+            image_data = request.annotated_image
+            if ',' in image_data:
+                image_data = image_data.split(',')[1]
+                logger.info(f"Stripped data URL prefix, base64 size: {len(image_data)}")
+
+            # Decode base64 image
+            image_bytes = base64.b64decode(image_data)
+            logger.info(f"Decoded image bytes, size: {len(image_bytes)}")
+
+            # Generate S3 key for annotated image
+            annotated_s3_key = f"creative-writing/annotated/{work_id}.png"
+
+            # Upload to S3
+            s3_service = S3Service()
+            upload_result = await s3_service.upload_bytes(
+                data=image_bytes,
+                s3_key=annotated_s3_key,
+                content_type="image/png"
+            )
+
+            if upload_result:
+                # Update work with annotated image URL
+                work.annotated_image_url = upload_result.get("url", "")
+                work.annotated_s3_key = annotated_s3_key
+                logger.info(f"Successfully uploaded annotated image: {work.annotated_image_url}")
+            else:
+                logger.error(f"S3 upload returned None for work {work_id}")
+
+        except Exception as e:
+            # Log error but don't fail the review
+            import logging
+            logging.error(f"Failed to upload annotated image: {str(e)}", exc_info=True)
+
+    # Update the work with feedback
+    work.feedback = request.feedback
+    work.reviewed_by = current_user.id
+    work.reviewed_at = datetime.now(timezone.utc)
+
+    if request.status == "rejected":
+        work.status = StudentCreativeWorkStatus.REJECTED
+    else:
+        work.status = StudentCreativeWorkStatus.REVIEWED
+
+    await db.commit()
+    await db.refresh(work)
+
+    student_name = "Unknown"
+    student_email = ""
+    if work.student and work.student.user:
+        student_name = work.student.user.full_name or work.student.user.username
+        student_email = work.student.user.email
+
+    return CreativeWorkDetailResponse(
+        id=str(work.id),
+        student_id=str(work.student_id),
+        student_name=student_name,
+        student_email=student_email,
+        title=work.title,
+        description=work.description,
+        image_url=work.image_url,
+        annotated_image_url=work.annotated_image_url,
+        status=work.status.value if work.status else "pending",
+        feedback=work.feedback,
+        submitted_at=work.submitted_at.isoformat() if work.submitted_at else "",
+        reviewed_at=work.reviewed_at.isoformat() if work.reviewed_at else None
+    )
+
+
+# ==================== Image Proxy Endpoint ====================
+
+@router.get("/image-proxy/{path:path}")
+async def proxy_image(
+    path: str,
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Proxy images from CloudFront/S3 to avoid CORS issues when loading into canvas.
+
+    The path should be the S3 key (e.g., creative-writing/uuid.png)
+    """
+    cloudfront_url = settings.CLOUDFRONT_URL
+    if not cloudfront_url:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="CloudFront URL not configured"
+        )
+
+    # Build the full URL
+    base_url = cloudfront_url.rstrip('/')
+    image_url = f"{base_url}/{path}"
+
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(image_url, timeout=30.0)
+            response.raise_for_status()
+
+            content_type = response.headers.get("content-type", "image/png")
+
+            return Response(
+                content=response.content,
+                media_type=content_type,
+                headers={
+                    "Cache-Control": "public, max-age=3600"
+                }
+            )
+    except httpx.HTTPStatusError as e:
+        raise HTTPException(
+            status_code=e.response.status_code,
+            detail="Failed to fetch image"
+        )
+    except httpx.RequestError as e:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"Failed to connect to image server: {str(e)}"
+        )

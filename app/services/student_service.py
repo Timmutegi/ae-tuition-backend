@@ -296,6 +296,10 @@ class StudentService:
             if not student:
                 return {"success": False, "error": "Student not found"}
 
+            # Store user info before commit (objects expire after commit in async SQLAlchemy)
+            user_email = student.user.email
+            user_full_name = student.user.full_name
+
             # Generate new password
             new_password = generate_secure_password()
             password_hash = get_password_hash(new_password)
@@ -304,10 +308,10 @@ class StudentService:
             student.user.password_hash = password_hash
             await db.commit()
 
-            # Send email
+            # Send email using stored values (not accessing expired relationship)
             student_dict = {
-                "email": student.user.email,
-                "full_name": student.user.full_name
+                "email": user_email,
+                "full_name": user_full_name
             }
             email_sent = await self.email_service.send_password_reset(
                 student_dict, new_password

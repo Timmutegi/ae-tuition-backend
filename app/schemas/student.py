@@ -144,14 +144,24 @@ class ChangePasswordResponse(BaseModel):
     success: bool
 
 
-class StudentProgressResponse(BaseModel):
-    total_tests: int
-    completed_tests: int
+class SubjectProgress(BaseModel):
+    subject: str
+    tests_completed: int
     average_score: float
     best_score: float
-    improvement_percentage: Optional[float] = None
-    subject_performance: dict
-    recent_trends: List[dict]
+    last_test_date: Optional[str] = None
+    trend: str = "stable"  # "up", "down", or "stable"
+
+
+class StudentProgressResponse(BaseModel):
+    overall_average: float
+    total_tests: int
+    total_time_spent: int  # in minutes
+    current_streak: int
+    longest_streak: int
+    subjects: List[SubjectProgress]
+    recent_scores: List[float]
+    weekly_activity: List[int]  # 7 elements for Mon-Sun
 
 
 class StudentStatsResponse(BaseModel):
@@ -177,6 +187,7 @@ class CreativeWorkResponse(BaseModel):
     title: str
     description: Optional[str] = None
     image_url: str
+    annotated_image_url: Optional[str] = None
     status: str
     feedback: Optional[str] = None
     submitted_at: datetime

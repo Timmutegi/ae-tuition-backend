@@ -736,6 +736,8 @@ async def get_student_progress(
     db: AsyncSession = Depends(get_db)
 ) -> StudentProgressResponse:
     """Get current student's progress and performance analytics"""
+    from app.schemas.student import SubjectProgress
+
     if current_user.role != UserRole.STUDENT:
         raise HTTPException(status_code=403, detail="Not authorized")
 
@@ -760,64 +762,124 @@ async def get_student_progress(
     if not all_results:
         # No results yet
         return StudentProgressResponse(
+            overall_average=0.0,
             total_tests=0,
-            completed_tests=0,
-            average_score=0.0,
-            best_score=0.0,
-            improvement_percentage=None,
-            subject_performance={},
-            recent_trends=[]
+            total_time_spent=0,
+            current_streak=0,
+            longest_streak=0,
+            subjects=[],
+            recent_scores=[],
+            weekly_activity=[0, 0, 0, 0, 0, 0, 0]
         )
 
     # Calculate basic stats
     total_tests = len(all_results)
     percentages = [float(result.TestResult.percentage) for result in all_results]
-    average_score = sum(percentages) / len(percentages)
-    best_score = max(percentages)
+    overall_average = round(sum(percentages) / len(percentages), 1)
 
-    # Calculate improvement (comparing first half to second half)
-    improvement_percentage = None
-    if len(percentages) >= 4:
-        mid_point = len(percentages) // 2
-        first_half_avg = sum(percentages[mid_point:]) / mid_point  # Earlier tests (reversed order)
-        second_half_avg = sum(percentages[:mid_point]) / mid_point  # Recent tests
-        improvement_percentage = second_half_avg - first_half_avg
+    # Calculate total time spent (time_taken is in seconds, convert to minutes)
+    total_time_spent = 0
+    for result in all_results:
+        if result.TestResult.time_taken:
+            total_time_spent += result.TestResult.time_taken // 60
+
+    # Calculate streaks based on test dates
+    current_streak = 0
+    longest_streak = 0
+    if all_results:
+        # Get unique dates when tests were taken
+        test_dates = set()
+        for result in all_results:
+            if result.TestResult.submitted_at:
+                test_dates.add(result.TestResult.submitted_at.date())
+
+        # Sort dates in descending order
+        sorted_dates = sorted(test_dates, reverse=True)
+
+        # Calculate current streak (consecutive days from today/most recent)
+        if sorted_dates:
+            from datetime import date, timedelta
+            today = date.today()
+            # Check if there was activity today or yesterday to start counting
+            if sorted_dates[0] >= today - timedelta(days=1):
+                current_streak = 1
+                for i in range(1, len(sorted_dates)):
+                    if sorted_dates[i-1] - sorted_dates[i] == timedelta(days=1):
+                        current_streak += 1
+                    else:
+                        break
+
+            # Calculate longest streak
+            temp_streak = 1
+            longest_streak = 1
+            for i in range(1, len(sorted_dates)):
+                if sorted_dates[i-1] - sorted_dates[i] == timedelta(days=1):
+                    temp_streak += 1
+                    longest_streak = max(longest_streak, temp_streak)
+                else:
+                    temp_streak = 1
 
     # Calculate subject performance
-    subject_performance = {}
+    subject_data = {}
     for result in all_results:
-        subject = result.Test.type.value
-        if subject not in subject_performance:
-            subject_performance[subject] = []
-        subject_performance[subject].append(float(result.TestResult.percentage))
+        subject = result.Test.type.value if result.Test.type else "unknown"
+        if subject not in subject_data:
+            subject_data[subject] = {
+                "scores": [],
+                "last_date": None
+            }
+        subject_data[subject]["scores"].append(float(result.TestResult.percentage))
+        if not subject_data[subject]["last_date"] and result.TestResult.submitted_at:
+            subject_data[subject]["last_date"] = result.TestResult.submitted_at
 
-    # Average by subject
-    for subject in subject_performance:
-        scores = subject_performance[subject]
-        subject_performance[subject] = {
-            "average": sum(scores) / len(scores),
-            "tests_taken": len(scores),
-            "best_score": max(scores)
-        }
+    subjects = []
+    for subject_name, data in subject_data.items():
+        scores = data["scores"]
+        # Determine trend (comparing recent to older scores)
+        trend = "stable"
+        if len(scores) >= 2:
+            recent_avg = sum(scores[:len(scores)//2 or 1]) / (len(scores)//2 or 1)
+            older_avg = sum(scores[len(scores)//2:]) / len(scores[len(scores)//2:])
+            if recent_avg > older_avg + 5:
+                trend = "up"
+            elif recent_avg < older_avg - 5:
+                trend = "down"
 
-    # Recent trends (last 5 tests)
-    recent_trends = []
-    for result in all_results[:5]:  # Already ordered by submitted_at desc
-        recent_trends.append({
-            "test_title": result.Test.title,
-            "score": float(result.TestResult.percentage),
-            "submitted_at": result.TestResult.submitted_at.isoformat() if result.TestResult.submitted_at else None,
-            "subject": result.Test.type.value
-        })
+        subjects.append(SubjectProgress(
+            subject=subject_name,
+            tests_completed=len(scores),
+            average_score=round(sum(scores) / len(scores), 1),
+            best_score=round(max(scores), 1),
+            last_test_date=data["last_date"].isoformat() if data["last_date"] else None,
+            trend=trend
+        ))
+
+    # Recent scores (last 10)
+    recent_scores = percentages[:10]
+
+    # Weekly activity (tests per day for last 7 days)
+    from datetime import date, timedelta
+    today = date.today()
+    weekly_activity = [0, 0, 0, 0, 0, 0, 0]  # Mon-Sun
+
+    for result in all_results:
+        if result.TestResult.submitted_at:
+            test_date = result.TestResult.submitted_at.date()
+            days_ago = (today - test_date).days
+            if 0 <= days_ago < 7:
+                # Get day of week (0=Monday, 6=Sunday)
+                day_index = test_date.weekday()
+                weekly_activity[day_index] += 1
 
     return StudentProgressResponse(
+        overall_average=overall_average,
         total_tests=total_tests,
-        completed_tests=total_tests,
-        average_score=average_score,
-        best_score=best_score,
-        improvement_percentage=improvement_percentage,
-        subject_performance=subject_performance,
-        recent_trends=recent_trends
+        total_time_spent=total_time_spent,
+        current_streak=current_streak,
+        longest_streak=longest_streak,
+        subjects=subjects,
+        recent_scores=recent_scores,
+        weekly_activity=weekly_activity
     )
 
 
@@ -1008,6 +1070,7 @@ async def get_creative_writing_submissions(
                 title=sub.title,
                 description=sub.description,
                 image_url=sub.image_url,
+                annotated_image_url=sub.annotated_image_url,
                 status=sub.status.value,
                 feedback=sub.feedback,
                 submitted_at=sub.submitted_at,

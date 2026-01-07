@@ -252,6 +252,10 @@ class StudentCreativeWork(Base):
     image_url = Column(String(500), nullable=False)  # CloudFront URL
     s3_key = Column(String(255), nullable=False)  # S3 key for the image
 
+    # Annotated image (created by teacher)
+    annotated_image_url = Column(String(500), nullable=True)  # CloudFront URL for annotated version
+    annotated_s3_key = Column(String(255), nullable=True)  # S3 key for annotated image
+
     # Image metadata
     original_filename = Column(String(255))
     file_size_bytes = Column(Integer)

@@ -94,8 +94,6 @@ class SessionResponse(BaseModel):
     last_heartbeat: Optional[str]
     time_remaining_seconds: Optional[int]
     tab_switches: int
-    copy_attempts: int
-    paste_attempts: int
     idle_periods: int
     total_idle_seconds: int
     warnings_count: int

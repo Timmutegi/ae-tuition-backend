@@ -42,12 +42,28 @@ async def lifespan(app: FastAPI):
         except Exception as e:
             logger.error(f"Error creating default admin: {e}")
 
+    # Initialize scheduler for daily intervention checks
+    try:
+        from app.services.scheduler_service import init_scheduler
+        init_scheduler()
+        logger.info("Scheduler initialized for daily intervention checks")
+    except Exception as e:
+        logger.error(f"Error initializing scheduler: {e}")
+
     logger.info("AE Tuition API startup complete")
 
     yield
 
     # Shutdown
     logger.info("Shutting down AE Tuition API...")
+
+    # Shutdown scheduler
+    try:
+        from app.services.scheduler_service import shutdown_scheduler
+        shutdown_scheduler()
+        logger.info("Scheduler shutdown complete")
+    except Exception as e:
+        logger.error(f"Error shutting down scheduler: {e}")
 
 
 # Create FastAPI application

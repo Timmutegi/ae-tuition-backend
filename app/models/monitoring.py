@@ -20,9 +20,6 @@ class ActivityType(enum.Enum):
     """Types of suspicious activities that can be logged."""
     TAB_SWITCH = "tab_switch"
     TAB_HIDDEN = "tab_hidden"
-    COPY_ATTEMPT = "copy_attempt"
-    PASTE_ATTEMPT = "paste_attempt"
-    CUT_ATTEMPT = "cut_attempt"
     RIGHT_CLICK = "right_click"
     KEYBOARD_SHORTCUT = "keyboard_shortcut"
     IDLE_TIMEOUT = "idle_timeout"
@@ -128,8 +125,6 @@ class ActiveTestSession(Base):
 
     # Activity counters
     tab_switches = Column(Integer, default=0)
-    copy_attempts = Column(Integer, default=0)
-    paste_attempts = Column(Integer, default=0)
     idle_periods = Column(Integer, default=0)
     total_idle_seconds = Column(Integer, default=0)
     warnings_count = Column(Integer, default=0)

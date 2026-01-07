@@ -35,6 +35,9 @@ class Settings(BaseSettings):
     # Email settings
     RESEND_API_KEY: Optional[str] = None
     FROM_EMAIL: str = "smart-tutor@app.smart-tutorai.com"
+
+    # OpenAI settings (for AI-generated distractors in MCQ tests)
+    OPENAI_API_KEY: Optional[str] = None
     FRONTEND_URL: str = "http://localhost:4200"
 
     # Default admin settings
